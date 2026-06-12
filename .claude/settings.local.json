@@ -1,0 +1,43 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run *)",
+      "Bash(curl -s http://localhost:3000)",
+      "Bash(supabase --version)",
+      "Bash(npx supabase *)",
+      "Bash(SUPABASE_ACCESS_TOKEN=\"$SERVICE_KEY\" npx supabase *)",
+      "Bash(psql --version)",
+      "Bash(node -e \"require\\('pg'\\)\")",
+      "Bash(npm install *)",
+      "Bash(DATABASE_URL=\"postgresql://postgres:AiLinkCol25@db.uwzcpuvaflrgqkfwbwcf.supabase.co:5432/postgres\" node *)",
+      "Bash(SUPABASE_ANON_KEY=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV3emNwdXZhZmxyZ3FrZndid2NmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg3MjE5ODUsImV4cCI6MjA5NDI5Nzk4NX0.f6qhxKMTylzSyIe70gG76vjRl0tcbhNsBMi1Kugb9Hs\" SUPABASE_SERVICE_KEY=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV3emNwdXZhZmxyZ3FrZndid2NmIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3ODcyMTk4NSwiZXhwIjoyMDk0Mjk3OTg1fQ.-mOIxjtRXNKfLVs0PR7eUng434YEd44nXC1Cj4Qca_4\" node *)",
+      "PowerShell(Head 50 *)",
+      "PowerShell(Get-ChildItem \"C:\\\\Users\\\\Andres\\\\Downloads\\\\fidel\\\\src\" -Recurse -File | ForEach-Object { $_.FullName })",
+      "Bash(npx tsc *)",
+      "Bash(npx vite *)",
+      "Bash(Read \"C:\\\\Users\\\\Andres\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--Users-Andres-Documents-fidelicard\\\\2fb79d4b-f976-4063-a8e2-79e3ecba466a\\\\tasks\\\\b66tb1yz1.output\")",
+      "Bash(start *)",
+      "Bash(cmd *)",
+      "Bash(where supabase *)",
+      "Bash(where scoop *)",
+      "Bash(where choco *)",
+      "PowerShell(New-Item *)",
+      "PowerShell(Copy-Item *)",
+      "PowerShell(Get-Item C:\\\\Users\\\\Andres\\\\Documents\\\\fidelicard\\\\scripts\\\\supabase.exe | Select-Object Name, @{N='SizeMB';E={[math]::Round\\($_.Length/1MB,1\\)}})",
+      "PowerShell(& \"C:\\\\Users\\\\Andres\\\\Documents\\\\fidelicard\\\\scripts\\\\deploy-mvp1.ps1\" 2>&1)",
+      "Read(//c/Users/Andres/AppData/Local/Temp/claude/C--Users-Andres-Documents-fidelicard/d7361ceb-71ce-4ad5-97b6-5166b3eb79a1/tasks/**)",
+      "PowerShell(Start-Process \"http://localhost:3001/\")",
+      "Bash(curl *)",
+      "WebFetch(domain:uwzcpuvaflrgqkfwbwcf.supabase.co)",
+      "Bash(Get-ChildItem \"C:\\\\Users\\\\Andres\\\\Documents\\\\fidelicard\" -Depth 1)",
+      "Bash(Select-Object Name, PSIsContainer, Length)",
+      "Bash(Sort-Object PSIsContainer -Descending)",
+      "PowerShell(Get-ChildItem \"C:\\\\Users\\\\Andres\\\\Documents\\\\fidelicard\" -Depth 0 | Where-Object { $_.PSIsContainer -eq $true } | Select-Object Name | Sort-Object Name)",
+      "PowerShell(Get-ChildItem \"C:\\\\Users\\\\Andres\\\\Documents\\\\fidelicard\" -Depth 0 | Where-Object { $_.PSIsContainer -eq $false } | Select-Object Name | Sort-Object Name)",
+      "PowerShell(Remove-Item *)",
+      "WebFetch(domain:localhost)",
+      "Bash(git init *)",
+      "Bash(git add *)"
+    ]
+  }
+}

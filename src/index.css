@@ -1,0 +1,149 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  
+  --color-surface: #f8f9ff;
+  --color-surface-dim: #cbdbf5;
+  --color-surface-bright: #f8f9ff;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #eff4ff;
+  --color-surface-container: #e5eeff;
+  --color-surface-container-high: #dce9ff;
+  --color-surface-container-highest: #d3e4fe;
+  --color-on-surface: #0b1c30;
+  --color-on-surface-variant: #464555;
+  --color-inverse-surface: #213145;
+  --color-inverse-on-surface: #eaf1ff;
+  --color-outline: #777587;
+  --color-outline-variant: #c7c4d8;
+  --color-surface-tint: #4d44e3;
+  --color-primary: #3525cd;
+  --color-on-primary: #ffffff;
+  --color-primary-container: #4f46e5;
+  --color-on-primary-container: #dad7ff;
+  --color-inverse-primary: #c3c0ff;
+  --color-secondary: #006c49;
+  --color-on-secondary: #ffffff;
+  --color-secondary-container: #6cf8bb;
+  --color-on-secondary-container: #00714d;
+  --color-tertiary: #684000;
+  --color-on-tertiary: #ffffff;
+  --color-tertiary-container: #885500;
+  --color-on-tertiary-container: #ffd4a4;
+  --color-error: #ba1a1a;
+  --color-on-error: #ffffff;
+  --color-error-container: #ffdad6;
+  --color-on-error-container: #93000a;
+  --color-primary-fixed: #e2dfff;
+  --color-primary-fixed-dim: #c3c0ff;
+  --color-on-primary-fixed: #0f0069;
+  --color-on-primary-fixed-variant: #3323cc;
+  --color-secondary-fixed: #6ffbbe;
+  --color-secondary-fixed-dim: #4edea3;
+  --color-on-secondary-fixed: #002113;
+  --color-on-secondary-fixed-variant: #005236;
+  --color-tertiary-fixed: #ffddb8;
+  --color-tertiary-fixed-dim: #ffb95f;
+  --color-on-tertiary-fixed: #2a1700;
+  --color-on-tertiary-fixed-variant: #653e00;
+  --color-background: #f8f9ff;
+  --color-on-background: #0b1c30;
+  --color-surface-variant: #d3e4fe;
+}
+
+@layer utilities {
+  .glass-panel {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+  }
+  
+  .loyalty-card-mesh {
+    background-image: radial-gradient(at 0% 0%, rgba(255, 255, 255, 0.15) 0%, transparent 50%),
+                      radial-gradient(at 100% 100%, rgba(0, 0, 0, 0.1) 0%, transparent 50%);
+  }
+
+  /* ── Metallic shine (efecto adaptado de AiLink/MetallicCard) ────────────
+     Brillo diagonal que se desliza de izquierda a derecha. Funciona en dos
+     modos:
+       1. Hover desktop: la animación corre una vez al pasar el mouse.
+       2. Auto loop: corre cada 5s en mobile (donde no hay hover).
+     Aplicado como overlay encima del card. Z-index 0 para quedar debajo
+     del contenido (que debe ser z-10). ──────────────────────────────────── */
+  .card-shine {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    border-radius: inherit;
+    z-index: 0;
+  }
+  .card-shine::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: 0;
+    width: 60%;
+    height: 200%;
+    background: linear-gradient(
+      to right,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.32) 50%,
+      rgba(255, 255, 255, 0) 100%
+    );
+    filter: blur(2px);
+    transform: translateX(-160%) rotate(35deg);
+    animation: cardShineAuto 5s ease-in-out 2s infinite;
+  }
+  /* En desktop el hover dispara el brillo "manual" y suspende el auto-loop. */
+  @media (hover: hover) {
+    .card-shine::after {
+      animation: none;
+      transition: transform 0.9s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .card-shine-trigger:hover .card-shine::after {
+      transform: translateX(220%) rotate(35deg);
+    }
+  }
+  @keyframes cardShineAuto {
+    0%   { transform: translateX(-160%) rotate(35deg); }
+    55%  { transform: translateX(220%)  rotate(35deg); }
+    100% { transform: translateX(220%)  rotate(35deg); }
+  }
+
+  /* Glow radial opcional en esquinas (también de MetallicCard) */
+  .card-corner-glow::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.22) 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.18) 0%, transparent 50%);
+    opacity: 0.5;
+    pointer-events: none;
+    border-radius: inherit;
+    z-index: 0;
+  }
+
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  /* Typography shortcuts based on the design system */
+  .text-headline-lg { @apply text-[32px] font-bold leading-[1.2] tracking-[-0.02em]; }
+  .text-headline-lg-mobile { @apply text-[28px] font-bold leading-[1.2] tracking-[-0.01em]; }
+  .text-headline-md { @apply text-[24px] font-semibold leading-[1.3]; }
+  .text-headline-sm { @apply text-[20px] font-semibold leading-[1.3]; }
+  .text-body-lg { @apply text-[18px] font-normal leading-[1.6]; }
+  .text-body-md { @apply text-[16px] font-normal leading-[1.5]; }
+  .text-body-sm { @apply text-[14px] font-normal leading-[1.5]; }
+  .text-label-md { @apply text-[12px] font-semibold leading-[1] tracking-[0.05em]; }
+  .text-points-display { @apply text-[48px] font-extrabold leading-[1] tracking-[-0.04em]; }
+}
