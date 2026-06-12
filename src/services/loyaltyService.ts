@@ -134,7 +134,10 @@ export async function upsertCardConfig(businessId: string, config: Partial<CardC
     .select()
     .single();
 
-  if (error) return { data: null, error };
+  if (error) {
+    console.error('[upsertCardConfig] error:', error.code, error.message, (error as any).details ?? '');
+    return { data: null, error };
+  }
   return { data: toCamelCase(data), error: null };
 }
 
@@ -445,25 +448,41 @@ export async function resetCard(loyaltyCardId: string): Promise<ServiceResult<Lo
   return { data: toLoyaltyCardCamelCase(data), error: null };
 }
 
-export function mapLoyaltyError(error: { code?: string; message?: string } | null): string {
+export function mapLoyaltyError(error: { code?: string; message?: string; details?: string; hint?: string } | null): string {
   if (!error) return 'Ocurrió un error inesperado. Por favor, intenta de nuevo.';
-  
+
   const code = error.code ?? '';
   const message = error.message ?? '';
-
-  if (code === 'CARD_COMPLETE' || message === 'CARD_COMPLETE') {
-    return 'Este cliente ya completó su tarjeta.';
-  }
-
-  if (code === 'NO_CARD_CONFIG' || message === 'NO_CARD_CONFIG') {
-    return 'Esta empresa aún no ha configurado su tarjeta de fidelización.';
-  }
-
   const lowerMessage = message.toLowerCase();
-  if (lowerMessage.includes('network') || lowerMessage.includes('fetch')) {
-    return 'Error de conexión. Por favor, intenta de nuevo.';
+
+  if (code === 'CARD_COMPLETE' || message === 'CARD_COMPLETE') return 'Este cliente ya completó su tarjeta.';
+  if (code === 'NO_CARD_CONFIG' || message === 'NO_CARD_CONFIG') return 'Esta empresa aún no ha configurado su tarjeta de fidelización.';
+
+  // PostgreSQL / PostgREST error codes
+  if (code === '42501' || lowerMessage.includes('row-level security') || lowerMessage.includes('policy')) {
+    return 'Sin permiso. Verifica que tu sesión esté activa (o recarga la página).';
+  }
+  if (code === '42703') return 'Columna inexistente en la BD. Aplica la migración 001_schema.sql en el Dashboard de Supabase.';
+  if (code === '23505') return 'Ya existe un registro con esos datos (conflicto de clave única).';
+  if (code === '23502') return 'Faltan campos obligatorios en la solicitud.';
+  if (code === 'PGRST116') return 'No se encontró el registro esperado.';
+  if (code === 'PGRST301' || lowerMessage.includes('jwt') || lowerMessage.includes('token') || lowerMessage.includes('expired')) {
+    return 'Sesión expirada. Cierra sesión y vuelve a entrar.';
   }
 
-  console.error('[LoyaltyService Error]', code, message);
-  return 'Ocurrió un error inesperado. Por favor, intenta de nuevo.';
+  // Network / connection
+  if (
+    !message ||
+    lowerMessage.includes('network') ||
+    lowerMessage.includes('fetch') ||
+    lowerMessage.includes('econnrefused') ||
+    lowerMessage.includes('failed to') ||
+    lowerMessage.includes('timeout') ||
+    lowerMessage.includes('connection')
+  ) {
+    return 'Error de conexión. Verifica tu internet y que el proyecto Supabase esté activo (puede estar en pausa).';
+  }
+
+  console.error('[LoyaltyService Error]', { code, message, details: (error as any).details, hint: (error as any).hint });
+  return `Error ${code ? `(${code})` : 'inesperado'}: ${message || 'intenta de nuevo.'}`;
 }
