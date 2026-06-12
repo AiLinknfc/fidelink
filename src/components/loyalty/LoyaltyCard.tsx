@@ -1,5 +1,5 @@
-import { useState, type ComponentType } from 'react';
-import { Star, Coffee, Heart, ShoppingBag, Ticket, RefreshCw, MapPin, Globe, Tag, Building2 } from 'lucide-react';
+import { useState, useRef, type ComponentType, type MouseEvent } from 'react';
+import { Star, Coffee, Heart, ShoppingBag, Ticket, RefreshCw, MapPin, Globe, Tag, Building2, Download } from 'lucide-react';
 
 const CATEGORY_ICONS: Record<string, ComponentType<{ className?: string }>> = {
   'Food & Drink': Coffee,
@@ -13,7 +13,7 @@ function StampIcon({ category, className }: { category?: string | null; classNam
   return <Icon className={className} />;
 }
 import { motion } from 'motion/react';
-import { QRCodeSVG } from 'qrcode.react';
+import { QRCodeSVG, QRCodeCanvas } from 'qrcode.react';
 import type { BusinessBranding } from '@/services/loyaltyService';
 
 interface LoyaltyCardProps {
@@ -51,6 +51,20 @@ export default function LoyaltyCard({
     ? (currentStamps === 1 ? 'punto' : 'puntos')
     : (currentStamps === 1 ? 'sello' : 'sellos');
   const [flipped, setFlipped] = useState(false);
+  const qrDownloadRef = useRef<HTMLCanvasElement>(null);
+
+  function handleDownloadQr(e: MouseEvent) {
+    e.stopPropagation();
+    const canvas = qrDownloadRef.current;
+    if (!canvas) return;
+    const url = canvas.toDataURL('image/png');
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${businessName.replace(/\s+/g, '-').toLowerCase()}-qr.png`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }
 
   const cardStyle = {
     background: `linear-gradient(135deg, ${colorHex}dd, ${colorHex}99)`,
@@ -254,6 +268,15 @@ export default function LoyaltyCard({
 
       {cardId && (
         <div className="relative z-10 mt-auto flex flex-col items-center gap-1.5 pt-3">
+          <QRCodeCanvas
+            ref={qrDownloadRef}
+            value={buildClientQrUrl(cardId)}
+            size={512}
+            level="M"
+            fgColor="#000000"
+            bgColor="#ffffff"
+            style={{ display: 'none', position: 'absolute', pointerEvents: 'none' }}
+          />
           <div className="bg-white rounded-xl p-2 shadow-md">
             <QRCodeSVG
               value={buildClientQrUrl(cardId)}
@@ -267,6 +290,15 @@ export default function LoyaltyCard({
           <p className="text-[10px] opacity-80 tracking-wider uppercase">
             Muestra este QR al pagar
           </p>
+          <button
+            type="button"
+            onClick={handleDownloadQr}
+            className="flex items-center gap-1 text-[11px] font-bold bg-white/15 hover:bg-white/25 backdrop-blur-sm px-3 py-1.5 rounded-full transition-colors"
+            aria-label="Descargar QR como imagen"
+          >
+            <Download className="w-3 h-3" />
+            Descargar QR
+          </button>
         </div>
       )}
     </div>

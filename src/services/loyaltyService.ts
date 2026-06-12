@@ -202,6 +202,51 @@ export async function getBusinessClients(businessId: string): Promise<ServiceRes
   };
 }
 
+export const BUSINESS_CATEGORIES = [
+  'Food & Drink',
+  'Health & Beauty',
+  'Retail & Shopping',
+  'Entertainment',
+] as const;
+
+export type BusinessCategory = typeof BUSINESS_CATEGORIES[number];
+
+export interface BusinessSearchResult {
+  id: string;
+  name: string;
+  email: string;
+  config: CardConfig;
+}
+
+/** Busca negocios por categoría y/o nombre (ilike). Máx 30 resultados. */
+export async function searchBusinesses(opts: {
+  category?: string;
+  query?: string;
+}): Promise<ServiceResult<BusinessSearchResult[]>> {
+  let q = supabase
+    .from('card_configs')
+    .select(
+      'business_id, business_name, color_hex, total_stamps, reward_description, logo_url, category, description, address, website, program_type, amount_per_point, profiles!card_configs_business_id_fkey(id, name, email)'
+    )
+    .neq('business_name', '');
+
+  if (opts.category) q = (q as any).eq('category', opts.category);
+  if (opts.query) q = (q as any).ilike('business_name', `%${opts.query}%`);
+
+  const { data, error } = await (q as any).limit(30);
+  if (error) return { data: null, error };
+
+  return {
+    data: (data ?? []).map((row: any) => ({
+      id: row.profiles?.id ?? row.business_id,
+      name: row.profiles?.name ?? row.business_name,
+      email: row.profiles?.email ?? '',
+      config: toCamelCase({ ...row, id: row.business_id }),
+    })),
+    error: null,
+  };
+}
+
 /** Sube el logo del negocio al bucket `logos` (path: <businessId>/logo-<ts>.<ext>) y devuelve la URL pública. */
 export async function uploadBusinessLogo(
   businessId: string,

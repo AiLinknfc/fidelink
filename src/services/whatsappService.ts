@@ -15,6 +15,8 @@
  * 360dialog solo cambia el endpoint dentro de la Edge Function.
  */
 
+import { sendTelegramMessage, isTelegramConfigured } from './telegramService';
+
 const OUTBOX_KEY = 'fidelicard.whatsapp.outbox.v1';
 const MAX_STORED = 200;
 
@@ -158,6 +160,10 @@ async function dispatch(message: WhatsappMessage): Promise<WhatsappMessage> {
   notifySubscribers();
   // eslint-disable-next-line no-console
   console.info('[whatsapp:simulacro]', stored.template, '→', stored.to, stored.body);
+  if (isTelegramConfigured()) {
+    const tgText = `<b>[FideliCard] ${stored.template}</b>\n→ ${stored.to}\n${stored.body}`;
+    sendTelegramMessage(tgText);
+  }
   return stored;
 }
 
