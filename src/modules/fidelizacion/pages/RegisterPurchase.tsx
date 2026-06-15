@@ -1,8 +1,7 @@
-import { useState, useEffect, useRef } from 'react';
-import React from 'react';
+import { useState, useEffect, useRef, type FormEvent } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
-import { Receipt as ReceiptIcon } from 'lucide-react';
+import { Receipt as ReceiptIcon, Camera, CheckCircle, Smartphone, AlertCircle } from 'lucide-react';
 import {
   findProfileByEmail,
   addStampSecure,
@@ -15,7 +14,7 @@ import { getProfile } from '@/services/profileService';
 import { sendPurchaseNotification } from '@/services/whatsappService';
 import ReceiptCapture from '@/components/receipt/ReceiptCapture';
 import type { Receipt } from '@/services/receiptService';
-import { useI18n } from '../../i18n/index';
+import { useI18n } from '@/i18n/index';
 
 function Spinner() {
   return (
@@ -91,7 +90,7 @@ export default function RegisterPurchase() {
     setPurchaseAmount('');
   }
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     await runStamp(email);
   }
@@ -221,7 +220,7 @@ export default function RegisterPurchase() {
 
           {scannedNotice && (
             <div className="mb-6 p-3 bg-primary-container text-on-primary-container rounded-xl text-body-sm flex items-center gap-2">
-              <span>📷</span>
+              <Camera className="w-4 h-4 shrink-0" />
               <span className="flex-1">{scannedNotice}</span>
             </div>
           )}
@@ -295,9 +294,10 @@ export default function RegisterPurchase() {
                 )}
               </div>
               {attachedReceipt && (
-                <p className="text-body-sm text-on-surface-variant">
-                  ✅ Recibo adjunto · Total: {attachedReceipt.ocrPayload.total ?? '—'} {attachedReceipt.ocrPayload.currency ?? ''}
-                </p>
+                <div className="flex items-center gap-2 text-body-sm text-on-surface-variant">
+                  <CheckCircle className="w-4 h-4 shrink-0" />
+                  <span>Recibo adjunto · Total: {attachedReceipt.ocrPayload.total ?? '—'} {attachedReceipt.ocrPayload.currency ?? ''}</span>
+                </div>
               )}
               {showReceiptCapture && businessId && (
                 <ReceiptCapture
@@ -318,7 +318,10 @@ export default function RegisterPurchase() {
 
             {successData && (
               <div className="p-4 bg-secondary-container text-on-secondary-container rounded-xl" role="status">
-                <p className="font-bold mb-2">✅ {successData.name}</p>
+                <div className="flex items-center gap-2 font-bold mb-2">
+                  <CheckCircle className="w-4 h-4 shrink-0" />
+                  <span>{successData.name}</span>
+                </div>
                 <p className="mb-3">
                   {isAccumulative ? 'Puntos' : 'Sellos'}: {successData.currentStamps} / {successData.totalStamps}
                 </p>
@@ -329,14 +332,16 @@ export default function RegisterPurchase() {
                   />
                 </div>
                 {notifyStatus === 'sent' && (
-                  <p className="text-[11px] mt-2 opacity-80">
-                    📱 WhatsApp enviado al cliente (modo simulacro).
-                  </p>
+                  <div className="flex items-center gap-1.5 text-[11px] mt-2 opacity-80">
+                    <Smartphone className="w-3.5 h-3.5 shrink-0" />
+                    <span>WhatsApp enviado al cliente (modo simulacro).</span>
+                  </div>
                 )}
                 {notifyStatus === 'skipped' && (
-                  <p className="text-[11px] mt-2 opacity-80">
-                    ⚠️ El cliente no tiene WhatsApp registrado — no se envió notificación.
-                  </p>
+                  <div className="flex items-center gap-1.5 text-[11px] mt-2 opacity-80">
+                    <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                    <span>El cliente no tiene WhatsApp registrado — no se envió notificación.</span>
+                  </div>
                 )}
               </div>
             )}

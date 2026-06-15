@@ -1,10 +1,15 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
-import { getBusinessClients, type LoyaltyCard as LoyaltyCardType } from '@/services/loyaltyService';
-import LoyaltyCard from '@/components/loyalty/LoyaltyCard';
+import {
+  getBusinessClients, getCardConfig,
+  type LoyaltyCard as LoyaltyCardType,
+  type BusinessBranding,
+} from '@/services/loyaltyService';
+import LoyaltyCard from '../components/LoyaltyCard';
 import { motion } from 'motion/react';
-import { Users } from 'lucide-react';
+import { Users, UserCheck } from 'lucide-react';
+import SectionRibbon from '@/platform/ui/SectionRibbon';
 
 function Spinner({ label }: { label: string }) {
   return (
@@ -23,6 +28,8 @@ export default function ClientList() {
   const businessId = user?.id;
 
   const [clients, setClients] = useState<LoyaltyCardType[]>([]);
+  const [branding, setBranding] = useState<BusinessBranding | null>(null);
+  const [cardTitle, setCardTitle] = useState<string | null>(null);
   const [dataLoading, setDataLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [query, setQuery] = useState('');
@@ -33,14 +40,35 @@ export default function ClientList() {
 
     let cancelled = false;
     setDataLoading(true);
-    getBusinessClients(businessId).then(({ data, error }) => {
+
+    Promise.all([
+      getBusinessClients(businessId),
+      getCardConfig(businessId),
+    ]).then(([clientsRes, configRes]) => {
       if (cancelled) return;
-      if (error) setErrorMsg('No se pudieron cargar los clientes. Intenta de nuevo.');
+      if (clientsRes.error) setErrorMsg('No se pudieron cargar los clientes. Intenta de nuevo.');
       else {
-        const sorted = (data ?? []).sort(
+        const sorted = (clientsRes.data ?? []).sort(
           (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
         );
         setClients(sorted);
+      }
+      if (!configRes.error && configRes.data) {
+        const cfg = configRes.data;
+        setBranding({
+          logoUrl:        cfg.logoUrl        ?? null,
+          description:    cfg.description    ?? null,
+          category:       cfg.category       ?? null,
+          address:        cfg.address        ?? null,
+          website:        cfg.website        ?? null,
+          email:          cfg.email          ?? null,
+          instagram:      cfg.instagram      ?? null,
+          facebook:       cfg.facebook       ?? null,
+          cardTag:        cfg.cardTag        ?? 'Loyalty',
+          programType:    cfg.programType    ?? 'stamp_based',
+          termsOfService: cfg.termsOfService ?? null,
+        });
+        setCardTitle(cfg.cardTitle ?? null);
       }
       setDataLoading(false);
     });
@@ -58,9 +86,13 @@ export default function ClientList() {
   if (!businessId) return null;
 
   return (
-    <div className="min-h-screen bg-surface pb-32">
-      <main className="max-w-7xl mx-auto px-4 md:px-12 pt-8 space-y-6">
-        {/* Header */}
+    <div className="min-h-screen bg-slate-50 pb-32">
+      <main className="max-w-7xl mx-auto px-4 md:px-8 py-6 space-y-6">
+        <SectionRibbon
+          icon={UserCheck}
+          title="Mis Clientes"
+          description="Visualiza la lista de tarjetahabientes activos de tu programa de fidelización"
+        />
         <div className="flex items-center justify-between gap-4 flex-wrap">
           <div>
             <h2 className="text-headline-lg text-on-surface font-bold">Mis Clientes</h2>
@@ -141,6 +173,8 @@ export default function ClientList() {
                     rewardDescription={client.rewardDescription}
                     colorHex={client.colorHex}
                     cardId={client.id}
+                    branding={branding ?? undefined}
+                    cardTitle={cardTitle}
                   />
                 </motion.div>
               );

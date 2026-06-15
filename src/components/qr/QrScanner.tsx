@@ -120,7 +120,7 @@ export default function QrScanner({
               </div>
 
               <p className="text-[11px] text-on-surface-variant text-center">
-                El QR debe codificar un link de FideliCard (<span className="font-mono">ailink.com.co/c/&lt;slug&gt;</span>).
+                El QR debe codificar un link de fidelink (<span className="font-mono">ailink.com.co/c/&lt;slug&gt;</span>).
               </p>
             </div>
           </motion.div>

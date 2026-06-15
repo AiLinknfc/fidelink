@@ -17,9 +17,17 @@ export interface CardConfig {
   category?: string | null;
   address?: string | null;
   website?: string | null;
+  cardTitle?: string | null;
+  // Contacto y redes
+  email?: string | null;
+  instagram?: string | null;
+  facebook?: string | null;
+  cardTag?: string | null;
   // Points Engine
   programType?: ProgramType;
   amountPerPoint?: number | null;
+  // Legal
+  termsOfService?: string | null;
 }
 
 export interface BusinessBranding {
@@ -28,7 +36,12 @@ export interface BusinessBranding {
   category: string | null;
   address: string | null;
   website: string | null;
+  email?: string | null;
+  instagram?: string | null;
+  facebook?: string | null;
+  cardTag?: string | null;
   programType?: ProgramType;
+  termsOfService?: string | null;
 }
 
 export interface LoyaltyCard {
@@ -74,8 +87,14 @@ function toSnakeCase(cardConfig: Partial<CardConfig>): Record<string, any> {
   if (cardConfig.category !== undefined) result.category = cardConfig.category;
   if (cardConfig.address !== undefined) result.address = cardConfig.address;
   if (cardConfig.website !== undefined) result.website = cardConfig.website;
+  if (cardConfig.cardTitle !== undefined) result.card_title = cardConfig.cardTitle;
+  if (cardConfig.email !== undefined) result.email = cardConfig.email;
+  if (cardConfig.instagram !== undefined) result.instagram = cardConfig.instagram;
+  if (cardConfig.facebook !== undefined) result.facebook = cardConfig.facebook;
+  if (cardConfig.cardTag !== undefined) result.card_tag = cardConfig.cardTag;
   if (cardConfig.programType !== undefined) result.program_type = cardConfig.programType;
   if (cardConfig.amountPerPoint !== undefined) result.amount_per_point = cardConfig.amountPerPoint;
+  if (cardConfig.termsOfService !== undefined) result.terms_of_service = cardConfig.termsOfService;
   return result;
 }
 
@@ -93,8 +112,14 @@ function toCamelCase(row: any): CardConfig {
     category: row.category ?? null,
     address: row.address ?? null,
     website: row.website ?? null,
+    cardTitle: row.card_title ?? null,
+    email: row.email ?? null,
+    instagram: row.instagram ?? null,
+    facebook: row.facebook ?? null,
+    cardTag: row.card_tag ?? 'Loyalty',
     programType: (row.program_type as ProgramType | undefined) ?? 'stamp_based',
     amountPerPoint: row.amount_per_point != null ? Number(row.amount_per_point) : null,
+    termsOfService: row.terms_of_service ?? null,
   };
 }
 
@@ -156,7 +181,7 @@ export async function getClientCards(clientId: string): Promise<ServiceResult<Lo
   const businessIds = Array.from(new Set(cards.map((c) => c.businessId)));
   const { data: configs, error: cfgErr } = await supabase
     .from('card_configs')
-    .select('business_id, business_name, color_hex, reward_description, total_stamps, logo_url, description, category, address, website, program_type')
+    .select('business_id, business_name, color_hex, reward_description, total_stamps, logo_url, description, category, address, website, email, instagram, facebook, card_tag, terms_of_service, program_type')
     .in('business_id', businessIds);
 
   if (cfgErr || !configs) return { data: cards, error: null };
@@ -173,6 +198,11 @@ export async function getClientCards(clientId: string): Promise<ServiceResult<Lo
       category: row.category ?? null,
       address: row.address ?? null,
       website: row.website ?? null,
+      email: row.email ?? null,
+      instagram: row.instagram ?? null,
+      facebook: row.facebook ?? null,
+      cardTag: row.card_tag ?? 'Loyalty',
+      termsOfService: row.terms_of_service ?? null,
       programType: (row.program_type as ProgramType | undefined) ?? 'stamp_based',
     });
   }

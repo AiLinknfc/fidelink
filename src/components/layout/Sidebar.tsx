@@ -1,6 +1,7 @@
-import { LayoutDashboard, CreditCard, ShoppingCart, Users, LogOut, X } from 'lucide-react';
+import { CreditCard, Zap, LogOut, X, Wallet, DollarSign, BarChart3, Megaphone, Gift, Target, UserCheck, ShoppingCart, Radio, Book, Globe, LayoutDashboard, Users, TrendingUp, MessageSquare, ShoppingBag, Smartphone } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
+import { useModuleBrand } from '@/platform/theme/ModuleBrand';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -11,13 +12,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
-
-  const menuItems = [
-    { icon: LayoutDashboard, label: 'Dashboard', path: '/business' },
-    { icon: CreditCard, label: 'Mi Tarjeta', path: '/business/card-editor' },
-    { icon: ShoppingCart, label: 'Registrar Compra', path: '/business/register-purchase' },
-    { icon: Users, label: 'Mis Clientes', path: '/business/clients' },
-  ];
+  const { brand, activeModule } = useModuleBrand();
 
   async function handleSignOut() {
     onClose();
@@ -27,56 +22,137 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
 
   if (!isOpen) return null;
 
+  const isActive = (path: string) => location.pathname === path;
+  const role = user?.user_metadata?.role as string | undefined;
+  const isAdmin = role === 'admin';
+
+  const brandColor = brand.colorHex;
+  const accentLight = `${brandColor}15`;
+
   return (
     <div className="fixed inset-0 z-50 bg-black/50" onClick={onClose}>
       <div
-        className="bg-surface-container-lowest w-80 h-full shadow-xl p-6"
+        className="bg-white w-80 h-full shadow-xl p-6 flex flex-col overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h2 className="text-headline-md text-on-surface font-bold mb-1">Panel de Administración</h2>
-            <p className="text-body-md text-on-surface-variant">
-              {user?.user_metadata?.name ?? user?.email ?? 'Empresa'}
-            </p>
+        <div className="flex justify-between items-start mb-8">
+          <div className="flex items-center gap-3">
+            <div
+              className="w-9 h-9 rounded-xl flex items-center justify-center text-white font-black text-sm shadow-md shrink-0"
+              style={{ backgroundColor: brandColor }}
+            >
+              {brand.logo}
+            </div>
+            <div>
+              <h2 className="text-sm font-bold font-headline text-slate-800 leading-tight">{brand.name}</h2>
+              <p className="text-[9px] font-mono text-slate-500 font-semibold flex items-center gap-1.5">
+                Consola v1.0 PRO
+                <span className="w-1.5 h-1.5 rounded-full animate-pulse inline-block" style={{ backgroundColor: brandColor }} />
+              </p>
+            </div>
           </div>
           <button
             onClick={onClose}
-            className="text-on-surface-variant hover:text-on-surface transition-colors p-2 rounded-full hover:bg-surface-container"
+            className="text-slate-400 hover:text-slate-700 transition-colors p-2 rounded-full hover:bg-slate-100"
           >
             <X className="w-6 h-6" />
           </button>
         </div>
 
-        <nav className="space-y-2">
-          {menuItems.map((item) => {
-            const isActive = location.pathname === item.path ||
-              (item.path === '/business' && location.pathname === '/business');
+        {/* Admin: Cross-module navigation */}
+        {isAdmin && (
+          <div className="mb-4 pb-4 border-b border-slate-100">
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-4 mb-2 font-mono">Admin Global</p>
+            <nav className="space-y-1">
+              <SidebarItem icon={LayoutDashboard} label="Dashboard Global" isActive={isActive('/admin')} onClick={() => { navigate('/admin'); onClose(); }} />
+              <SidebarItem icon={Users} label="Clientes Cross-Module" isActive={isActive('/admin/clients')} onClick={() => { navigate('/admin/clients'); onClose(); }} />
+            </nav>
+          </div>
+        )}
 
-            return (
-              <button
-                key={item.path}
-                onClick={() => {
-                  navigate(item.path);
-                  onClose();
-                }}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
-                  isActive
-                    ? 'bg-primary-container text-on-primary-container'
-                    : 'text-on-surface hover:bg-surface-container'
-                }`}
-              >
-                <item.icon className="w-5 h-5" />
-                <span className="font-medium">{item.label}</span>
-              </button>
-            );
-          })}
-        </nav>
+        {/* MODULE-SPECIFIC SECTIONS — shown based on activeModule + admin access */}
+        {/* Fidelización section */}
+        {(activeModule === 'fidelizacion' || isAdmin) && (
+          <div className="mb-4">
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-4 mb-2 font-mono">Fidelización</p>
+            <nav className="space-y-1">
+              <SidebarItem icon={CreditCard} label="Personalizar tarjeta" isActive={isActive('/business/card-editor')} onClick={() => { navigate('/business/card-editor'); onClose(); }} />
+              <SidebarItem icon={UserCheck} label="Clientes" isActive={isActive('/business/crm')} onClick={() => { navigate('/business/crm'); onClose(); }} />
+              <SidebarItem icon={ShoppingCart} label="Registrar compra" isActive={isActive('/business/register-purchase')} onClick={() => { navigate('/business/register-purchase'); onClose(); }} />
+            </nav>
+          </div>
+        )}
 
-        <div className="mt-8 pt-8 border-t border-outline-variant">
+        {/* Biografías section */}
+        {(activeModule === 'biografias' || isAdmin) && (
+          <div className="mb-4 pt-4 border-t border-slate-100">
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-4 mb-2 font-mono">Biografías</p>
+            <nav className="space-y-1">
+              <SidebarItem icon={Book} label="Mis Biografías" isActive={isActive('/biography')} onClick={() => { navigate('/biography'); onClose(); }} />
+              <SidebarItem icon={Globe} label="BioLink Público" isActive={false} onClick={() => {}} />
+            </nav>
+          </div>
+        )}
+
+        {/* Ventas section */}
+        {(activeModule === 'ventas' || isAdmin) && (
+          <div className="mb-4 pt-4 border-t border-slate-100">
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-4 mb-2 font-mono">Ventas</p>
+            <nav className="space-y-1">
+              <SidebarItem icon={BarChart3} label="Analítica y Embudos" isActive={isActive('/sales/analytics')} onClick={() => { navigate('/sales/analytics'); onClose(); }} />
+              <SidebarItem icon={Megaphone} label="Campañas y Pixel Logs" isActive={isActive('/sales/campaigns')} onClick={() => { navigate('/sales/campaigns'); onClose(); }} />
+              <SidebarItem icon={Users} label="CRM Leads Calificados" isActive={isActive('/sales/crm')} onClick={() => { navigate('/sales/crm'); onClose(); }} />
+              <SidebarItem icon={ShoppingBag} label="Catálogo de Productos" isActive={isActive('/sales/products')} onClick={() => { navigate('/sales/products'); onClose(); }} />
+            </nav>
+          </div>
+        )}
+
+        {/* Gestión */}
+        {(activeModule === 'fidelizacion' || isAdmin) && (
+          <div className="mb-4 pt-4 border-t border-slate-100">
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-4 mb-2 font-mono">Gestión</p>
+            <nav className="space-y-1">
+              <SidebarItem icon={Radio} label="Audiencia CRM & Segmentación" isActive={isActive('/business/audiencia-crm')} onClick={() => { navigate('/business/audiencia-crm'); onClose(); }} />
+              <SidebarItem icon={DollarSign} label="Pagos" isActive={isActive('/business/payment')} onClick={() => { navigate('/business/payment'); onClose(); }} />
+            </nav>
+          </div>
+        )}
+
+        {/* CAMPAÑAS */}
+        {(activeModule === 'fidelizacion' || isAdmin) && (
+          <div className="mb-4 pt-4 border-t border-slate-100">
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-4 mb-2 font-mono">Campañas</p>
+            <nav className="space-y-1">
+              <SidebarItem icon={Megaphone} label="Campañas" isActive={false} onClick={() => {}} badge="3" />
+              <SidebarItem icon={Target} label="Crear campaña" isActive={false} onClick={() => {}} />
+              <SidebarItem icon={Gift} label="Plantillas" isActive={false} onClick={() => {}} />
+            </nav>
+          </div>
+        )}
+
+        {/* PLATAFORMA GENERAL */}
+        {(activeModule === 'fidelizacion' || activeModule === 'biografias' || isAdmin) && (
+          <div className="mb-4 pt-4 border-t border-slate-100">
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-4 mb-2 font-mono">Plataforma General</p>
+            <nav className="space-y-1">
+              <SidebarItem icon={Zap} label="Automatizaciones" isActive={isActive('/business/automatizaciones')} onClick={() => { navigate('/business/automatizaciones'); onClose(); }} />
+              <SidebarItem icon={BarChart3} label="Analítica" isActive={isActive('/business')} onClick={() => { navigate('/business'); onClose(); }} />
+            </nav>
+          </div>
+        )}
+
+        {/* EXPERIENCIA DEL CLIENTE */}
+        <div className="mb-4 pt-4 border-t border-slate-100">
+          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-4 mb-2 font-mono">Experiencia del Cliente</p>
+          <nav className="space-y-1">
+            <SidebarItem icon={Wallet} label="Wallet Móvil" isActive={isActive('/wallet')} onClick={() => { navigate('/wallet'); onClose(); }} />
+          </nav>
+        </div>
+
+        <div className="mt-auto pt-8 border-t border-slate-100">
           <button
             onClick={handleSignOut}
-            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-error hover:bg-error-container transition-all"
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-red-500 hover:bg-red-50 transition-all"
           >
             <LogOut className="w-5 h-5" />
             <span className="font-medium">Cerrar sesión</span>
@@ -84,5 +160,28 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
         </div>
       </div>
     </div>
+  );
+}
+
+function SidebarItem({ icon: Icon, label, isActive, onClick, badge }: { icon: any; label: string; isActive: boolean; onClick: () => void; badge?: string }) {
+  const { brand } = useModuleBrand();
+  return (
+    <button
+      onClick={onClick}
+      className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all text-sm ${
+        isActive
+          ? 'font-semibold'
+          : 'text-slate-600 hover:bg-slate-50 hover:text-slate-800'
+      }`}
+      style={isActive ? { backgroundColor: `${brand.colorHex}15`, color: brand.colorHex } : undefined}
+    >
+      <Icon className="w-5 h-5 shrink-0" />
+      <span className="flex-1 text-left">{label}</span>
+      {badge && (
+        <span className="text-[9px] font-bold text-white bg-red-500 px-1.5 py-0.5 rounded-full min-w-[18px] text-center leading-tight shadow-sm">
+          {badge}
+        </span>
+      )}
+    </button>
   );
 }

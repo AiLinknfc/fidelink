@@ -10,7 +10,7 @@ import {
   mapLoyaltyError, type CardConfig,
 } from '@/services/loyaltyService';
 import { getOrCreatePrimaryQr } from '@/services/qrLinkService';
-import LoyaltyCard from '@/components/loyalty/LoyaltyCard';
+import LoyaltyCard from './LoyaltyCard';
 
 interface CreateProgramWizardProps {
   open: boolean;

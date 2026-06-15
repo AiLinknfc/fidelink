@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useI18n } from '../i18n/index';
 
 export default function Editor() {
+  const { t } = useI18n();
   const [cardName, setCardName] = useState('Indigo Coffee Rewards');
   const [points, setPoints] = useState(8);
   const [total, setTotal] = useState(10);

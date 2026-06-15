@@ -229,7 +229,7 @@ export default function Welcome() {
         className="relative z-10 w-full max-w-7xl px-4 md:px-12 py-12 flex flex-col items-center"
       >
         <header className="mb-12 text-center">
-          <h1 className="text-primary text-[32px] md:text-[48px] font-bold tracking-tight mb-2">FideliCard</h1>
+          <h1 className="text-primary text-[32px] md:text-[48px] font-bold tracking-tight mb-2">fidelink</h1>
           <p className="text-on-surface-variant text-body-lg max-w-md mx-auto">
             Tarjetas de fidelización para el mundo moderno. Elige tu modo para comenzar.
           </p>

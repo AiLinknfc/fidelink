@@ -37,7 +37,12 @@
       "PowerShell(Remove-Item *)",
       "WebFetch(domain:localhost)",
       "Bash(git init *)",
-      "Bash(git add *)"
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git remote *)",
+      "Bash(git push *)",
+      "Bash(node -e \"const p=require\\('./node_modules/lucide-react/package.json'\\); console.log\\(p.version\\)\")",
+      "Bash(node *)"
     ]
   }
 }

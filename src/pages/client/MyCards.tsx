@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import { getClientCards, type LoyaltyCard } from '@/services/loyaltyService';
-import LoyaltyCardComponent from '@/components/loyalty/LoyaltyCard';
+import LoyaltyCardComponent from '@/modules/fidelizacion/components/LoyaltyCard';
 import { motion, AnimatePresence } from 'motion/react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 

@@ -1,4 +1,4 @@
-import { Menu, QrCode, ScanLine, X, CreditCard, ShoppingCart, LogOut } from 'lucide-react';
+import { Menu, ScanLine, X, CreditCard, ShoppingCart, LogOut, Bell } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useI18n } from '../../i18n/index';
@@ -8,6 +8,8 @@ import ProfileDrawer from '@/components/profile/ProfileDrawer';
 import QrScanner from '@/components/qr/QrScanner';
 import { parseScannedSlug, parseScannedClientCardId, resolveSlugToBusinessEmail } from '@/services/qrLinkService';
 import { resolveClientByCardId, getCardConfig } from '@/services/loyaltyService';
+import { useModuleBrand } from '@/platform/theme/ModuleBrand';
+import { useCart } from '@/context/CartContext';
 
 interface TopBarProps {
   onSidebarOpen?: () => void;
@@ -17,13 +19,16 @@ export default function TopBar({ onSidebarOpen }: TopBarProps) {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
-  const { t } = useI18n();
+  const { brand } = useModuleBrand();
+  useI18n(); // mantiene el contexto de idioma activo
   const [menuOpen, setMenuOpen] = useState(false);
+  const [notifOpen, setNotifOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const [scannerMode, setScannerMode] = useState<'client' | 'business' | null>(null);
   const [scanError, setScanError] = useState<string | null>(null);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [businessLogo, setBusinessLogo] = useState<string | null>(null);
+  const { cartCount, openCart } = useCart();
 
   useEffect(() => {
     if (!user) { setAvatarUrl(null); setBusinessLogo(null); return; }
@@ -40,7 +45,7 @@ export default function TopBar({ onSidebarOpen }: TopBarProps) {
 
   if (location.pathname === '/') return null;
 
-  const isBusiness = location.pathname.startsWith('/business');
+  const isBusiness = location.pathname.startsWith('/business') || location.pathname.startsWith('/biography') || location.pathname.startsWith('/sales') || location.pathname.startsWith('/admin');
   const isClientRoute = location.pathname.startsWith('/client');
 
   const userInitials = user?.user_metadata?.name
@@ -62,7 +67,7 @@ export default function TopBar({ onSidebarOpen }: TopBarProps) {
     if (scannerMode === 'business') {
       const cardId = parseScannedClientCardId(text);
       if (!cardId) {
-        setScanError('Este QR no corresponde a una tarjeta FideliCard de cliente.');
+        setScanError('Este QR no corresponde a una tarjeta fidelink de cliente.');
         return;
       }
       const { data, error } = await resolveClientByCardId(cardId);
@@ -79,7 +84,7 @@ export default function TopBar({ onSidebarOpen }: TopBarProps) {
     // cliente escaneando QR de un negocio
     const slug = parseScannedSlug(text);
     if (!slug) {
-      setScanError('Este QR no corresponde a una tarjeta FideliCard.');
+      setScanError('Este QR no corresponde a una tarjeta fidelink.');
       return;
     }
     const { data, error } = await resolveSlugToBusinessEmail(slug);
@@ -92,59 +97,124 @@ export default function TopBar({ onSidebarOpen }: TopBarProps) {
     navigate(`/client/register-purchase?email=${encodeURIComponent(data.businessEmail)}`);
   }
 
+  const userEmail = user?.email ?? '';
+
   return (
     <>
-      <header className="bg-surface sticky top-0 z-40 border-b border-outline-variant">
-        <div className="flex justify-between items-center w-full px-4 h-16 max-w-7xl mx-auto">
-          <div className="flex items-center gap-4">
+      <header className="bg-white/90 backdrop-blur-md sticky top-0 z-40 border-b border-slate-200">
+        <div className="flex justify-between items-center w-full px-4 h-14 max-w-7xl mx-auto">
+          <div className="flex items-center gap-3">
             {isBusiness ? (
               <button
-                className="text-primary hover:bg-surface-container transition-colors p-2 rounded-full scale-95 active:opacity-80"
+                className="hover:bg-slate-100 transition-colors p-2 rounded-full"
+                style={{ color: brand.colorHex }}
                 onClick={onSidebarOpen}
               >
-                <Menu className="w-6 h-6" />
+                <Menu className="w-5 h-5" />
               </button>
             ) : (
               <button
-                className="text-primary hover:bg-surface-container transition-colors p-2 rounded-full scale-95 active:opacity-80"
+                className="hover:bg-slate-100 transition-colors p-2 rounded-full"
+                style={{ color: brand.colorHex }}
                 onClick={() => setMenuOpen(!menuOpen)}
               >
-                {menuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+                {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </button>
             )}
-            <h1
-              className="text-headline-md font-bold text-primary cursor-pointer"
-              onClick={() => navigate(isBusiness ? '/business' : '/wallet')}
-            >
-              FideliCard
-            </h1>
+            <div className="flex items-center gap-2">
+              <h1
+                className="text-xl font-bold font-headline cursor-pointer tracking-tight"
+                style={{ color: brand.colorHex }}
+                onClick={() => navigate(isBusiness ? '/business' : '/wallet')}
+              >
+                {brand.name}
+              </h1>
+            </div>
           </div>
 
-          <div className="flex items-center gap-2">
-            {isBusiness ? (
-              <>
-                <button
-                  onClick={() => { setScanError(null); setScannerMode('business'); }}
-                  className="bg-primary text-on-primary px-3 py-2 rounded-xl flex items-center gap-2 hover:opacity-90 transition-all scale-95 active:opacity-80 shadow-md"
-                  aria-label="Escanear QR del cliente"
+          <div className="flex items-center gap-3">
+            <div className="hidden sm:flex items-center gap-3 bg-white border border-slate-200 pl-3 pr-2.5 py-1.5 rounded-full shadow-xs text-xs text-slate-600">
+              <div className="text-right">
+                <p className="text-[9px] font-mono tracking-wide font-bold uppercase leading-none"
+                  style={{ color: brand.colorHex }}
                 >
-                  <ScanLine className="w-5 h-5" />
-                  <span className="font-label-md text-label-md hidden sm:inline">Escanear</span>
-                </button>
-              </>
-            ) : (
+                  {brand.name.toUpperCase()}
+                </p>
+                <p className="text-[10px] font-semibold text-slate-700 tracking-tight mt-0.5 truncate max-w-[150px]">
+                  {userEmail}
+                </p>
+              </div>
+            </div>
+
+            {/* QR Scanner */}
+            <button
+              onClick={() => { setScanError(null); setScannerMode(isBusiness ? 'business' : 'client'); }}
+              className="bg-primary text-on-primary px-3 py-2 rounded-xl flex items-center gap-2 hover:opacity-90 transition-all scale-95 active:opacity-80 shadow-md"
+              aria-label="Escáner QR"
+            >
+              <ScanLine className="w-5 h-5" />
+              <span className="hidden sm:inline text-[11px] font-bold">Escáner</span>
+            </button>
+
+            {/* Cart */}
+            {isBusiness && (
               <button
-                onClick={() => { setScanError(null); setScannerMode('client'); }}
-                className="bg-primary text-on-primary px-4 py-2 rounded-xl flex items-center gap-2 hover:opacity-90 transition-all scale-95 active:opacity-80"
+                onClick={openCart}
+                className="relative w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600 transition-all"
+                aria-label="Carrito de compras"
               >
-                <QrCode className="w-5 h-5" />
-                <span className="font-label-md text-label-md">{t('Scan QR') ?? 'Scan QR'}</span>
+                <ShoppingCart className="w-4 h-4" />
+                {cartCount > 0 && (
+                  <span className="absolute -top-0.5 -right-0.5 w-3.5 h-3.5 bg-rose-500 text-white rounded-full text-[7px] font-bold flex items-center justify-center shadow-sm">
+                    {cartCount}
+                  </span>
+                )}
               </button>
             )}
 
+            {/* Notifications */}
+            {isBusiness && (
+              <div className="relative">
+                <button
+                  onClick={() => setNotifOpen(prev => !prev)}
+                  className="relative w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600 transition-all"
+                  aria-label="Notificaciones de campaña"
+                >
+                  <Bell className="w-4 h-4" />
+                  <span className="absolute -top-0.5 -right-0.5 w-3.5 h-3.5 bg-red-500 text-white rounded-full text-[7px] font-bold flex items-center justify-center shadow-sm">
+                    3
+                  </span>
+                </button>
+                {notifOpen && (
+                  <>
+                    <div className="fixed inset-0 z-40" onClick={() => setNotifOpen(false)} />
+                    <div className="absolute right-0 top-10 z-50 w-72 bg-white border border-slate-200 rounded-2xl shadow-xl p-4 space-y-3">
+                      <p className="text-xs font-bold text-slate-800 uppercase tracking-wider">Notificaciones</p>
+                      <div className="space-y-2">
+                        <div className="p-3 bg-blue-50 rounded-xl border border-blue-100">
+                          <p className="text-xs font-semibold text-slate-800">Meta Pixel: 12 eventos nuevos</p>
+                          <p className="text-[10px] text-slate-500 mt-0.5">3 compras detectadas vía CAPI</p>
+                        </div>
+                        <div className="p-3 bg-amber-50 rounded-xl border border-amber-100">
+                          <p className="text-xs font-semibold text-slate-800">Campaña "Café Premium"</p>
+                          <p className="text-[10px] text-slate-500 mt-0.5">Presupuesto cerca del límite diario ($45.50/$50.00)</p>
+                        </div>
+                        <div className="p-3 bg-emerald-50 rounded-xl border border-emerald-100">
+                          <p className="text-xs font-semibold text-slate-800">Nuevo lead calificado</p>
+                          <p className="text-[10px] text-slate-500 mt-0.5">María González — Score 92/100 — vía WhatsApp</p>
+                        </div>
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
+
+            {/* Avatar */}
             <button
               onClick={() => setProfileOpen(true)}
-              className="ml-2 w-9 h-9 rounded-full overflow-hidden bg-primary-container flex items-center justify-center text-on-primary-container font-bold text-label-md ring-2 ring-transparent hover:ring-primary/30 transition-all"
+              className="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center font-bold text-[11px] ring-2 ring-transparent hover:ring-[var(--accent-color)] transition-all"
+              style={{ backgroundColor: `${brand.colorHex}20`, color: brand.colorHex }}
               aria-label="Abrir perfil"
             >
               {isBusiness && businessLogo ? (
@@ -174,14 +244,9 @@ export default function TopBar({ onSidebarOpen }: TopBarProps) {
       />
 
       {scanError && (
-        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-[80] bg-error-container text-on-error-container px-4 py-3 rounded-xl shadow-lg text-body-sm max-w-sm">
+        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-[80] bg-red-50 text-red-600 px-4 py-2.5 rounded-xl shadow-lg text-xs max-w-sm border border-red-200">
           {scanError}
-          <button
-            onClick={() => setScanError(null)}
-            className="ml-3 font-bold underline"
-          >
-            Cerrar
-          </button>
+          <button onClick={() => setScanError(null)} className="ml-3 font-bold underline">Cerrar</button>
         </div>
       )}
 

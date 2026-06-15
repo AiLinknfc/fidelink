@@ -161,7 +161,7 @@ async function dispatch(message: WhatsappMessage): Promise<WhatsappMessage> {
   // eslint-disable-next-line no-console
   console.info('[whatsapp:simulacro]', stored.template, '→', stored.to, stored.body);
   if (isTelegramConfigured()) {
-    const tgText = `<b>[FideliCard] ${stored.template}</b>\n→ ${stored.to}\n${stored.body}`;
+    const tgText = `<b>[fidelink] ${stored.template}</b>\n→ ${stored.to}\n${stored.body}`;
     sendTelegramMessage(tgText);
   }
   return stored;
