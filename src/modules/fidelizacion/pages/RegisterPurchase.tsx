@@ -1,7 +1,10 @@
 import { useState, useEffect, useRef, type FormEvent } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
-import { Receipt as ReceiptIcon, Camera, CheckCircle, Smartphone, AlertCircle } from 'lucide-react';
+import { Receipt as ReceiptIcon, Camera, CheckCircle, Smartphone, AlertCircle, ScanLine } from 'lucide-react';
+import QrScanner from '@/components/qr/QrScanner';
+import { parseScannedClientCardId } from '@/services/qrLinkService';
+import { resolveClientByCardId } from '@/services/loyaltyService';
 import {
   findProfileByEmail,
   addStampSecure,
@@ -44,6 +47,8 @@ export default function RegisterPurchase() {
   const [notifyStatus, setNotifyStatus] = useState<'idle' | 'sent' | 'skipped'>('idle');
   const [cardConfig, setCardConfig] = useState<CardConfig | null>(null);
   const [purchaseAmount, setPurchaseAmount] = useState<string>('');
+  const [scannerOpen, setScannerOpen] = useState(false);
+  const [scanError, setScanError] = useState<string | null>(null);
   const autoStampedRef = useRef(false);
 
   // Cargamos la config del programa para conocer programType (stamps vs acumulativo).
@@ -187,6 +192,24 @@ export default function RegisterPurchase() {
     setNotifyStatus(msg ? 'sent' : 'skipped');
   }
 
+  async function handleScanResult(text: string) {
+    const cardId = parseScannedClientCardId(text);
+    if (!cardId) {
+      setScanError('Este QR no corresponde a una tarjeta fidelink de cliente.');
+      return;
+    }
+    const { data, error } = await resolveClientByCardId(cardId);
+    if (error || !data) {
+      setScanError('No se pudo identificar al cliente. Verifica que la tarjeta sea de tu negocio.');
+      return;
+    }
+    setScannerOpen(false);
+    setScanError(null);
+    setEmail(data.clientEmail);
+    setScannedNotice(`Cliente identificado vía QR: ${data.clientEmail}`);
+    runStamp(data.clientEmail);
+  }
+
   async function handleResetCard() {
     if (!completeCard) return;
     setLoading(true);
@@ -211,7 +234,17 @@ export default function RegisterPurchase() {
     <div className="min-h-screen bg-surface pb-32">
       <main className="max-w-7xl mx-auto px-4 md:px-12 pt-8 space-y-8">
         <div className="bg-surface-container-lowest p-8 rounded-2xl border border-outline-variant shadow-sm max-w-2xl mx-auto">
-          <h2 className="text-headline-lg text-on-surface font-bold mb-2">Registrar Compra</h2>
+          <div className="flex items-start justify-between gap-3 mb-2">
+            <h2 className="text-headline-lg text-on-surface font-bold">Registrar Compra</h2>
+            <button
+              type="button"
+              onClick={() => { setScanError(null); setScannerOpen(true); }}
+              className="flex items-center gap-2 px-3 py-2 rounded-xl bg-primary/10 text-primary hover:bg-primary/20 transition-all text-[13px] font-bold flex-shrink-0"
+            >
+              <ScanLine className="w-4 h-4" />
+              Escanear QR
+            </button>
+          </div>
           <p className="text-body-md text-on-surface-variant mb-4">
             {isAccumulative
               ? 'Suma puntos a la tarjeta del cliente según el monto de la compra'
@@ -395,6 +428,21 @@ export default function RegisterPurchase() {
           </form>
         </div>
       </main>
+
+      <QrScanner
+        open={scannerOpen}
+        onClose={() => setScannerOpen(false)}
+        onScan={handleScanResult}
+        title="Escanear cliente"
+        subtitle="Apunta a la cara B de la tarjeta del cliente para registrar la compra."
+      />
+
+      {scanError && (
+        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-[80] bg-red-50 text-red-600 px-4 py-2.5 rounded-xl shadow-lg text-xs max-w-sm border border-red-200">
+          {scanError}
+          <button onClick={() => setScanError(null)} className="ml-3 font-bold underline">Cerrar</button>
+        </div>
+      )}
     </div>
   );
 }

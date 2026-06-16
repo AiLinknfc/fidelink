@@ -26,8 +26,8 @@ export default function BottomNav() {
   const location = useLocation();
   const { user } = useAuth();
 
-  // Welcome screen y mientras carga: oculto
-  if (location.pathname === '/' || !user) return null;
+  // Welcome screen, mientras carga y módulo Promociones: oculto
+  if (location.pathname === '/' || !user || location.pathname.startsWith('/promociones') || location.pathname.startsWith('/napilink')) return null;
 
   // Rol-aware: nav cliente vs nav empresa según rol del usuario,
   // no según la ruta (evita perder contexto al navegar entre secciones).

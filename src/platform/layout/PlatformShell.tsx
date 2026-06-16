@@ -27,6 +27,8 @@ export default function PlatformShell() {
   const { activeModule } = useModuleBrand();
   const { cart, isCartOpen, closeCart, removeFromCart, updateQuantity, clearCart } = useCart();
   const isLoginRoute = location.pathname === '/';
+  const isPromoRoute = location.pathname.startsWith('/promociones');
+  const isNapiRoute = location.pathname.startsWith('/napilink');
 
   if (isLoginRoute) return <Outlet />;
 
@@ -37,7 +39,7 @@ export default function PlatformShell() {
       <div className="flex-grow relative z-10">
         <Outlet />
       </div>
-      {activeModule ? (
+      {(activeModule || isPromoRoute || isNapiRoute) ? (
         <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       ) : null}
 

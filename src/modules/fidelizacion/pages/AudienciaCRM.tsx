@@ -3,7 +3,7 @@ import { Users, Search, Filter, ShieldCheck, Mail, Phone, Calendar, ArrowRight, 
 import { useAuth } from '@/context/AuthContext';
 import { getBusinessClients, type LoyaltyCard as LoyaltyCardType } from '@/services/loyaltyService';
 import { supabase } from '@/lib/supabaseClient';
-import SectionRibbon from '@/platform/ui/SectionRibbon';
+import { useModuleBrand } from '@/platform/theme/ModuleBrand';
 
 interface CRMClient {
   id: string;
@@ -53,6 +53,7 @@ function Spinner({ label }: { label: string }) {
 
 export default function AudienciaCRM() {
   const { user, loading: authLoading } = useAuth();
+  const { brand } = useModuleBrand();
   const businessId = user?.id ?? '';
 
   const [clients, setClients] = useState<CRMClient[]>([]);
@@ -73,6 +74,9 @@ export default function AudienciaCRM() {
   const [saving, setSaving] = useState(false);
   const [successMsg, setSuccessMsg] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
+
+  const [chipHovered, setChipHovered] = useState(false);
+  const [hoveredRow, setHoveredRow] = useState<string | null>(null);
 
   // Segment stats (derived from clients)
   const [segStats, setSegStats] = useState({ total: 0, bronze: 0, silver: 0, gold: 0, platinum: 0 });
@@ -220,12 +224,68 @@ export default function AudienciaCRM() {
   }
 
   return (
-    <main className="max-w-7xl mx-auto px-4 md:px-8 py-6 space-y-6">
-      <SectionRibbon
-        icon={Radio}
-        title="Audiencia CRM & Segmentación"
-        description="Gestión avanzada de públicos, segmentación y análisis de clientes"
-      />
+    <div className="h-full flex flex-col overflow-hidden">
+      <div className="bg-[#f8fafc] border-b border-slate-200 px-4 sm:px-6 h-10 flex flex-row items-center justify-between gap-2 select-none overflow-hidden flex-shrink-0">
+
+        {/* LEFT — chip expandible */}
+        <div
+          className="relative flex items-center gap-1.5 px-3 py-1.5 rounded-full border bg-white cursor-default transition-all duration-500 ease-in-out min-w-0"
+          style={{
+            color: brand.colorHex,
+            borderColor: chipHovered ? `${brand.colorHex}55` : 'rgb(226 232 240 / 0.6)',
+            boxShadow: chipHovered
+              ? `0 0 0 3px ${brand.colorHex}18, 0 2px 12px ${brand.colorHex}22`
+              : '0 0 0 0px transparent',
+            flex: chipHovered ? '1 1 0%' : '0 0 auto',
+          }}
+          onMouseEnter={() => setChipHovered(true)}
+          onMouseLeave={() => setChipHovered(false)}
+        >
+          <div
+            className="absolute inset-0 pointer-events-none rounded-full transition-opacity duration-500"
+            style={{
+              opacity: chipHovered ? 1 : 0,
+              background: `linear-gradient(90deg, ${brand.colorHex}06 0%, ${brand.colorHex}14 50%, ${brand.colorHex}06 100%)`,
+            }}
+          />
+          <Target
+            className="w-3.5 h-3.5 flex-shrink-0 transition-transform duration-300"
+            style={{ transform: chipHovered ? 'rotate(-15deg) scale(1.2)' : 'none' }}
+          />
+          <span className="text-[12px] font-bold font-sans whitespace-nowrap flex-shrink-0">Segmentación & CRM</span>
+          <span
+            className="text-[12px] font-sans whitespace-nowrap overflow-hidden transition-all duration-500 ease-in-out"
+            style={{
+              maxWidth: chipHovered ? '600px' : '0px',
+              opacity: chipHovered ? 1 : 0,
+              paddingLeft: chipHovered ? '6px' : '0px',
+              color: `${brand.colorHex}99`,
+              fontWeight: 500,
+            }}
+          >
+            · Gestión avanzada de públicos, segmentación y análisis de clientes
+          </span>
+        </div>
+
+        {/* RIGHT — estado + búsqueda */}
+        <div className="flex items-center gap-2 flex-shrink-0">
+          <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200/60 px-3 py-1.5 rounded-full flex-shrink-0">
+            <div className="w-2 h-2 rounded-full animate-pulse flex-shrink-0" style={{ backgroundColor: brand.colorHex }} />
+            <span className="text-[11px] font-semibold text-slate-600 whitespace-nowrap">{clients.length} clientes</span>
+          </div>
+          <div className="relative w-44 sm:w-56 flex-shrink-0">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 pointer-events-none" />
+            <input
+              type="search"
+              value={searchTerm}
+              onChange={e => setSearchTerm(e.target.value)}
+              placeholder="Buscar…"
+              className="w-full pl-9 pr-3 py-1.5 bg-white border border-slate-200 rounded-lg text-[12px] focus:outline-none focus:border-slate-400 text-slate-800 placeholder:text-slate-400"
+            />
+          </div>
+        </div>
+      </div>
+      <main className="flex-1 overflow-y-auto px-4 md:px-6 pt-3 pb-6 space-y-4">
 
       {errorMsg && (
         <div className="mb-4 p-3 bg-red-50 text-red-600 border border-red-200 rounded-xl text-xs flex items-center gap-2">
@@ -248,19 +308,19 @@ export default function AudienciaCRM() {
           {/* Segment stats cards */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <div className="bg-white rounded-xl border border-slate-200 p-3 shadow-sm text-center">
-              <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wider font-mono">Total</p>
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider font-jakarta">Total</p>
               <p className="text-lg font-bold text-slate-800 font-headline">{segStats.total}</p>
             </div>
             <div className="bg-white rounded-xl border border-slate-200 p-3 shadow-sm text-center">
-              <p className="text-[9px] font-bold text-orange-600 uppercase tracking-wider font-mono">Bronce</p>
+              <p className="text-[10px] font-bold text-orange-600 uppercase tracking-wider font-jakarta">Bronce</p>
               <p className="text-lg font-bold text-slate-800 font-headline">{segStats.bronze}</p>
             </div>
             <div className="bg-white rounded-xl border border-slate-200 p-3 shadow-sm text-center">
-              <p className="text-[9px] font-bold text-slate-500 uppercase tracking-wider font-mono">Plata</p>
+              <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider font-jakarta">Plata</p>
               <p className="text-lg font-bold text-slate-800 font-headline">{segStats.silver}</p>
             </div>
             <div className="bg-white rounded-xl border border-slate-200 p-3 shadow-sm text-center">
-              <p className="text-[9px] font-bold text-amber-600 uppercase tracking-wider font-mono">Oro/Platino</p>
+              <p className="text-[10px] font-bold text-amber-600 uppercase tracking-wider font-jakarta">Oro/Platino</p>
               <p className="text-lg font-bold text-slate-800 font-headline">{segStats.gold + segStats.platinum}</p>
             </div>
           </div>
@@ -294,25 +354,50 @@ export default function AudienciaCRM() {
             <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
               <table className="w-full text-xs">
                 <thead>
-                  <tr className="bg-slate-50 text-slate-500 font-semibold uppercase tracking-wider text-[10px]">
-                    <th className="text-left px-4 py-3 font-mono">Cliente</th>
-                    <th className="text-left px-4 py-3 font-mono">Contacto</th>
-                    <th className="text-left px-4 py-3 font-mono">Segmento / Antigüedad</th>
-                    <th className="text-right px-4 py-3 font-mono">Puntos</th>
-                    <th className="text-right px-4 py-3 font-mono">Acción</th>
+                  <tr className="bg-slate-50 text-slate-500 text-[12px] font-bold uppercase tracking-wider font-jakarta">
+                    <th className="text-left px-4 py-3">Cliente</th>
+                    <th className="text-left px-4 py-3">Contacto</th>
+                    <th className="text-left px-4 py-3">Segmento / Antigüedad</th>
+                    <th className="text-center px-4 py-3">Puntos</th>
+                    <th className="text-center px-4 py-3">Acción</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
-                  {filtered.map(c => (
-                    <tr key={c.id} className="hover:bg-slate-50/50 transition-colors">
+                  {filtered.map(c => {
+                    const isHovered = hoveredRow === c.id;
+                    return (
+                    <tr
+                      key={c.id}
+                      className="transition-all duration-300 ease-in-out"
+                      style={{
+                        backgroundColor: isHovered ? `${brand.colorHex}06` : 'transparent',
+                        boxShadow: isHovered ? `inset 3px 0 0 ${brand.colorHex}` : 'inset 3px 0 0 transparent',
+                      }}
+                      onMouseEnter={() => setHoveredRow(c.id)}
+                      onMouseLeave={() => setHoveredRow(null)}
+                    >
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-2.5">
-                          <div className="w-7 h-7 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-[10px] font-bold shrink-0">
+                          <div
+                            className="w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0 transition-colors duration-300"
+                            style={isHovered ? {
+                              backgroundColor: `${brand.colorHex}18`,
+                              color: brand.colorHex,
+                            } : {
+                              backgroundColor: '#dbeafe',
+                              color: '#1d4ed8',
+                            }}
+                          >
                             {c.name.slice(0, 2).toUpperCase()}
                           </div>
                           <div>
-                            <p className="text-xs font-semibold text-slate-700">{c.name}</p>
-                            {c.notes && <p className="text-[9px] text-slate-400 mt-0.5">{c.notes}</p>}
+                            <p
+                              className="text-[12px] font-semibold transition-colors duration-300"
+                              style={{ color: isHovered ? brand.colorHex : '#334155' }}
+                            >
+                              {c.name}
+                            </p>
+                            {c.notes && <p className="text-[11px] text-slate-400 mt-0.5">{c.notes}</p>}
                             {matchesReferredBy(c.referredBy) && (
                               <span className="inline-flex items-center gap-0.5 text-[8px] text-blue-600 bg-blue-50 px-1 py-0.5 rounded-full mt-0.5">
                                 <ArrowRight className="w-2.5 h-2.5" /> {matchesReferredBy(c.referredBy)}
@@ -322,7 +407,7 @@ export default function AudienciaCRM() {
                         </div>
                       </td>
                       <td className="px-4 py-3">
-                        <div className="flex flex-col gap-1 text-[10px] text-slate-600">
+                        <div className="flex flex-col gap-1 text-[11px] text-slate-600">
                           <span className="flex items-center gap-1"><Mail className="w-3 h-3 text-slate-400" /> {c.email}</span>
                           <span className="flex items-center gap-1"><Phone className="w-3 h-3 text-slate-400" /> {c.phone}</span>
                         </div>
@@ -338,16 +423,30 @@ export default function AudienciaCRM() {
                         </div>
                       </td>
                       <td className="px-4 py-3 text-right">
-                        <span className="text-sm font-bold text-blue-600">{c.pointsTotal}</span>
+                        <span
+                          className="text-sm font-bold transition-colors duration-300"
+                          style={{ color: isHovered ? brand.colorHex : '#2563eb' }}
+                        >
+                          {c.pointsTotal}
+                        </span>
                       </td>
                       <td className="px-4 py-3 text-right">
                         <button onClick={() => { setAdjustingId(c.id); setPointsDelta(1); }}
-                          className="px-2 py-1 bg-blue-50 text-blue-600 rounded-lg text-[9px] font-bold hover:bg-blue-100 transition-all">
+                          className="px-2 py-1 rounded-lg text-[9px] font-bold transition-all duration-300"
+                          style={isHovered ? {
+                            backgroundColor: `${brand.colorHex}14`,
+                            color: brand.colorHex,
+                          } : {
+                            backgroundColor: '#eff6ff',
+                            color: '#2563eb',
+                          }}
+                        >
                           Ajustar Puntos
                         </button>
                       </td>
                     </tr>
-                  ))}
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
@@ -397,7 +496,7 @@ export default function AudienciaCRM() {
           <div className="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm space-y-3">
             <div className="flex items-center gap-2 text-blue-600">
               <UserPlus className="w-4 h-4" />
-              <span className="text-[10px] font-bold uppercase tracking-wider font-mono">Registrar Cliente</span>
+              <span className="text-section-heading text-blue-600">Registrar Cliente</span>
             </div>
             <div className="space-y-2">
               <input value={newName} onChange={e => setNewName(e.target.value)}
@@ -433,7 +532,7 @@ export default function AudienciaCRM() {
           <div className="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm space-y-3">
             <div className="flex items-center gap-2 text-blue-600">
               <Gift className="w-4 h-4" />
-              <span className="text-[10px] font-bold uppercase tracking-wider font-mono">Red de Referidos</span>
+              <span className="text-section-heading text-blue-600">Red de Referidos</span>
             </div>
             {referrals.length === 0 ? (
               <div className="text-center py-6">
@@ -477,7 +576,7 @@ export default function AudienciaCRM() {
           <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl border border-blue-200 p-4">
             <div className="flex items-center gap-2 mb-2">
               <TrendingUp className="w-4 h-4 text-blue-600" />
-              <span className="text-[10px] font-bold text-blue-700 uppercase tracking-wider font-mono">Segmentación Inteligente</span>
+              <span className="text-section-heading text-blue-700">Segmentación Inteligente</span>
             </div>
             <p className="text-[10px] text-slate-600 leading-relaxed">
               {clients.length} clientes en tu audiencia. Segmenta por rango ({segStats.bronze} Bronce, {segStats.silver} Plata, {segStats.gold} Oro, {segStats.platinum} Platino) para campañas dirigidas.
@@ -487,5 +586,6 @@ export default function AudienciaCRM() {
         </aside>
       </div>
     </main>
+    </div>
   );
 }

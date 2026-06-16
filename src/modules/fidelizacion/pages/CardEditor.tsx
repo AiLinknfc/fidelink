@@ -11,6 +11,8 @@ import { useI18n } from '@/i18n/index';
 import { useAuth } from '@/context/AuthContext';
 import { getCardConfig, upsertCardConfig, uploadBusinessLogo, mapLoyaltyError, type CardConfig, type ProgramType } from '@/services/loyaltyService';
 import { getOrCreatePrimaryQr, updateQrTarget, buildQrUrl, type QrLink } from '@/services/qrLinkService';
+import SectionRibbon from '@/platform/ui/SectionRibbon';
+import { useModuleBrand } from '@/platform/theme/ModuleBrand';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -147,6 +149,7 @@ function Spinner({ label }: { label: string }) {
 export default function CardEditor() {
   const { t } = useI18n();
   const { user, loading: authLoading } = useAuth();
+  const { brand } = useModuleBrand();
   const navigate = useNavigate();
   const businessId = user?.id ?? '';
   const businessEmail = user?.email ?? '';
@@ -159,6 +162,7 @@ export default function CardEditor() {
   const [ecLevel, setEcLevel] = useState<ECLevel>('L');
 
   // UI state
+  const [chipHovered, setChipHovered] = useState(false);
   const [dataLoading, setDataLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [successMsg, setSuccessMsg] = useState('');
@@ -489,7 +493,7 @@ export default function CardEditor() {
 
   // ── Render ──────────────────────────────────────────────────────────────────
   return (
-    <div className="min-h-screen">
+    <div className="h-full flex flex-col overflow-hidden">
       {/* Hidden high-res QR canvas for download (off-screen, not display:none) */}
       <div
         ref={qrDownloadRef}
@@ -506,17 +510,59 @@ export default function CardEditor() {
         />
       </div>
 
-      <main className="max-w-7xl mx-auto px-4 md:px-12 py-8">
+      <div className="bg-[#f8fafc] border-b border-slate-200 px-4 sm:px-6 h-10 flex flex-row items-center justify-between gap-2 select-none overflow-hidden flex-shrink-0">
+
+        {/* LEFT — chip expandible con descripción en hover */}
+        <div
+          className="relative flex items-center gap-1.5 px-3 py-1.5 rounded-full border bg-white cursor-default transition-all duration-500 ease-in-out min-w-0"
+          style={{
+            color: brand.colorHex,
+            borderColor: chipHovered ? `${brand.colorHex}55` : 'rgb(226 232 240 / 0.6)',
+            boxShadow: chipHovered
+              ? `0 0 0 3px ${brand.colorHex}18, 0 2px 12px ${brand.colorHex}22`
+              : '0 0 0 0px transparent',
+            flex: chipHovered ? '1 1 0%' : '0 0 auto',
+          }}
+          onMouseEnter={() => setChipHovered(true)}
+          onMouseLeave={() => setChipHovered(false)}
+        >
+          <div
+            className="absolute inset-0 pointer-events-none rounded-full transition-opacity duration-500"
+            style={{
+              opacity: chipHovered ? 1 : 0,
+              background: `linear-gradient(90deg, ${brand.colorHex}06 0%, ${brand.colorHex}14 50%, ${brand.colorHex}06 100%)`,
+            }}
+          />
+          <QrCode
+            className="w-3.5 h-3.5 flex-shrink-0 transition-transform duration-300"
+            style={{ transform: chipHovered ? 'rotate(-15deg) scale(1.2)' : 'none' }}
+          />
+          <span className="text-[12px] font-bold font-sans whitespace-nowrap flex-shrink-0">Identidad & QR</span>
+          <span
+            className="text-[12px] font-sans whitespace-nowrap overflow-hidden transition-all duration-500 ease-in-out"
+            style={{
+              maxWidth: chipHovered ? '600px' : '0px',
+              opacity: chipHovered ? 1 : 0,
+              paddingLeft: chipHovered ? '6px' : '0px',
+              color: `${brand.colorHex}99`,
+              fontWeight: 500,
+            }}
+          >
+            · Personaliza tu programa de fidelización y su identidad visual
+          </span>
+        </div>
+
+        {/* RIGHT — estado */}
+        <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200/60 px-3 py-1.5 rounded-full flex-shrink-0">
+          <div className="w-2 h-2 rounded-full animate-pulse flex-shrink-0" style={{ backgroundColor: brand.colorHex }} />
+          <span className="text-[11px] font-semibold text-slate-600 whitespace-nowrap">Editor de tarjeta</span>
+        </div>
+      </div>
+      <main className="flex-1 overflow-y-auto px-4 md:px-8 pt-3 pb-6">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
 
           {/* ── Left: Editor Controls ─────────────────────────────────────── */}
           <section className="lg:col-span-7 space-y-6">
-            <div>
-              <h2 className="text-xl font-bold font-headline text-slate-800">Personalizar tarjeta</h2>
-              <p className="text-sm text-slate-600 mt-1">
-                Configura tu programa de fidelización y personaliza su identidad visual.
-              </p>
-            </div>
 
             {/* Category picker — full width, above bento */}
             <div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">

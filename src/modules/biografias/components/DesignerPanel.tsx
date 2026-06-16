@@ -28,16 +28,11 @@ function getThemeHex(themeColor: string): string {
 }
 
 const FONTS_LIST: { id: FontStyle; label: string; preview: string; class: string }[] = [
-  { id: 'sans',    label: 'Inter',     preview: 'La sencillez de la elegancia', class: 'font-sans' },
-  { id: 'display', label: 'Outfit',    preview: 'Innovación minimalista',       class: 'font-display font-medium' },
-  { id: 'serif',   label: 'Playfair',  preview: 'Historia y alta costura',      class: 'font-serif italic' },
-  { id: 'mono',    label: 'JetBrains', preview: 'SYS_CALL_OK 0x48a',            class: 'font-mono' },
-  { id: 'grotesk', label: 'Space',     preview: 'Modular y geométrica',         class: 'font-grotesk font-medium' },
-  { id: 'dm',      label: 'DM Sans',   preview: 'Clean y versátil',             class: 'font-dm' },
-  { id: 'jakarta', label: 'Jakarta',   preview: 'Sofisticación moderna',        class: 'font-jakarta font-medium' },
-  { id: 'poppins', label: 'Poppins',   preview: 'Audaz y contemporánea',        class: 'font-poppins font-medium' },
-  { id: 'montserrat', label: 'Montserrat', preview: 'Geometría urbana',         class: 'font-montserrat font-medium' },
-  { id: 'nunito',  label: 'Nunito',    preview: 'Suave y amigable',             class: 'font-nunito font-medium' },
+  { id: 'sans',     label: 'Inter',     preview: 'La sencillez de la elegancia', class: 'font-sans' },
+  { id: 'display',  label: 'Outfit',    preview: 'Innovación minimalista',       class: 'font-display font-medium' },
+  { id: 'serif',    label: 'Playfair',  preview: 'Historia y alta costura',      class: 'font-serif italic' },
+  { id: 'mono',     label: 'Space',     preview: 'Modular y geométrica',         class: 'font-mono font-medium' },
+  { id: 'jakarta',  label: 'Jakarta',   preview: 'Sofisticación moderna',        class: 'font-jakarta font-medium' },
 ];
 
 const CARD_STYLES: { id: CardStyle; label: string; swatches: string[] }[] = [

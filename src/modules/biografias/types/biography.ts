@@ -2,7 +2,7 @@
 
 export type TemplateType = 'mascota' | 'boda' | 'vehiculo' | 'salon' | 'generico' | 'farmacia' | 'deportes' | 'mecanico' | 'inmobiliaria' | 'artesanias' | 'tecnologia' | 'diseno' | 'vendedor' | 'acarreos' | 'taxis';
 
-export type FontStyle = 'sans' | 'display' | 'serif' | 'mono' | 'grotesk' | 'dm' | 'jakarta' | 'poppins' | 'montserrat' | 'nunito';
+export type FontStyle = 'sans' | 'display' | 'serif' | 'mono' | 'jakarta';
 
 export type CardStyle = 'glass' | 'flat' | 'warm' | 'neo' | 'cyberpunk' | 'clinico' | 'deportes' | 'industrial' | 'lujo' | 'natural';
 

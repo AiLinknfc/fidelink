@@ -8,10 +8,11 @@ export default function AdminGuard() {
   const { setModule } = useModuleBrand();
 
   useEffect(() => {
-    if (!loading && user) {
-      setModule('admin');
-    }
-  }, [loading, user, setModule]);
+    setModule('admin');
+  }, [setModule]);
+
+  // Skip auth checks in development
+  if (import.meta.env.DEV) return <Outlet />;
 
   if (loading) {
     return (

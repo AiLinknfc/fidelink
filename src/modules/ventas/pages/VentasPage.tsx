@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Outlet, useNavigate } from 'react-router-dom';
-import { Smartphone, X, Sparkles, Target, ShoppingCart } from 'lucide-react';
+import { Outlet } from 'react-router-dom';
+import { Smartphone, X, Sparkles } from 'lucide-react';
 import MobileSimulator from '../components/MobileSimulator';
 import { useModuleBrand } from '@/platform/theme/ModuleBrand';
 import { useCart } from '@/context/CartContext';
@@ -32,10 +32,11 @@ export interface VentasContextType {
   handleSaveTrackingConfig: (config: TrackingConfig) => void;
   setActiveCampaignId: (id: string) => void;
   onRefreshData: () => void;
+  openSimulator: () => void;
 }
 
 export default function VentasPage() {
-  const { brand } = useModuleBrand();
+  useModuleBrand();
   const [products, setProducts] = useState<Product[]>(INITIAL_PRODUCTS);
   const [leads, setLeads] = useState<Lead[]>(INITIAL_LEADS);
   const [campaigns, setCampaigns] = useState<Campaign[]>(INITIAL_CAMPAIGNS);
@@ -47,7 +48,7 @@ export default function VentasPage() {
   const [notification, setNotification] = useState<{ message: string; type: 'success' | 'info' } | null>(null);
   const [showPhoneModal, setShowPhoneModal] = useState(false);
   const [trackingConfig, setTrackingConfig] = useState<TrackingConfig>({ metaPixelCode: '' });
-  const { cart, cartCount, addToCart, removeFromCart, updateQuantity, clearCart, openCart } = useCart();
+  const { cart, addToCart, removeFromCart, updateQuantity, clearCart } = useCart();
 
   useEffect(() => {
     if (campaigns.length > 0 && !activeCampaignId) {
@@ -168,19 +169,18 @@ export default function VentasPage() {
     triggerToast('Tracking codes guardados e inyectados en la página.');
   };
 
-  const navigate = useNavigate();
-
   const contextValue: VentasContextType = {
     products, leads, campaigns, pixelEvents, transactions, agentConfig,
     cart, trackingConfig, activeCampaignId,
     addToCart: handleAddToCart, removeFromCart, updateQuantity, clearCart,
     handleAddProduct, handleAddCampaign, handleUpdateAgentConfig,
     handleAddPixelEvent, handlePaymentSuccess, handleSaveTrackingConfig,
-    setActiveCampaignId, onRefreshData: () => {}
+    setActiveCampaignId, onRefreshData: () => {},
+    openSimulator: () => setShowPhoneModal(true),
   };
 
   return (
-    <div className="flex flex-col h-full overflow-hidden bg-slate-50 text-slate-900 font-sans relative">
+    <div className="flex flex-col h-full overflow-hidden text-slate-900 font-sans relative">
       {notification && (
         <div className={`fixed top-4 left-1/2 transform -translate-x-1/2 z-50 px-4 py-3 rounded-xl shadow-xl flex items-center gap-2 border text-xs font-bold transition-all animate-bounce ${
           notification.type === 'success'
@@ -192,42 +192,9 @@ export default function VentasPage() {
         </div>
       )}
 
-      <header className="flex items-center justify-between px-4 py-3 bg-white border-b border-slate-200 gap-2 shrink-0">
-        <div className="flex items-center gap-2">
-          <div className="p-2 rounded-xl text-white" style={{ backgroundColor: brand.colorHex }}>
-            <Target className="w-5 h-5" />
-          </div>
-          <div>
-            <h1 className="text-lg font-bold tracking-tight text-slate-900">{brand.name}</h1>
-            <p className="text-[10px] text-slate-500 font-mono hidden sm:block">Inteligencia de Ventas</p>
-          </div>
-        </div>
-        <div className="flex items-center gap-2">
-          <button onClick={() => setShowPhoneModal(true)} title="Ver simulador de celular" className="p-2 text-indigo-600 hover:bg-indigo-50 bg-indigo-50 rounded-xl transition-all cursor-pointer">
-            <Smartphone className="w-5 h-5" />
-          </button>
-          <button onClick={openCart} title="Carrito de compras" className="relative p-2 text-slate-500 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 rounded-xl transition-all cursor-pointer">
-            <ShoppingCart className="w-5 h-5" />
-            {cartCount > 0 && (
-              <span className="absolute -top-1 -right-1 w-5 h-5 bg-rose-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
-                {cartCount}
-              </span>
-            )}
-          </button>
-        </div>
-      </header>
-
       <div className="flex-1 overflow-hidden relative">
         <Outlet context={contextValue} />
       </div>
-
-      <button
-        onClick={() => setShowPhoneModal(true)}
-        className="fixed bottom-6 right-6 z-30 w-14 h-14 bg-indigo-600 hover:bg-indigo-500 text-white rounded-full shadow-2xl flex items-center justify-center transition-all hover:scale-110 cursor-pointer"
-        title="Abrir simulador de celular"
-      >
-        <Smartphone className="w-6 h-6" />
-      </button>
 
       {showPhoneModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/10 backdrop-blur-sm" onClick={() => setShowPhoneModal(false)}>

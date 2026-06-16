@@ -1,4 +1,5 @@
 import { ResponsiveContainer, Tooltip, PieChart, Pie, Cell } from 'recharts';
+import { useModuleBrand } from '@/platform/theme/ModuleBrand';
 
 interface ChannelData {
   name: string;
@@ -11,11 +12,13 @@ interface ChannelPieChartProps {
 }
 
 export default function ChannelPieChart({ channelPieData, COLORS }: ChannelPieChartProps) {
+  const { brand } = useModuleBrand();
+
   return (
-    <div className="bg-white p-5 border border-slate-200 rounded-2xl flex flex-col justify-between">
-      <div>
-        <h3 className="text-base font-bold text-slate-900">Distribución por Canal Ads</h3>
-        <p className="text-xs text-slate-500 mb-4">Origen de prospectos detectados</p>
+    <div className="bg-white p-5 border border-slate-200 rounded-2xl flex flex-col">
+      <div className="mb-4">
+        <h3 className="text-section-heading text-slate-900">Canales de Origen</h3>
+        <p className="text-[11px] font-sans text-slate-500 mt-0.5">Distribución de prospectos por canal</p>
       </div>
 
       <div className="h-44 w-full flex items-center justify-center">
@@ -26,8 +29,8 @@ export default function ChannelPieChart({ channelPieData, COLORS }: ChannelPieCh
                 data={channelPieData}
                 cx="50%"
                 cy="50%"
-                innerRadius={50}
-                outerRadius={70}
+                innerRadius={52}
+                outerRadius={72}
                 paddingAngle={3}
                 dataKey="value"
               >
@@ -35,22 +38,29 @@ export default function ChannelPieChart({ channelPieData, COLORS }: ChannelPieCh
                   <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                 ))}
               </Pie>
-              <Tooltip />
+              <Tooltip
+                contentStyle={{ fontSize: '11px', fontFamily: 'Inter, sans-serif', borderRadius: '8px', border: '1px solid #e2e8f0' }}
+              />
             </PieChart>
           </ResponsiveContainer>
         ) : (
-          <div className="text-xs text-slate-400 italic">No hay leads registrados aún</div>
+          <div className="text-[11px] font-sans text-slate-400">No hay leads registrados aún</div>
         )}
       </div>
 
-      <div className="space-y-1.5 mt-2">
+      <div className="space-y-2 mt-3 pt-3 border-t border-slate-100">
         {channelPieData.map((ch, idx) => (
-          <div key={idx} className="flex items-center justify-between text-xs text-slate-600">
-            <div className="flex items-center gap-1.5">
-              <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: COLORS[idx % COLORS.length] }} />
-              <span>{ch.name}</span>
+          <div key={idx} className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: COLORS[idx % COLORS.length] }} />
+              <span className="text-[11px] font-sans text-slate-600">{ch.name}</span>
             </div>
-            <span className="font-mono font-bold">{ch.value} can.</span>
+            <span
+              className="text-[12px] font-bold font-sans tabular-nums"
+              style={{ color: brand.colorHex }}
+            >
+              {ch.value}
+            </span>
           </div>
         ))}
       </div>

@@ -1,0 +1,6 @@
+{
+  "name": "Napilink",
+  "description": "Plataforma segura y avanzada de propinas con billetera digital, escaneo por IA de recibos, canje de Puntos Colombia, alias Bre-B y sistema de retención ajustable (retracto).",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

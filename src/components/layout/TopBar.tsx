@@ -1,13 +1,11 @@
-import { Menu, ScanLine, X, CreditCard, ShoppingCart, LogOut, Bell } from 'lucide-react';
+import { Menu, X, CreditCard, ShoppingCart, LogOut, Bell, Building2, User } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useI18n } from '../../i18n/index';
 import { useAuth } from '@/context/AuthContext';
 import { getProfile } from '@/services/profileService';
 import ProfileDrawer from '@/components/profile/ProfileDrawer';
-import QrScanner from '@/components/qr/QrScanner';
-import { parseScannedSlug, parseScannedClientCardId, resolveSlugToBusinessEmail } from '@/services/qrLinkService';
-import { resolveClientByCardId, getCardConfig } from '@/services/loyaltyService';
+import { getCardConfig } from '@/services/loyaltyService';
 import { useModuleBrand } from '@/platform/theme/ModuleBrand';
 import { useCart } from '@/context/CartContext';
 
@@ -24,8 +22,6 @@ export default function TopBar({ onSidebarOpen }: TopBarProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
-  const [scannerMode, setScannerMode] = useState<'client' | 'business' | null>(null);
-  const [scanError, setScanError] = useState<string | null>(null);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [businessLogo, setBusinessLogo] = useState<string | null>(null);
   const { cartCount, openCart } = useCart();
@@ -45,7 +41,10 @@ export default function TopBar({ onSidebarOpen }: TopBarProps) {
 
   if (location.pathname === '/') return null;
 
+  const isPromo = location.pathname.startsWith('/promociones');
+  const isNapi = location.pathname.startsWith('/napilink');
   const isBusiness = location.pathname.startsWith('/business') || location.pathname.startsWith('/biography') || location.pathname.startsWith('/sales') || location.pathname.startsWith('/admin');
+  const usesSidebar = isBusiness || isPromo || isNapi;
   const isClientRoute = location.pathname.startsWith('/client');
 
   const userInitials = user?.user_metadata?.name
@@ -63,104 +62,61 @@ export default function TopBar({ onSidebarOpen }: TopBarProps) {
     navigate('/');
   }
 
-  async function handleScanResult(text: string) {
-    if (scannerMode === 'business') {
-      const cardId = parseScannedClientCardId(text);
-      if (!cardId) {
-        setScanError('Este QR no corresponde a una tarjeta fidelink de cliente.');
-        return;
-      }
-      const { data, error } = await resolveClientByCardId(cardId);
-      if (error || !data) {
-        setScanError('No se pudo identificar al cliente. Verifica que la tarjeta sea de tu negocio.');
-        return;
-      }
-      setScannerMode(null);
-      setScanError(null);
-      navigate(`/business/register-purchase?email=${encodeURIComponent(data.clientEmail)}`);
-      return;
-    }
-
-    // cliente escaneando QR de un negocio
-    const slug = parseScannedSlug(text);
-    if (!slug) {
-      setScanError('Este QR no corresponde a una tarjeta fidelink.');
-      return;
-    }
-    const { data, error } = await resolveSlugToBusinessEmail(slug);
-    if (error || !data) {
-      setScanError('No se pudo identificar la empresa del QR.');
-      return;
-    }
-    setScannerMode(null);
-    setScanError(null);
-    navigate(`/client/register-purchase?email=${encodeURIComponent(data.businessEmail)}`);
-  }
-
-  const userEmail = user?.email ?? '';
+  const userRole = user?.user_metadata?.role as string | undefined;
+  const isClientUser = userRole === 'client';
+  const roleLabel = isClientUser ? 'Cliente' : 'Empresa';
+  const RoleIcon = isClientUser ? User : Building2;
 
   return (
     <>
-      <header className="bg-white/90 backdrop-blur-md sticky top-0 z-40 border-b border-slate-200">
-        <div className="flex justify-between items-center w-full px-4 h-14 max-w-7xl mx-auto">
-          <div className="flex items-center gap-3">
-            {isBusiness ? (
+      <header className="bg-white/90 backdrop-blur-md sticky top-0 z-40 border-b border-slate-200 w-full">
+        <div className="flex items-center w-full px-3 sm:px-4 h-14 gap-2">
+
+          {/* ── Izquierda: botón menú + nombre de marca ── */}
+          <div className="flex items-center gap-1.5 min-w-0 flex-shrink-0">
+            {usesSidebar ? (
               <button
-                className="hover:bg-slate-100 transition-colors p-2 rounded-full"
-                style={{ color: brand.colorHex }}
+                className="hover:bg-slate-100 transition-colors p-2 rounded-full flex-shrink-0"
+                style={{ color: isPromo ? '#be123c' : isNapi ? '#b45309' : brand.colorHex }}
                 onClick={onSidebarOpen}
               >
-                <Menu className="w-5 h-5" />
+                <Menu className="w-[22px] h-[22px]" strokeWidth={2.25} />
               </button>
             ) : (
               <button
-                className="hover:bg-slate-100 transition-colors p-2 rounded-full"
+                className="hover:bg-slate-100 transition-colors p-2 rounded-full flex-shrink-0"
                 style={{ color: brand.colorHex }}
                 onClick={() => setMenuOpen(!menuOpen)}
               >
-                {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+                {menuOpen ? <X className="w-[22px] h-[22px]" strokeWidth={2.25} /> : <Menu className="w-[22px] h-[22px]" strokeWidth={2.25} />}
               </button>
             )}
-            <div className="flex items-center gap-2">
-              <h1
-                className="text-xl font-bold font-headline cursor-pointer tracking-tight"
-                style={{ color: brand.colorHex }}
-                onClick={() => navigate(isBusiness ? '/business' : '/wallet')}
-              >
-                {brand.name}
-              </h1>
-            </div>
+            <h1
+              className="text-lg sm:text-xl font-extrabold font-headline cursor-pointer tracking-[-0.03em] truncate"
+              style={{ color: isPromo ? '#be123c' : isNapi ? '#b45309' : brand.colorHex }}
+              onClick={() => navigate(isPromo ? '/promociones/explorar' : isNapi ? '/napilink/dashboard' : isBusiness ? '/business' : '/wallet')}
+            >
+              {isPromo ? 'PromoLink' : isNapi ? 'Napilink' : brand.name}
+            </h1>
           </div>
 
-          <div className="flex items-center gap-3">
-            <div className="hidden sm:flex items-center gap-3 bg-white border border-slate-200 pl-3 pr-2.5 py-1.5 rounded-full shadow-xs text-xs text-slate-600">
-              <div className="text-right">
-                <p className="text-[9px] font-mono tracking-wide font-bold uppercase leading-none"
-                  style={{ color: brand.colorHex }}
-                >
-                  {brand.name.toUpperCase()}
-                </p>
-                <p className="text-[10px] font-semibold text-slate-700 tracking-tight mt-0.5 truncate max-w-[150px]">
-                  {userEmail}
-                </p>
-              </div>
+          {/* ── Derecha: acciones ── */}
+          <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0 ml-auto">
+            {/* Chip de rol */}
+            <div
+              className="flex items-center gap-1.5 w-8 h-8 sm:w-auto sm:px-3 sm:h-8 rounded-full justify-center transition-all"
+              style={{ backgroundColor: `${isPromo ? '#be123c' : isNapi ? '#b45309' : brand.colorHex}18`, color: isPromo ? '#be123c' : isNapi ? '#b45309' : brand.colorHex }}
+              title={roleLabel}
+            >
+              <RoleIcon className="w-4 h-4 flex-shrink-0" />
+              <span className="hidden sm:inline text-[11px] font-bold">{roleLabel}</span>
             </div>
 
-            {/* QR Scanner */}
-            <button
-              onClick={() => { setScanError(null); setScannerMode(isBusiness ? 'business' : 'client'); }}
-              className="bg-primary text-on-primary px-3 py-2 rounded-xl flex items-center gap-2 hover:opacity-90 transition-all scale-95 active:opacity-80 shadow-md"
-              aria-label="Escáner QR"
-            >
-              <ScanLine className="w-5 h-5" />
-              <span className="hidden sm:inline text-[11px] font-bold">Escáner</span>
-            </button>
-
             {/* Cart */}
-            {isBusiness && (
+            {isBusiness && !isPromo && (
               <button
                 onClick={openCart}
-                className="relative w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600 transition-all"
+                className="relative w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600 transition-all flex-shrink-0"
                 aria-label="Carrito de compras"
               >
                 <ShoppingCart className="w-4 h-4" />
@@ -173,8 +129,8 @@ export default function TopBar({ onSidebarOpen }: TopBarProps) {
             )}
 
             {/* Notifications */}
-            {isBusiness && (
-              <div className="relative">
+            {isBusiness && !isPromo && (
+              <div className="relative flex-shrink-0">
                 <button
                   onClick={() => setNotifOpen(prev => !prev)}
                   className="relative w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600 transition-all"
@@ -213,7 +169,7 @@ export default function TopBar({ onSidebarOpen }: TopBarProps) {
             {/* Avatar */}
             <button
               onClick={() => setProfileOpen(true)}
-              className="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center font-bold text-[11px] ring-2 ring-transparent hover:ring-[var(--accent-color)] transition-all"
+              className="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center font-bold text-[11px] ring-2 ring-transparent hover:ring-[var(--accent-color)] transition-all flex-shrink-0"
               style={{ backgroundColor: `${brand.colorHex}20`, color: brand.colorHex }}
               aria-label="Abrir perfil"
             >
@@ -231,27 +187,8 @@ export default function TopBar({ onSidebarOpen }: TopBarProps) {
 
       <ProfileDrawer open={profileOpen} onClose={() => setProfileOpen(false)} />
 
-      <QrScanner
-        open={scannerMode !== null}
-        onClose={() => setScannerMode(null)}
-        onScan={handleScanResult}
-        title={scannerMode === 'business' ? 'Escanear cliente' : 'Escanear código QR'}
-        subtitle={
-          scannerMode === 'business'
-            ? 'Apunta a la cara B de la tarjeta del cliente para registrar la compra.'
-            : 'Apunta la cámara hacia el código QR de la empresa.'
-        }
-      />
-
-      {scanError && (
-        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-[80] bg-red-50 text-red-600 px-4 py-2.5 rounded-xl shadow-lg text-xs max-w-sm border border-red-200">
-          {scanError}
-          <button onClick={() => setScanError(null)} className="ml-3 font-bold underline">Cerrar</button>
-        </div>
-      )}
-
       {/* Client Hamburger Menu */}
-      {!isBusiness && menuOpen && (
+      {!usesSidebar && menuOpen && (
         <div className="fixed inset-0 z-50 bg-black/50" onClick={() => setMenuOpen(false)}>
           <div
             className="bg-surface-container-lowest w-80 h-full shadow-xl p-6"

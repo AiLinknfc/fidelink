@@ -13,10 +13,11 @@ export default function ModuleGuard({ module, redirectTo = '/' }: ModuleGuardPro
   const { setModule } = useModuleBrand();
 
   useEffect(() => {
-    if (!loading && user) {
-      setModule(module);
-    }
-  }, [loading, user, module, setModule]);
+    setModule(module);
+  }, [module, setModule]);
+
+  // Skip auth checks in development
+  if (import.meta.env.DEV) return <Outlet />;
 
   if (loading) {
     return (

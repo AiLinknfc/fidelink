@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from 'react';
-import { Sparkles, Play, Pause, Trash2, Plus, Zap, Bell, Check, Gift, GitBranch } from 'lucide-react';
+import { Sparkles, Play, Pause, Trash2, Plus, Zap, Bell, Check, Gift } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
-import SectionRibbon from '@/platform/ui/SectionRibbon';
+import { useModuleBrand } from '@/platform/theme/ModuleBrand';
 
 interface AutomationRule {
   id: string;
@@ -15,6 +15,7 @@ interface AutomationRule {
 
 export default function Automatizaciones() {
   const { user } = useAuth();
+  const { brand } = useModuleBrand();
 
   const [rules, setRules] = useState<AutomationRule[]>([
     {
@@ -106,16 +107,64 @@ export default function Automatizaciones() {
     }, 800);
   };
 
-  return (
-    <div className="min-h-screen bg-slate-50 pb-32">
-      <main className="max-w-7xl mx-auto px-4 md:px-8 py-6 space-y-6">
-        <SectionRibbon
-          icon={GitBranch}
-          title="Automatizaciones"
-          description="Configura reglas inteligentes para campañas automatizadas de fidelización"
-          badge="MOTOR COMPARTIDO GLOBAL"
-        />
+  const [chipHovered, setChipHovered] = useState(false);
+  const [hoveredRule, setHoveredRule] = useState<string | null>(null);
+  const activeRules = rules.filter(r => r.isActive).length;
 
+  return (
+    <div className="h-full flex flex-col overflow-hidden">
+      <div className="bg-[#f8fafc] border-b border-slate-200 px-4 sm:px-6 h-10 flex flex-row items-center justify-between gap-2 select-none overflow-hidden flex-shrink-0">
+
+        {/* LEFT — chip interactivo con descripción en hover */}
+        <div
+          className="relative flex items-center gap-1.5 px-3 py-1.5 rounded-full border bg-white cursor-default transition-all duration-500 ease-in-out min-w-0"
+          style={{
+            color: brand.colorHex,
+            borderColor: chipHovered ? `${brand.colorHex}55` : 'rgb(226 232 240 / 0.6)',
+            boxShadow: chipHovered
+              ? `0 0 0 3px ${brand.colorHex}18, 0 2px 12px ${brand.colorHex}22`
+              : '0 0 0 0px transparent',
+            flex: chipHovered ? '1 1 0%' : '0 0 auto',
+          }}
+          onMouseEnter={() => setChipHovered(true)}
+          onMouseLeave={() => setChipHovered(false)}
+        >
+          {/* Glow sweep background */}
+          <div
+            className="absolute inset-0 pointer-events-none rounded-full transition-opacity duration-500"
+            style={{
+              opacity: chipHovered ? 1 : 0,
+              background: `linear-gradient(90deg, ${brand.colorHex}06 0%, ${brand.colorHex}14 50%, ${brand.colorHex}06 100%)`,
+            }}
+          />
+          <Zap
+            className="w-3.5 h-3.5 flex-shrink-0 transition-transform duration-300"
+            style={{ transform: chipHovered ? 'rotate(-15deg) scale(1.2)' : 'none' }}
+          />
+          <span className="text-[12px] font-bold font-sans whitespace-nowrap flex-shrink-0">Motor de automatización</span>
+
+          {/* Separador + descripción — se revelan con clip */}
+          <span
+            className="text-[12px] font-sans whitespace-nowrap overflow-hidden transition-all duration-500 ease-in-out"
+            style={{
+              maxWidth: chipHovered ? '600px' : '0px',
+              opacity: chipHovered ? 1 : 0,
+              paddingLeft: chipHovered ? '6px' : '0px',
+              color: `${brand.colorHex}99`,
+              fontWeight: 500,
+            }}
+          >
+            · Configura reglas inteligentes para campañas automatizadas de fidelización
+          </span>
+        </div>
+
+        {/* RIGHT — estado del sistema */}
+        <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200/60 px-3 py-1.5 rounded-full">
+          <div className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: brand.colorHex }} />
+          <span className="text-[11px] font-semibold text-slate-600">{activeRules} activas / {rules.length} reglas</span>
+        </div>
+      </div>
+      <main className="flex-1 overflow-y-auto px-4 md:px-6 pt-3 pb-6 space-y-4">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           <div className="lg:col-span-8 bg-white border border-slate-200 rounded-2xl p-6 relative overflow-hidden shadow-sm">
             <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/2 rounded-full filter blur-xl pointer-events-none" />
@@ -126,48 +175,89 @@ export default function Automatizaciones() {
                   <p className="text-xs text-slate-400">No hay reglas de fidelización configuradas.</p>
                 </div>
               ) : (
-                rules.map(rule => (
+                rules.map(rule => {
+                  const isHovered = hoveredRule === rule.id;
+                  return (
                   <div
                     key={rule.id}
-                    className={`p-4 rounded-xl border transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4 ${
-                      rule.isActive
-                        ? 'bg-white border-slate-200 shadow-xs hover:border-blue-400'
-                        : 'bg-slate-50/50 border-slate-200 opacity-60'
-                    }`}
+                    className="relative p-4 rounded-xl border transition-all duration-300 ease-in-out flex flex-col sm:flex-row sm:items-center justify-between gap-4 overflow-hidden"
+                    style={{
+                      backgroundColor: rule.isActive
+                        ? isHovered ? `${brand.colorHex}06` : '#ffffff'
+                        : '#f8fafc',
+                      borderColor: rule.isActive
+                        ? isHovered ? `${brand.colorHex}55` : `${brand.colorHex}28`
+                        : 'rgb(226 232 240)',
+                      boxShadow: isHovered && rule.isActive
+                        ? `0 0 0 3px ${brand.colorHex}14, 0 4px 16px ${brand.colorHex}18`
+                        : rule.isActive
+                          ? `0 0 0 1.5px ${brand.colorHex}18`
+                          : 'none',
+                      opacity: rule.isActive ? 1 : 0.55,
+                    }}
+                    onMouseEnter={() => setHoveredRule(rule.id)}
+                    onMouseLeave={() => setHoveredRule(null)}
                   >
-                    <div className="space-y-1">
+                    {/* Glow sweep en hover */}
+                    <div
+                      className="absolute inset-0 pointer-events-none transition-opacity duration-500 rounded-xl"
+                      style={{
+                        opacity: isHovered && rule.isActive ? 1 : 0,
+                        background: `linear-gradient(105deg, ${brand.colorHex}04 0%, ${brand.colorHex}10 50%, ${brand.colorHex}04 100%)`,
+                      }}
+                    />
+
+                    <div className="relative space-y-1">
                       <div className="flex items-center gap-2">
-                        <span className={`w-2 h-2 rounded-full ${rule.isActive ? 'bg-emerald-500' : 'bg-slate-400'}`} />
-                        <h3 className="text-xs font-bold text-slate-800">{rule.name}</h3>
+                        <span
+                          className={`w-2 h-2 rounded-full transition-all duration-300 ${rule.isActive ? 'animate-pulse' : ''}`}
+                          style={{ backgroundColor: rule.isActive ? brand.colorHex : '#94a3b8' }}
+                        />
+                        <h3
+                          className="text-xs font-bold transition-colors duration-300"
+                          style={{ color: isHovered && rule.isActive ? brand.colorHex : '#1e293b' }}
+                        >
+                          {rule.name}
+                        </h3>
                       </div>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1 pt-1 text-[11px]">
-                        <p className="text-slate-500">
-                          <strong className="text-slate-400 font-mono text-[9px] uppercase font-bold">Si ocurre:</strong> {rule.trigger}
+                        <p className="text-[11px] text-slate-500">
+                          <strong className="text-slate-400 font-jakarta text-[10px] uppercase font-bold tracking-wider">Si ocurre:</strong> {rule.trigger}
                         </p>
-                        <p className="text-slate-500">
-                          <strong className="text-slate-400 font-mono text-[9px] uppercase font-bold">Acción:</strong> {rule.action}
+                        <p className="text-[11px] text-slate-500">
+                          <strong className="text-slate-400 font-jakarta text-[10px] uppercase font-bold tracking-wider">Acción:</strong> {rule.action}
                         </p>
-                        <p className="sm:col-span-2 text-blue-600 font-semibold mt-0.5 flex items-center gap-1">
-                          <Gift className="w-3.5 h-3.5 text-blue-500" />
+                        <p className="sm:col-span-2 font-semibold mt-0.5 flex items-center gap-1 transition-colors duration-300"
+                           style={{ color: isHovered && rule.isActive ? brand.colorHex : '#2563eb' }}>
+                          <Gift className="w-3.5 h-3.5" style={{ color: isHovered && rule.isActive ? brand.colorHex : '#3b82f6' }} />
                           Recompensa: {rule.reward}
                         </p>
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-2 sm:self-center">
+                    <div className="relative flex items-center gap-2 sm:self-center">
                       <div className="text-right mr-2 hidden sm:block">
-                        <p className="text-[10px] text-slate-400 font-mono">Disparos total</p>
-                        <p className="text-xs font-bold text-slate-700 font-mono">{rule.timesTriggered}</p>
+                        <p className="text-[10px] text-slate-400 font-jakarta uppercase tracking-wider font-bold">Disparos total</p>
+                        <p className="text-[12px] font-bold font-sans transition-colors duration-300"
+                           style={{ color: isHovered && rule.isActive ? brand.colorHex : '#334155' }}>
+                          {rule.timesTriggered}
+                        </p>
                       </div>
 
                       <button type="button" title="Simular ejecución"
                         disabled={!rule.isActive || isRunningSim}
                         onClick={() => runSimulation(rule)}
-                        className={`p-1.5 rounded-lg border transition-all ${
-                          rule.isActive
-                            ? 'bg-blue-50 border-blue-200 text-blue-600 hover:bg-blue-100 hover:border-blue-500'
-                            : 'bg-white border-slate-200 text-slate-400 !cursor-not-allowed'
-                        }`}>
+                        className="p-1.5 rounded-lg border transition-all duration-300"
+                        style={rule.isActive ? {
+                          backgroundColor: isHovered ? `${brand.colorHex}14` : '#eff6ff',
+                          borderColor: isHovered ? `${brand.colorHex}66` : '#bfdbfe',
+                          color: brand.colorHex,
+                        } : {
+                          backgroundColor: '#ffffff',
+                          borderColor: '#e2e8f0',
+                          color: '#94a3b8',
+                          cursor: 'not-allowed',
+                        }}>
                         <Play className="w-3.5 h-3.5 fill-current" />
                       </button>
 
@@ -184,13 +274,14 @@ export default function Automatizaciones() {
                       </button>
                     </div>
                   </div>
-                ))
+                  );
+                })
               )}
             </div>
 
             <form onSubmit={handleCreateRule} className="mt-6 pt-5 border-t border-slate-100 space-y-3">
-              <h3 className="text-xs font-bold uppercase tracking-wider font-mono text-slate-800 flex items-center gap-1.5">
-                <Plus className="w-4 h-4 text-blue-600" /> CREADOR VELOZ DE REGLAS DE CAMPAÑA
+              <h3 className="text-section-heading text-slate-800 flex items-center gap-1.5">
+                <Plus className="w-4 h-4 text-blue-600" /> Creador de reglas de campaña
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
@@ -241,8 +332,8 @@ export default function Automatizaciones() {
             <div>
               <div className="flex items-center gap-1.5 mb-3">
                 <Bell className="w-4 h-4 text-blue-600 animate-pulse" />
-                <h3 className="text-xs font-bold uppercase tracking-wider font-mono text-slate-800">
-                  Auditor de Triggers en Vivo (Webhook Log)
+                <h3 className="text-section-heading text-slate-800">
+                  Auditor de triggers en vivo
                 </h3>
               </div>
               <p className="text-[11px] text-slate-500 leading-normal">
@@ -276,7 +367,7 @@ export default function Automatizaciones() {
             </div>
 
             <div className="p-3 bg-blue-50/50 border border-blue-100 rounded-xl">
-              <span className="text-[9.5px] font-mono text-blue-700 font-bold block uppercase">Servidor de Automatización</span>
+              <span className="text-[10px] font-jakarta text-blue-700 font-bold block uppercase tracking-wider">Servidor de Automatización</span>
               <p className="text-[10.5px] text-slate-600 leading-relaxed mt-0.5">
                 Las reglas se conectan a un pipeline distribuido por medio del cual se envían notificaciones push interactivas a iPhones/Androids y correos a la base CRM corporativa.
               </p>

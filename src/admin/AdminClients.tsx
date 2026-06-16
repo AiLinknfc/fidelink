@@ -1,76 +1,242 @@
-import { Search, CreditCard, Book, ShoppingBag, MoreHorizontal } from 'lucide-react';
+import { Search, CreditCard, Book, ShoppingBag, Users } from 'lucide-react';
 import { useState } from 'react';
+import { useModuleBrand } from '@/platform/theme/ModuleBrand';
 
 const MOCK_CLIENTS = [
-  { id: '1', name: 'Carlos Mendoza', email: 'carlos@ejemplo.com', module: 'fidelizacion', cards: 3, joined: '2026-01-15' },
-  { id: '2', name: 'Laura Silva', email: 'laura@ejemplo.com', module: 'biografias', cards: 0, joined: '2026-02-20' },
-  { id: '3', name: 'María García', email: 'maria@ejemplo.com', module: 'fidelizacion', cards: 5, joined: '2026-03-10' },
-  { id: '4', name: 'Juan Pérez', email: 'juan@ejemplo.com', module: 'biografias', cards: 0, joined: '2026-04-05' },
-  { id: '5', name: 'Ana Martínez', email: 'ana@ejemplo.com', module: 'ventas', cards: 0, joined: '2026-05-20' },
+  { id: '1', name: 'Carlos Mendoza',  email: 'carlos@ejemplo.com', module: 'fidelizacion', cards: 3, joined: '2026-01-15' },
+  { id: '2', name: 'Laura Silva',     email: 'laura@ejemplo.com',  module: 'biografias',   cards: 0, joined: '2026-02-20' },
+  { id: '3', name: 'María García',    email: 'maria@ejemplo.com',  module: 'fidelizacion', cards: 5, joined: '2026-03-10' },
+  { id: '4', name: 'Juan Pérez',      email: 'juan@ejemplo.com',   module: 'biografias',   cards: 0, joined: '2026-04-05' },
+  { id: '5', name: 'Ana Martínez',    email: 'ana@ejemplo.com',    module: 'ventas',       cards: 0, joined: '2026-05-20' },
 ];
 
-export default function AdminClients() {
-  const [filter, setFilter] = useState<'all' | 'fidelizacion' | 'biografias' | 'ventas'>('all');
+const MODULE_FILTERS = [
+  { value: 'all',          label: 'Todos'       },
+  { value: 'fidelizacion', label: 'Fidelización' },
+  { value: 'biografias',   label: 'Biografías'  },
+  { value: 'ventas',       label: 'Ventas'      },
+] as const;
 
-  const filtered = filter === 'all' ? MOCK_CLIENTS : MOCK_CLIENTS.filter((c) => c.module === filter);
+type Filter = typeof MODULE_FILTERS[number]['value'];
+
+function ModuleIcon({ module }: { module: string }) {
+  if (module === 'fidelizacion') return <CreditCard className="w-3.5 h-3.5 text-violet-500" />;
+  if (module === 'ventas')       return <ShoppingBag className="w-3.5 h-3.5 text-emerald-500" />;
+  return <Book className="w-3.5 h-3.5 text-indigo-500" />;
+}
+
+export default function AdminClients() {
+  const { brand } = useModuleBrand();
+
+  const [filter, setFilter]       = useState<Filter>('all');
+  const [query, setQuery]         = useState('');
+  const [chipHovered, setChipHovered] = useState(false);
+  const [hoveredRow, setHoveredRow]   = useState<string | null>(null);
+
+  const filtered = MOCK_CLIENTS.filter((c) => {
+    const matchModule = filter === 'all' || c.module === filter;
+    const matchQuery  = !query.trim() ||
+      c.name.toLowerCase().includes(query.toLowerCase()) ||
+      c.email.toLowerCase().includes(query.toLowerCase());
+    return matchModule && matchQuery;
+  });
 
   return (
-    <div className="max-w-7xl mx-auto px-4 md:px-8 py-6 space-y-6">
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900">Clientes Cross-Module</h1>
-          <p className="text-sm text-slate-500">Todos los clientes de la plataforma</p>
-        </div>
-      </div>
+    <div className="h-full flex flex-col overflow-hidden">
 
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-        <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-          <input type="text" placeholder="Buscar clientes..." className="w-full pl-9 pr-4 py-2 border border-slate-200 rounded-lg text-sm" />
-        </div>
-        <div className="flex gap-1 bg-slate-100 rounded-lg p-1">
-          {(['all', 'fidelizacion', 'biografias', 'ventas'] as const).map((f) => (
-            <button key={f} onClick={() => setFilter(f)}
-              className={`px-3 py-1.5 rounded-md text-xs font-bold capitalize transition-colors ${filter === f ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}>
-              {f === 'all' ? 'Todos' : f === 'fidelizacion' ? 'Fidelización' : f === 'biografias' ? 'Biografías' : 'Ventas'}
-            </button>
-          ))}
-        </div>
-      </div>
+      {/* ── Barra secundaria ── */}
+      <div className="bg-[#f8fafc] border-b border-slate-200 px-4 sm:px-6 h-10
+                      flex flex-row items-center justify-between
+                      gap-2 select-none overflow-hidden">
 
-      <div className="bg-white rounded-2xl border border-slate-200 overflow-x-auto">
-        <div className="grid grid-cols-5 gap-4 p-4 bg-slate-50 border-b border-slate-200 text-xs font-bold text-slate-500 uppercase tracking-wider">
-          <span className="col-span-2">Cliente</span>
-          <span>Módulo</span>
-          <span>Tarjetas</span>
-          <span>Ingreso</span>
+        {/* LEFT — chip expandible */}
+        <div
+          className="relative flex items-center gap-1.5 px-3 py-1.5 rounded-full border bg-white cursor-default transition-all duration-500 ease-in-out min-w-0"
+          style={{
+            color: brand.colorHex,
+            borderColor: chipHovered ? `${brand.colorHex}55` : 'rgb(226 232 240 / 0.6)',
+            boxShadow: chipHovered
+              ? `0 0 0 3px ${brand.colorHex}18, 0 2px 12px ${brand.colorHex}22`
+              : '0 0 0 0px transparent',
+            flex: chipHovered ? '1 1 0%' : '0 0 auto',
+          }}
+          onMouseEnter={() => setChipHovered(true)}
+          onMouseLeave={() => setChipHovered(false)}
+        >
+          <div
+            className="absolute inset-0 pointer-events-none rounded-full transition-opacity duration-500"
+            style={{
+              opacity: chipHovered ? 1 : 0,
+              background: `linear-gradient(90deg, ${brand.colorHex}06 0%, ${brand.colorHex}14 50%, ${brand.colorHex}06 100%)`,
+            }}
+          />
+          <Users
+            className="w-3.5 h-3.5 flex-shrink-0 transition-transform duration-300"
+            style={{ transform: chipHovered ? 'rotate(-15deg) scale(1.2)' : 'none' }}
+          />
+          <span className="text-[12px] font-bold font-sans whitespace-nowrap flex-shrink-0">Clientes Cross-Module</span>
+          <span
+            className="text-[12px] font-sans whitespace-nowrap overflow-hidden transition-all duration-500 ease-in-out"
+            style={{
+              maxWidth: chipHovered ? '600px' : '0px',
+              opacity: chipHovered ? 1 : 0,
+              paddingLeft: chipHovered ? '6px' : '0px',
+              color: `${brand.colorHex}99`,
+              fontWeight: 500,
+            }}
+          >
+            · Todos los clientes registrados en la plataforma
+          </span>
         </div>
-        {filtered.map((client) => (
-          <div key={client.id} className="grid grid-cols-5 gap-4 p-4 border-b border-slate-100 items-center hover:bg-slate-50 transition-colors">
-            <div className="col-span-2 flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-xs font-bold text-slate-600">
-                {client.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()}
-              </div>
-              <div>
-                <p className="text-sm font-semibold text-slate-800">{client.name}</p>
-                <p className="text-xs text-slate-400">{client.email}</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-1.5">
-              {client.module === 'fidelizacion' ? (
-                <CreditCard className="w-3.5 h-3.5 text-violet-500" />
-              ) : client.module === 'ventas' ? (
-                <ShoppingBag className="w-3.5 h-3.5 text-emerald-500" />
-              ) : (
-                <Book className="w-3.5 h-3.5 text-indigo-500" />
-              )}
-              <span className="text-xs font-medium text-slate-600 capitalize">{client.module}</span>
-            </div>
-            <span className="text-sm font-semibold text-slate-700">{client.cards}</span>
-            <span className="text-xs text-slate-400">{client.joined}</span>
+
+        {/* RIGHT — estado + búsqueda */}
+        <div className="flex items-center gap-2 flex-shrink-0">
+          <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200/60 px-3 py-1.5 rounded-full flex-shrink-0">
+            <div className="w-2 h-2 rounded-full animate-pulse flex-shrink-0" style={{ backgroundColor: brand.colorHex }} />
+            <span className="text-[11px] font-semibold text-slate-600 whitespace-nowrap">
+              {filtered.length} {filtered.length === 1 ? 'cliente' : 'clientes'}
+            </span>
           </div>
-        ))}
+          <div className="relative w-44 sm:w-56 flex-shrink-0">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 pointer-events-none" />
+            <input
+              type="search"
+              value={query}
+              onChange={e => setQuery(e.target.value)}
+              placeholder="Buscar…"
+              className="w-full pl-9 pr-3 py-1.5 bg-white border border-slate-200 rounded-lg text-[12px] focus:outline-none focus:border-slate-400 text-slate-800 placeholder:text-slate-400"
+            />
+          </div>
+        </div>
       </div>
+
+      <main className="flex-1 overflow-y-auto px-4 md:px-6 pt-3 pb-6 space-y-4">
+
+        {/* Filtros de módulo — variante C: botón de selección activa */}
+        <div className="flex gap-1.5 flex-wrap">
+          {MODULE_FILTERS.map(({ value, label }) => {
+            const isActive = filter === value;
+            return (
+              <button
+                key={value}
+                onClick={() => setFilter(value)}
+                className="relative px-3 py-1.5 rounded-full text-[11px] font-bold border transition-all duration-300 ease-in-out overflow-hidden"
+                style={{
+                  borderColor:     isActive ? brand.colorHex       : 'rgb(226 232 240)',
+                  backgroundColor: isActive ? `${brand.colorHex}10` : '#ffffff',
+                  color:           isActive ? brand.colorHex       : '#64748b',
+                  boxShadow: isActive
+                    ? `0 0 0 3px ${brand.colorHex}18, 0 2px 8px ${brand.colorHex}20`
+                    : 'none',
+                }}
+              >
+                <div
+                  className="absolute inset-0 pointer-events-none rounded-full transition-opacity duration-500"
+                  style={{
+                    opacity: isActive ? 1 : 0,
+                    background: `linear-gradient(135deg, ${brand.colorHex}04 0%, ${brand.colorHex}14 50%, ${brand.colorHex}04 100%)`,
+                  }}
+                />
+                <span className="relative">{label}</span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Tabla de clientes */}
+        <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+
+          {/* Cabecera */}
+          <div className="grid grid-cols-12 gap-3 px-4 py-3 bg-slate-50 border-b border-slate-200">
+            <span className="col-span-4 text-[12px] font-bold text-slate-500 uppercase tracking-wider font-jakarta text-left">Cliente</span>
+            <span className="col-span-3 text-[12px] font-bold text-slate-500 uppercase tracking-wider font-jakarta text-left">Correo</span>
+            <span className="col-span-2 text-[12px] font-bold text-slate-500 uppercase tracking-wider font-jakarta text-left">Módulo</span>
+            <span className="col-span-1 text-[12px] font-bold text-slate-500 uppercase tracking-wider font-jakarta text-center">Cards</span>
+            <span className="col-span-2 text-[12px] font-bold text-slate-500 uppercase tracking-wider font-jakarta text-center">Ingreso</span>
+          </div>
+
+          {filtered.length === 0 ? (
+            <div className="text-center py-12">
+              <Users className="w-8 h-8 text-slate-300 mx-auto mb-2" />
+              <p className="text-sm text-slate-400">No se encontraron clientes.</p>
+            </div>
+          ) : (
+            filtered.map((client) => {
+              const isHovered = hoveredRow === client.id;
+              return (
+                <div
+                  key={client.id}
+                  className="relative grid grid-cols-12 gap-3 px-4 py-3 border-b border-slate-100 items-center overflow-hidden"
+                  style={{
+                    backgroundColor: isHovered ? `${brand.colorHex}0d` : '#ffffff',
+                    borderLeft: `3px solid ${isHovered ? brand.colorHex : 'transparent'}`,
+                    transition: 'background-color 0.25s ease, border-left-color 0.25s ease',
+                  }}
+                  onMouseEnter={() => setHoveredRow(client.id)}
+                  onMouseLeave={() => setHoveredRow(null)}
+                >
+                  {/* Glow sweep */}
+                  <div
+                    className="absolute inset-0 pointer-events-none transition-opacity duration-300"
+                    style={{
+                      opacity: isHovered ? 1 : 0,
+                      background: `linear-gradient(105deg, ${brand.colorHex}08 0%, ${brand.colorHex}18 50%, ${brand.colorHex}08 100%)`,
+                    }}
+                  />
+
+                  {/* Cliente */}
+                  <div className="relative col-span-4 flex items-center justify-start gap-3">
+                    <div
+                      className="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center text-[11px] font-bold transition-colors duration-300"
+                      style={isHovered ? {
+                        backgroundColor: `${brand.colorHex}18`,
+                        color: brand.colorHex,
+                      } : {
+                        backgroundColor: '#f1f5f9',
+                        color: '#475569',
+                      }}
+                    >
+                      {client.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()}
+                    </div>
+                    <p
+                      className="text-[12px] font-semibold transition-colors duration-300"
+                      style={{ color: isHovered ? brand.colorHex : '#1e293b' }}
+                    >
+                      {client.name}
+                    </p>
+                  </div>
+
+                  {/* Correo */}
+                  <div className="relative col-span-3">
+                    <span className="text-[11px] font-sans text-slate-400 truncate block">{client.email}</span>
+                  </div>
+
+                  {/* Módulo */}
+                  <div className="relative col-span-2 flex items-center gap-1.5">
+                    <ModuleIcon module={client.module} />
+                    <span className="text-[11px] font-sans font-medium text-slate-600 capitalize truncate">{client.module}</span>
+                  </div>
+
+                  {/* Tarjetas */}
+                  <div className="relative col-span-1 flex justify-center">
+                    <span
+                      className="text-[12px] font-bold font-sans tabular-nums transition-colors duration-300"
+                      style={{ color: isHovered ? brand.colorHex : '#334155' }}
+                    >
+                      {client.cards}
+                    </span>
+                  </div>
+
+                  {/* Ingreso */}
+                  <div className="relative col-span-2 flex justify-center">
+                    <span className="text-[11px] font-sans text-slate-400 tabular-nums">{client.joined}</span>
+                  </div>
+                </div>
+              );
+            })
+          )}
+        </div>
+      </main>
     </div>
   );
 }

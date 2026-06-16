@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&family=Nunito:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap');
 @import "tailwindcss";
 
 @theme {
@@ -8,11 +8,7 @@
   --font-display: "Outfit", "Inter", sans-serif;
   --font-serif: "Playfair Display", Georgia, serif;
   --font-grotesk: "Space Grotesk", ui-sans-serif, sans-serif;
-  --font-dm: "DM Sans", ui-sans-serif, sans-serif;
   --font-jakarta: "Plus Jakarta Sans", ui-sans-serif, sans-serif;
-  --font-poppins: "Poppins", ui-sans-serif, sans-serif;
-  --font-montserrat: "Montserrat", ui-sans-serif, sans-serif;
-  --font-nunito: "Nunito", ui-sans-serif, sans-serif;
 
   --animate-shimmer: shimmer 8s infinite linear;
 
@@ -63,11 +59,37 @@
   --color-background: #f8f9ff;
   --color-on-background: #0b1c30;
   --color-surface-variant: #d3e4fe;
+
+  /* Módulo Promociones — colores brand PromoLink */
+  --color-brand-primary: #be123c;
+  --color-brand-secondary: #881337;
+  --color-brand-gold: #854d0e;
+
+  /* Módulo Napilink — colores brand */
+  --color-napi-primary: #f8f80b;
+  --color-napi-amber: #b45309;
 }
 
 @keyframes shimmer {
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
+}
+
+@keyframes radar-pulse {
+  0% { transform: scale(0.9); opacity: 0.8; }
+  50% { opacity: 0.3; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+.animate-radar-pulse {
+  animation: radar-pulse 3s infinite cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in {
+  animation: fade-in 0.25s ease-out;
 }
 
 .fidelia-dark-canvas {
@@ -277,23 +299,55 @@
     scrollbar-width: none;
   }
 
-  .text-headline-lg { @apply text-[32px] font-bold leading-[1.2] tracking-[-0.02em]; }
+  /* ── Titulares ─────────────────────────────────────────────────── */
+  .text-headline-lg        { @apply text-[32px] font-bold leading-[1.2] tracking-[-0.02em]; }
   .text-headline-lg-mobile { @apply text-[28px] font-bold leading-[1.2] tracking-[-0.01em]; }
-  .text-headline-md { @apply text-[24px] font-semibold leading-[1.3]; }
-  .text-headline-sm { @apply text-[20px] font-semibold leading-[1.3]; }
-  .text-body-lg { @apply text-[18px] font-normal leading-[1.6]; }
-  .text-body-md { @apply text-[16px] font-normal leading-[1.5]; }
-  .text-body-sm { @apply text-[14px] font-normal leading-[1.5]; }
-  .text-label-md { @apply text-[12px] font-semibold leading-[1] tracking-[0.05em]; }
+  .text-headline-md        { @apply text-[24px] font-semibold leading-[1.3]; }
+  .text-headline-sm        { @apply text-[20px] font-semibold leading-[1.3]; }
+
+  /* ── Subtítulo interno de panel/card — zona autenticada ─────── */
+  /* h3 dentro de cards, títulos de sección de formulario */
+  .text-section-heading    { @apply text-[14px] font-bold font-headline leading-[1.3]; }
+
+  /* ── Cuerpo ─────────────────────────────────────────────────────── */
+  .text-body-lg  { @apply text-[18px] font-normal leading-[1.6]; }
+  .text-body-md  { @apply text-[16px] font-normal leading-[1.5]; }
+  .text-body-sm  { @apply text-[14px] font-normal leading-[1.5]; }
+
+  /* ── UI / Datos — zona 10–12px ───────────────────────────────── */
+  /* dato primario: nombre de cliente, título de fila */
+  .text-data-primary   { @apply text-[12px] font-semibold leading-[1.3]; }
+  /* dato secundario: email, módulo, metadatos de fila */
+  .text-data-secondary { @apply text-[11px] font-normal leading-[1.4]; }
+  /* dato numérico resaltado: contadores, totales */
+  .text-data-number    { @apply text-[12px] font-bold leading-[1] tabular-nums; }
+
+  /* ── Labels / UI chrome ─────────────────────────────────────── */
+  /* chip de barra secundaria: título y botones de filtro */
+  .text-chip           { @apply text-[11px] font-bold leading-none; }
+  /* chip descripción revelada en hover, tooltips inline */
+  .text-chip-sub       { @apply text-[11px] font-medium leading-none; }
+  /* cabeceras de tabla, etiquetas de sección */
+  .text-col-header     { @apply text-[10px] font-bold uppercase tracking-wider leading-none; }
+  /* estado del sistema en RIGHT de barra secundaria */
+  .text-status         { @apply text-[11px] font-semibold leading-none; }
+  /* iniciales de avatar */
+  .text-avatar         { @apply text-[11px] font-bold leading-none; }
+
+  /* label técnico: "SI OCURRE:", "ACCIÓN:", contadores en panel de logs */
+  .text-tech-label         { @apply text-[10px] font-bold font-jakarta uppercase tracking-wider leading-none; }
+
+  /* ── Labels heredados (mantener compatibilidad) ─────────────── */
+  .text-label-md  { @apply text-[12px] font-semibold leading-[1] tracking-[0.05em]; }
   .text-points-display { @apply text-[48px] font-extrabold leading-[1] tracking-[-0.04em]; }
 
-  .text-hero { @apply text-xl font-bold font-mono leading-tight; }
-  .text-hero-label { @apply text-[10px] font-mono font-bold uppercase tracking-wider; }
-  .text-page-title { @apply text-xl font-headline font-bold leading-tight; }
-  .text-section-title { @apply text-xs font-mono font-bold uppercase tracking-wider; }
-  .text-caption { @apply text-[11px] leading-normal; }
-  .text-label { @apply text-[10.5px] font-bold leading-none; }
-  .text-btn { @apply text-xs font-bold leading-none; }
+  .text-hero         { @apply text-xl font-bold font-mono leading-tight; }
+  .text-hero-label   { @apply text-[10px] font-mono font-bold uppercase tracking-wider; }
+  .text-page-title   { @apply text-xl font-headline font-bold leading-tight; }
+  .text-section-title{ @apply text-xs font-mono font-bold uppercase tracking-wider; }
+  .text-caption      { @apply text-[11px] leading-normal; }
+  .text-label        { @apply text-[10.5px] font-bold leading-none; }
+  .text-btn          { @apply text-xs font-bold leading-none; }
 }
 
 .no-scrollbar::-webkit-scrollbar {

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import { getBusinessClients, type LoyaltyCard as LoyaltyCardType } from '@/services/loyaltyService';
 import { CreditCard, ShieldCheck, DollarSign, Zap, CheckCircle, Smartphone, Banknote, Loader2 } from 'lucide-react';
+import { useModuleBrand } from '@/platform/theme/ModuleBrand';
 
 const COLOMBIAN_BANKS = [
   { id: 'bancolombia', name: 'Bancolombia' },
@@ -16,6 +17,7 @@ const COLOMBIAN_BANKS = [
 export default function Payment() {
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
+  const { brand } = useModuleBrand();
   const businessId = user?.id;
 
   const [clients, setClients] = useState<LoyaltyCardType[]>([]);
@@ -35,6 +37,7 @@ export default function Payment() {
   const [bancolombiaUser, setBancolombiaUser] = useState('usuario.bancolombia');
   const [selectedBankId, setSelectedBankId] = useState('bancolombia');
   const [pseUserEmail, setPseUserEmail] = useState('cliente@correo.co');
+  const [chipHovered, setChipHovered] = useState(false);
 
   useEffect(() => {
     if (authLoading) return;
@@ -115,14 +118,62 @@ export default function Payment() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 pb-32">
-      <main className="max-w-7xl mx-auto px-4 md:px-8 py-6 space-y-6">
+    <div className="h-full flex flex-col overflow-hidden">
+      <div className="bg-[#f8fafc] border-b border-slate-200 px-4 sm:px-6 h-10 flex flex-row items-center justify-between gap-2 select-none overflow-hidden flex-shrink-0">
+
+        {/* LEFT — chip expandible */}
+        <div
+          className="relative flex items-center gap-1.5 px-3 py-1.5 rounded-full border bg-white cursor-default transition-all duration-500 ease-in-out min-w-0"
+          style={{
+            color: brand.colorHex,
+            borderColor: chipHovered ? `${brand.colorHex}55` : 'rgb(226 232 240 / 0.6)',
+            boxShadow: chipHovered
+              ? `0 0 0 3px ${brand.colorHex}18, 0 2px 12px ${brand.colorHex}22`
+              : '0 0 0 0px transparent',
+            flex: chipHovered ? '1 1 0%' : '0 0 auto',
+          }}
+          onMouseEnter={() => setChipHovered(true)}
+          onMouseLeave={() => setChipHovered(false)}
+        >
+          <div
+            className="absolute inset-0 pointer-events-none rounded-full transition-opacity duration-500"
+            style={{
+              opacity: chipHovered ? 1 : 0,
+              background: `linear-gradient(90deg, ${brand.colorHex}06 0%, ${brand.colorHex}14 50%, ${brand.colorHex}06 100%)`,
+            }}
+          />
+          <ShieldCheck
+            className="w-3.5 h-3.5 flex-shrink-0 transition-transform duration-300"
+            style={{ transform: chipHovered ? 'rotate(-15deg) scale(1.2)' : 'none' }}
+          />
+          <span className="text-[12px] font-bold font-sans whitespace-nowrap flex-shrink-0">Cobros & Recargas</span>
+          <span
+            className="text-[12px] font-sans whitespace-nowrap overflow-hidden transition-all duration-500 ease-in-out"
+            style={{
+              maxWidth: chipHovered ? '600px' : '0px',
+              opacity: chipHovered ? 1 : 0,
+              paddingLeft: chipHovered ? '6px' : '0px',
+              color: `${brand.colorHex}99`,
+              fontWeight: 500,
+            }}
+          >
+            · Procesa pagos y recargas para tus clientes
+          </span>
+        </div>
+
+        {/* RIGHT — estado */}
+        <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200/60 px-3 py-1.5 rounded-full flex-shrink-0">
+          <div className="w-2 h-2 rounded-full animate-pulse flex-shrink-0" style={{ backgroundColor: brand.colorHex }} />
+          <span className="text-[11px] font-semibold text-slate-600 whitespace-nowrap">{clients.length} clientes disponibles</span>
+        </div>
+      </div>
+      <main className="flex-1 overflow-y-auto px-4 md:px-6 pt-3 pb-6 space-y-4">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           <div className="lg:col-span-8 bg-white border border-slate-200 rounded-2xl p-6 relative overflow-hidden shadow-sm">
             <div className="absolute top-0 right-0 w-32 h-32 bg-blue-600/5 rounded-full filter blur-xl pointer-events-none" />
             <div className="flex items-center gap-2.5 mb-5 border-b border-slate-100 pb-3">
               <CreditCard className="w-5 h-5 text-blue-600" />
-              <h2 className="text-sm font-bold text-slate-800">Módulo Seguro de Cobros & Recargas</h2>
+              <h2 className="text-section-heading text-slate-800">Módulo Seguro de Cobros & Recargas</h2>
             </div>
 
             <form onSubmit={handleProcessPayment} className="space-y-4">
@@ -149,15 +200,33 @@ export default function Payment() {
               <div>
                 <label className="block text-xs font-bold text-slate-600 mb-1.5">Canales de Pago</label>
                 <div className="grid grid-cols-4 gap-2">
-                  {(['CARD', 'NEQUI', 'BANCOLOMBIA', 'PSE'] as const).map(ch => (
+                  {(['CARD', 'NEQUI', 'BANCOLOMBIA', 'PSE'] as const).map(ch => {
+                    const isActive = activeChannel === ch;
+                    return (
                     <button key={ch} type="button" onClick={() => setActiveChannel(ch)}
-                      className={`p-2.5 rounded-xl border text-center transition-all flex flex-col items-center gap-1 cursor-pointer ${
-                        activeChannel === ch ? 'border-blue-500 bg-blue-50 text-blue-700 shadow-xs' : 'border-slate-200 hover:border-slate-300'
-                      }`}>
-                      <CreditCard className="w-4 h-4" />
-                      <span className="text-[10px] font-bold">{ch === 'CARD' ? 'Tarjeta' : ch}</span>
+                      className="relative p-2.5 rounded-xl border text-center transition-all duration-300 ease-in-out flex flex-col items-center gap-1 cursor-pointer overflow-hidden"
+                      style={{
+                        borderColor: isActive ? brand.colorHex : 'rgb(226 232 240)',
+                        backgroundColor: isActive ? `${brand.colorHex}10` : '#ffffff',
+                        boxShadow: isActive
+                          ? `0 0 0 3px ${brand.colorHex}18, 0 2px 8px ${brand.colorHex}20`
+                          : 'none',
+                        color: isActive ? brand.colorHex : '#64748b',
+                      }}
+                    >
+                      {/* Glow sweep al estar activo */}
+                      <div
+                        className="absolute inset-0 pointer-events-none rounded-xl transition-opacity duration-500"
+                        style={{
+                          opacity: isActive ? 1 : 0,
+                          background: `linear-gradient(135deg, ${brand.colorHex}04 0%, ${brand.colorHex}14 50%, ${brand.colorHex}04 100%)`,
+                        }}
+                      />
+                      <CreditCard className="relative w-4 h-4" />
+                      <span className="relative text-[10px] font-bold">{ch === 'CARD' ? 'Tarjeta' : ch}</span>
                     </button>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
 

@@ -19,8 +19,10 @@ import {
   Search, Mail, Check, Camera, CheckCircle, PartyPopper,
   Coffee, Utensils, Gem, Monitor, Ticket, ShoppingCart,
   Heart, Scissors, Dumbbell, Crown,
-  Receipt as ReceiptIcon, ArrowLeft, Lock,
+  Receipt as ReceiptIcon, ArrowLeft, Lock, ScanLine,
 } from 'lucide-react';
+import QrScanner from '@/components/qr/QrScanner';
+import { parseScannedSlug, resolveSlugToBusinessEmail } from '@/services/qrLinkService';
 import type { Receipt } from '@/services/receiptService';
 
 // ── Category definitions ────────────────────────────────────────────────────
@@ -91,6 +93,10 @@ export default function RegisterPurchase() {
   const [receiptIsMock, setReceiptIsMock] = useState(false);
   const [showReceiptCapture, setShowReceiptCapture] = useState(false);
 
+  // QR Scanner
+  const [scannerOpen, setScannerOpen] = useState(false);
+  const [scanError, setScanError] = useState<string | null>(null);
+
   useEffect(() => {
     if (!authLoading && !clientId) navigate('/');
   }, [authLoading, clientId, navigate]);
@@ -114,6 +120,22 @@ export default function RegisterPurchase() {
     searchBusinesses({ category: selectedCategory ?? undefined, query: categoryQuery.trim() || undefined })
       .then(({ data }) => { setSearchResults(data ?? []); setSearchingCategory(false); });
   }, [selectedCategory, categoryQuery, searchMode]);
+
+  async function handleScanResult(text: string) {
+    const slug = parseScannedSlug(text);
+    if (!slug) {
+      setScanError('Este QR no corresponde a una tarjeta fidelink.');
+      return;
+    }
+    const { data, error } = await resolveSlugToBusinessEmail(slug);
+    if (error || !data) {
+      setScanError('No se pudo identificar la empresa del QR.');
+      return;
+    }
+    setScannerOpen(false);
+    setScanError(null);
+    await runSearch(data.businessEmail);
+  }
 
   function reset() {
     setEmail('');
@@ -234,14 +256,28 @@ export default function RegisterPurchase() {
               Cambiar empresa
             </button>
           )}
-          <h1 className="text-3xl font-black text-white mb-1">
-            {showFlow ? (cardConfig?.businessName ?? 'Registrar Compra') : 'Registrar Compra'}
-          </h1>
-          <p className="text-white/65 text-sm leading-relaxed">
-            {showFlow
-              ? `${previewCurrentStamps} de ${cardConfig?.totalStamps} ${cardConfig?.totalStamps === 1 ? 'sello' : 'sellos'} acumulados`
-              : 'Acumula sellos y gana premios en tus lugares favoritos'}
-          </p>
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <h1 className="text-3xl font-black text-white mb-1">
+                {showFlow ? (cardConfig?.businessName ?? 'Registrar Compra') : 'Registrar Compra'}
+              </h1>
+              <p className="text-white/65 text-sm leading-relaxed">
+                {showFlow
+                  ? `${previewCurrentStamps} de ${cardConfig?.totalStamps} ${cardConfig?.totalStamps === 1 ? 'sello' : 'sellos'} acumulados`
+                  : 'Acumula sellos y gana premios en tus lugares favoritos'}
+              </p>
+            </div>
+            {!showFlow && (
+              <button
+                type="button"
+                onClick={() => { setScanError(null); setScannerOpen(true); }}
+                className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/20 hover:bg-white/30 text-white transition-all text-[13px] font-bold flex-shrink-0 mt-1"
+              >
+                <ScanLine className="w-4 h-4" />
+                Escanear QR
+              </button>
+            )}
+          </div>
         </div>
       </div>
 
@@ -686,6 +722,21 @@ export default function RegisterPurchase() {
 
         </AnimatePresence>
       </main>
+
+      <QrScanner
+        open={scannerOpen}
+        onClose={() => setScannerOpen(false)}
+        onScan={handleScanResult}
+        title="Escanear código QR"
+        subtitle="Apunta la cámara hacia el código QR de la empresa."
+      />
+
+      {scanError && (
+        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-[80] bg-red-50 text-red-600 px-4 py-2.5 rounded-xl shadow-lg text-xs max-w-sm border border-red-200">
+          {scanError}
+          <button onClick={() => setScanError(null)} className="ml-3 font-bold underline">Cerrar</button>
+        </div>
+      )}
     </div>
   );
 }

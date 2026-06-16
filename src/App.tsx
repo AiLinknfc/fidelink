@@ -30,6 +30,8 @@ import VentasCheckoutPage from './modules/ventas/pages/VentasCheckoutPage';
 import AdminDashboard from './admin/AdminDashboard';
 import AdminClients from './admin/AdminClients';
 import AdminModules from './admin/AdminModules';
+import PromocionesPage from './modules/promociones/pages/PromocionesPage';
+import NapilinkPage from './modules/napilink/pages/NapilinkPage';
 
 export default function App() {
   return (
@@ -85,6 +87,10 @@ export default function App() {
                 <Route path="/editor" element={<Editor />} />
                 <Route path="/client/my-cards" element={<MyCards />} />
                 <Route path="/client/register-purchase" element={<RegisterPurchaseClient />} />
+                {/* Módulo Promociones */}
+                <Route path="/promociones/:tab?" element={<PromocionesPage />} />
+                {/* Módulo Napilink */}
+                <Route path="/napilink/:tab?" element={<NapilinkPage />} />
 
                 {/* Legacy fallbacks */}
                 <Route path="/explore" element={<Wallet />} />

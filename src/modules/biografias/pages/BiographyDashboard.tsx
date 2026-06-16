@@ -74,8 +74,8 @@ const ACCENT_COLORS: { [key: string]: { border: string; bg: string; text: string
 
 const fontClassMap: Record<string, string> = {
   sans: 'font-sans', display: 'font-display', serif: 'font-serif', mono: 'font-mono',
-  grotesk: 'font-grotesk', dm: 'font-dm', jakarta: 'font-jakarta', poppins: 'font-poppins',
-  montserrat: 'font-montserrat', nunito: 'font-nunito'
+  grotesk: 'font-mono', dm: 'font-sans', jakarta: 'font-jakarta', poppins: 'font-display',
+  montserrat: 'font-jakarta', nunito: 'font-display'
 };
 
 const cardStylesMap: { [key in CardStyle]: string } = {

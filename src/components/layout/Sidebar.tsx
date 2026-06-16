@@ -1,4 +1,4 @@
-import { CreditCard, Zap, LogOut, X, Wallet, DollarSign, BarChart3, Megaphone, Gift, Target, UserCheck, ShoppingCart, Radio, Book, Globe, LayoutDashboard, Users, TrendingUp, MessageSquare, ShoppingBag, Smartphone } from 'lucide-react';
+import { CreditCard, Zap, LogOut, X, Wallet, DollarSign, BarChart3, Megaphone, Gift, Target, UserCheck, ShoppingCart, Radio, Book, LayoutDashboard, Users, TrendingUp, MessageSquare, ShoppingBag, MapPin, Award, Calendar, Key, Coins, Building2, History } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import { useModuleBrand } from '@/platform/theme/ModuleBrand';
@@ -89,7 +89,6 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-4 mb-2 font-mono">Biografías</p>
             <nav className="space-y-1">
               <SidebarItem icon={Book} label="Mis Biografías" isActive={isActive('/biography')} onClick={() => { navigate('/biography'); onClose(); }} />
-              <SidebarItem icon={Globe} label="BioLink Público" isActive={false} onClick={() => {}} />
             </nav>
           </div>
         )}
@@ -112,7 +111,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
           <div className="mb-4 pt-4 border-t border-slate-100">
             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-4 mb-2 font-mono">Gestión</p>
             <nav className="space-y-1">
-              <SidebarItem icon={Radio} label="Audiencia CRM & Segmentación" isActive={isActive('/business/audiencia-crm')} onClick={() => { navigate('/business/audiencia-crm'); onClose(); }} />
+              <SidebarItem icon={Radio} label="Segmentación & CRM" isActive={isActive('/business/audiencia-crm')} onClick={() => { navigate('/business/audiencia-crm'); onClose(); }} />
               <SidebarItem icon={DollarSign} label="Pagos" isActive={isActive('/business/payment')} onClick={() => { navigate('/business/payment'); onClose(); }} />
             </nav>
           </div>
@@ -142,10 +141,35 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
         )}
 
         {/* EXPERIENCIA DEL CLIENTE */}
+        {!isAdmin && role !== 'business' && (
+          <div className="mb-4 pt-4 border-t border-slate-100">
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-4 mb-2 font-mono">Experiencia del Cliente</p>
+            <nav className="space-y-1">
+              <SidebarItem icon={Wallet} label="Wallet Móvil" isActive={isActive('/wallet')} onClick={() => { navigate('/wallet'); onClose(); }} />
+            </nav>
+          </div>
+        )}
+
+        {/* PROMOCIONES */}
         <div className="mb-4 pt-4 border-t border-slate-100">
-          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-4 mb-2 font-mono">Experiencia del Cliente</p>
+          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-4 mb-2 font-mono">Promociones</p>
           <nav className="space-y-1">
-            <SidebarItem icon={Wallet} label="Wallet Móvil" isActive={isActive('/wallet')} onClick={() => { navigate('/wallet'); onClose(); }} />
+            <SidebarItem icon={MapPin} label="Explorar Radar" isActive={isActive('/promociones/explorar') || isActive('/promociones')} onClick={() => { navigate('/promociones/explorar'); onClose(); }} />
+            <SidebarItem icon={Award} label="Pasaporte Club" isActive={isActive('/promociones/lealtad')} onClick={() => { navigate('/promociones/lealtad'); onClose(); }} />
+            <SidebarItem icon={Calendar} label="Mis Reservas" isActive={isActive('/promociones/reservas')} onClick={() => { navigate('/promociones/reservas'); onClose(); }} />
+            <SidebarItem icon={MessageSquare} label="Chat en Vivo" isActive={isActive('/promociones/chat')} onClick={() => { navigate('/promociones/chat'); onClose(); }} />
+          </nav>
+        </div>
+
+        {/* NAPILINK */}
+        <div className="mb-4 pt-4 border-t border-slate-100">
+          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-4 mb-2 font-mono" style={{ color: '#b45309' }}>Napilink</p>
+          <nav className="space-y-1">
+            <SidebarItem icon={TrendingUp} label="Dashboard Propinas" isActive={isActive('/napilink/dashboard') || isActive('/napilink')} onClick={() => { navigate('/napilink/dashboard'); onClose(); }} />
+            <SidebarItem icon={Key} label="Billetera Bre-B" isActive={isActive('/napilink/wallet')} onClick={() => { navigate('/napilink/wallet'); onClose(); }} />
+            <SidebarItem icon={Coins} label="Puntos Colombia" isActive={isActive('/napilink/puntos')} onClick={() => { navigate('/napilink/puntos'); onClose(); }} />
+            <SidebarItem icon={Building2} label="Comercios y Personal" isActive={isActive('/napilink/comercios')} onClick={() => { navigate('/napilink/comercios'); onClose(); }} />
+            <SidebarItem icon={History} label="Historial de Propinas" isActive={isActive('/napilink/historial')} onClick={() => { navigate('/napilink/historial'); onClose(); }} />
           </nav>
         </div>
 

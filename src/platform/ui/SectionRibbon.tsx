@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import type { LucideIcon } from 'lucide-react';
 import { useModuleBrand } from '@/platform/theme/ModuleBrand';
 
@@ -6,11 +7,12 @@ interface SectionRibbonProps {
   title: string;
   description?: string;
   badge?: string;
+  badgeNode?: ReactNode;
   transparent?: boolean;
   fullWidth?: boolean;
 }
 
-export default function SectionRibbon({ icon: Icon, title, description, badge, transparent, fullWidth }: SectionRibbonProps) {
+export default function SectionRibbon({ icon: Icon, title, description, badge, badgeNode, transparent, fullWidth }: SectionRibbonProps) {
   const { brand } = useModuleBrand();
 
   return (
@@ -51,7 +53,7 @@ export default function SectionRibbon({ icon: Icon, title, description, badge, t
             )}
           </div>
         </div>
-        {badge && (
+        {badgeNode ?? (badge && (
           <span
             className="text-[10px] font-mono font-bold px-2.5 py-1 rounded shrink-0 whitespace-nowrap"
             style={{
@@ -62,7 +64,7 @@ export default function SectionRibbon({ icon: Icon, title, description, badge, t
           >
             {badge}
           </span>
-        )}
+        ))}
       </div>
     </div>
   );
