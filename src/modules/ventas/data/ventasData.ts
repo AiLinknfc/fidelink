@@ -1,4 +1,4 @@
-import type { Product, Lead, Campaign, PixelEvent, PaymentTransaction, AIAgilityConfig, TrackingConfig } from '../types';
+import type { Product, Lead, Campaign, PixelEvent, PaymentTransaction, AIAgilityConfig, TrackingConfig, CollectedData } from '../types';
 
 export const INITIAL_PRODUCTS: Product[] = [
   {
@@ -140,8 +140,36 @@ export const INITIAL_AGENT_CONFIG: AIAgilityConfig = {
   agentTone: "friendly",
   systemInstructions: "Eres un vendedor experto en cafés especiales colombianos de la tienda 'Orígenes Café Gourmet'. Tu objetivo es aconsejar amigablemente sobre barismo, tipos de moliendas y variedades, calificar al lead y persuadirlo sutilmente de adquirir nuestros productos. Siempre sé servicial y educado.",
   welcomeMessage: "¡Hola! Bienvenido a Orígenes Café Gourmet. Escríbeme y estaré feliz de guiarte sobre cuál es el mejor café para tu mañana de acuerdo con tu cafetera favorita. ☕✨",
-  autoRecommendThreshold: 75
+  autoRecommendThreshold: 75,
+  telegramToken: '',
+  openAiApiKey: '',
+  pixelId: ''
 };
+
+export const INITIAL_COLLECTED_DATA: CollectedData[] = [
+  {
+    id: "collected-1",
+    email: "carlos@example.com",
+    phone: "+573001112233",
+    eventName: "Purchase",
+    timestamp: new Date(Date.now() - 600000).toISOString(),
+    amount: 35000,
+    currency: "COP",
+    source: "Telegram",
+    rawConversation: "Cliente: Quiero comprar el café\nAsistente: Claro, te paso el link de pago"
+  },
+  {
+    id: "collected-2",
+    email: "maria@example.com",
+    phone: "+573004445566",
+    eventName: "Purchase",
+    timestamp: new Date(Date.now() - 1800000).toISOString(),
+    amount: 12000,
+    currency: "COP",
+    source: "Telegram",
+    rawConversation: "Cliente: Me interesa el ebook\nAsistente: Genial, aquí está tu enlace"
+  }
+];
 
 export function generateFallbackResponse(message: string, userName: string) {
   const lowercase = message.toLowerCase();

@@ -63,6 +63,9 @@ export interface AIAgilityConfig {
   systemInstructions: string;
   welcomeMessage: string;
   autoRecommendThreshold: number;
+  telegramToken: string;
+  openAiApiKey: string;
+  pixelId: string;
 }
 
 export interface PaymentTransaction {
@@ -82,4 +85,22 @@ export interface CartItem {
 
 export interface TrackingConfig {
   metaPixelCode: string;
+}
+
+export interface CollectedData {
+  id: string;
+  email: string;
+  phone: string;
+  eventName: string;
+  timestamp: string;
+  amount: number;
+  currency: string;
+  source: string;
+  rawConversation: string;
+}
+
+export interface DataCollectionConfig {
+  telegramToken: string;
+  openAiApiKey: string;
+  pixelId: string;
 }

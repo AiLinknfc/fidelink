@@ -5,6 +5,7 @@ interface RealisticCardPreviewProps {
   cardTitle: string;
   cardTag: string;
   colorHex: string;
+  secondaryColorHex?: string;
   totalStamps: number;
   rewardDescription: string;
   category: string;

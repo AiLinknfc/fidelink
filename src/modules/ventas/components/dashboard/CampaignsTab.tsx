@@ -56,18 +56,41 @@ export default function CampaignsTab({
         setCsvResult({ count: 0, loading: false, error: 'CSV debe tener al menos 2 filas (encabezados + datos)' });
         return;
       }
-      const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
-      const phoneIdx = headers.indexOf('phone');
-      const nameIdx = headers.indexOf('name');
-      const emailIdx = headers.indexOf('email');
-      if (phoneIdx === -1) {
-        setCsvResult({ count: 0, loading: false, error: 'El CSV debe tener una columna "phone"' });
+
+      const delim = lines[0].includes(';') ? ';' : ',';
+      const firstCols = lines[0].split(delim).map(c => c.trim().toLowerCase());
+      const knownHeaders = ['phone', 'name', 'email', 'event', 'timestamp', 'amount', 'currency', 'source'];
+      const hasHeaders = firstCols.some(h => knownHeaders.includes(h));
+
+      let phoneIdx: number, nameIdx: number, emailIdx: number;
+
+      if (hasHeaders) {
+        phoneIdx = firstCols.indexOf('phone');
+        nameIdx = firstCols.indexOf('name');
+        emailIdx = firstCols.indexOf('email');
+        if (phoneIdx === -1) {
+          setCsvResult({ count: 0, loading: false, error: 'El CSV debe tener una columna "phone"' });
+          return;
+        }
+      } else {
+        phoneIdx = 1;
+        nameIdx = -1;
+        emailIdx = 0;
+      }
+
+      const dataLines = hasHeaders ? lines.slice(1) : lines;
+      const rows = dataLines.map(line => {
+        const cols = line.split(delim).map(c => c.trim());
+        let phone = cols[phoneIdx] || '';
+        if (phone.startsWith('57') && phone.length > 10) phone = '+' + phone;
+        return { phone, name: nameIdx >= 0 ? cols[nameIdx] || '' : '', email: emailIdx >= 0 ? cols[emailIdx] || '' : '' };
+      }).filter(r => r.phone);
+
+      if (!rows.length) {
+        setCsvResult({ count: 0, loading: false, error: 'No se encontraron filas con teléfono válido' });
         return;
       }
-      const rows = lines.slice(1).map(line => {
-        const cols = line.split(',').map(c => c.trim());
-        return { phone: cols[phoneIdx] || '', name: nameIdx >= 0 ? cols[nameIdx] || '' : '', email: emailIdx >= 0 ? cols[emailIdx] || '' : '' };
-      }).filter(r => r.phone);
+
       onRefreshData();
       setCsvResult({ count: rows.length, loading: false });
     } catch (err) {

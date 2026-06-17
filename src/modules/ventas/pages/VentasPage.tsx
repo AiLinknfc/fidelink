@@ -4,11 +4,25 @@ import { Smartphone, X, Sparkles } from 'lucide-react';
 import MobileSimulator from '../components/MobileSimulator';
 import { useModuleBrand } from '@/platform/theme/ModuleBrand';
 import { useCart } from '@/context/CartContext';
-import type { Product, Lead, Campaign, PixelEvent, PaymentTransaction, AIAgilityConfig, CartItem, TrackingConfig } from '../types';
+import type { Product, Lead, Campaign, PixelEvent, PaymentTransaction, AIAgilityConfig, CartItem, TrackingConfig, CollectedData, DataCollectionConfig } from '../types';
 import {
   INITIAL_PRODUCTS, INITIAL_LEADS, INITIAL_CAMPAIGNS,
-  INITIAL_PIXEL_EVENTS, INITIAL_TRANSACTIONS, INITIAL_AGENT_CONFIG
+  INITIAL_PIXEL_EVENTS, INITIAL_TRANSACTIONS, INITIAL_AGENT_CONFIG, INITIAL_COLLECTED_DATA
 } from '../data/ventasData';
+
+const DC_STORAGE_KEY = 'fidelicard_data_collection';
+
+function loadCollectedData(): CollectedData[] {
+  try {
+    const raw = localStorage.getItem(DC_STORAGE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch {}
+  return INITIAL_COLLECTED_DATA;
+}
+
+function saveCollectedData(data: CollectedData[]) {
+  localStorage.setItem(DC_STORAGE_KEY, JSON.stringify(data));
+}
 
 export interface VentasContextType {
   products: Product[];
@@ -30,6 +44,11 @@ export interface VentasContextType {
   handleAddPixelEvent: (eventName: 'PageView' | 'Contact' | 'InitiateCheckout' | 'Purchase' | 'Lead', source: 'Pixel Browser' | 'Conversion API (CAPI)', payload: any) => void;
   handlePaymentSuccess: (data: { leadName: string; phone: string; productId: string; amount: number; gateway: string }) => void;
   handleSaveTrackingConfig: (config: TrackingConfig) => void;
+  collectedData: CollectedData[];
+  dataCollectionConfig: DataCollectionConfig;
+  handleAddCollectedData: (record: CollectedData) => void;
+  handleSaveDataCollectionConfig: (config: DataCollectionConfig) => void;
+  handleDeleteCollectedData: (id: string) => void;
   setActiveCampaignId: (id: string) => void;
   onRefreshData: () => void;
   openSimulator: () => void;
@@ -48,6 +67,12 @@ export default function VentasPage() {
   const [notification, setNotification] = useState<{ message: string; type: 'success' | 'info' } | null>(null);
   const [showPhoneModal, setShowPhoneModal] = useState(false);
   const [trackingConfig, setTrackingConfig] = useState<TrackingConfig>({ metaPixelCode: '' });
+  const [collectedData, setCollectedData] = useState<CollectedData[]>(loadCollectedData);
+  const [dataCollectionConfig, setDataCollectionConfig] = useState<DataCollectionConfig>({
+    telegramToken: '',
+    openAiApiKey: '',
+    pixelId: ''
+  });
   const { cart, addToCart, removeFromCart, updateQuantity, clearCart } = useCart();
 
   useEffect(() => {
@@ -169,12 +194,36 @@ export default function VentasPage() {
     triggerToast('Tracking codes guardados e inyectados en la página.');
   };
 
+  const handleAddCollectedData = (record: CollectedData) => {
+    setCollectedData(prev => {
+      const next = [record, ...prev];
+      saveCollectedData(next);
+      return next;
+    });
+    triggerToast('Dato recolectado guardado en local.');
+  };
+
+  const handleSaveDataCollectionConfig = (config: DataCollectionConfig) => {
+    setDataCollectionConfig(config);
+    triggerToast('Configuración de recolección guardada.');
+  };
+
+  const handleDeleteCollectedData = (id: string) => {
+    setCollectedData(prev => {
+      const next = prev.filter(d => d.id !== id);
+      saveCollectedData(next);
+      return next;
+    });
+  };
+
   const contextValue: VentasContextType = {
     products, leads, campaigns, pixelEvents, transactions, agentConfig,
     cart, trackingConfig, activeCampaignId,
+    collectedData, dataCollectionConfig,
     addToCart: handleAddToCart, removeFromCart, updateQuantity, clearCart,
     handleAddProduct, handleAddCampaign, handleUpdateAgentConfig,
     handleAddPixelEvent, handlePaymentSuccess, handleSaveTrackingConfig,
+    handleAddCollectedData, handleSaveDataCollectionConfig, handleDeleteCollectedData,
     setActiveCampaignId, onRefreshData: () => {},
     openSimulator: () => setShowPhoneModal(true),
   };

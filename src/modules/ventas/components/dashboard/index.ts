@@ -7,3 +7,4 @@ export { default as AIConfigTab } from './AIConfigTab';
 export { default as KPICards } from './KPICards';
 export { default as FunnelChart } from './FunnelChart';
 export { default as ChannelPieChart } from './ChannelPieChart';
+export { default as DataCollectionTab } from './DataCollectionTab';

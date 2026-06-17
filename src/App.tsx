@@ -27,6 +27,7 @@ import VentasCampaignsPage from './modules/ventas/pages/VentasCampaignsPage';
 import VentasCRMPage from './modules/ventas/pages/VentasCRMPage';
 import VentasProductsPage from './modules/ventas/pages/VentasProductsPage';
 import VentasCheckoutPage from './modules/ventas/pages/VentasCheckoutPage';
+import VentasDataCollectionPage from './modules/ventas/pages/VentasDataCollectionPage';
 import AdminDashboard from './admin/AdminDashboard';
 import AdminClients from './admin/AdminClients';
 import AdminModules from './admin/AdminModules';
@@ -72,6 +73,7 @@ export default function App() {
                     <Route path="crm" element={<VentasCRMPage />} />
                     <Route path="products" element={<VentasProductsPage />} />
                     <Route path="checkout" element={<VentasCheckoutPage />} />
+                    <Route path="data-collection" element={<VentasDataCollectionPage />} />
                   </Route>
                 </Route>
 

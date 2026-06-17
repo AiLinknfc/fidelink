@@ -1,4 +1,4 @@
-import { CreditCard, Zap, LogOut, X, Wallet, DollarSign, BarChart3, Megaphone, Gift, Target, UserCheck, ShoppingCart, Radio, Book, LayoutDashboard, Users, TrendingUp, MessageSquare, ShoppingBag, MapPin, Award, Calendar, Key, Coins, Building2, History } from 'lucide-react';
+import { CreditCard, Zap, LogOut, X, Wallet, DollarSign, BarChart3, Megaphone, Gift, Target, UserCheck, ShoppingCart, Radio, Book, LayoutDashboard, Users, TrendingUp, MessageSquare, ShoppingBag, MapPin, Award, Calendar, Key, Coins, Building2, History, ClipboardList } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import { useModuleBrand } from '@/platform/theme/ModuleBrand';
@@ -102,6 +102,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
               <SidebarItem icon={Megaphone} label="Campañas y Pixel Logs" isActive={isActive('/sales/campaigns')} onClick={() => { navigate('/sales/campaigns'); onClose(); }} />
               <SidebarItem icon={Users} label="CRM Leads Calificados" isActive={isActive('/sales/crm')} onClick={() => { navigate('/sales/crm'); onClose(); }} />
               <SidebarItem icon={ShoppingBag} label="Catálogo de Productos" isActive={isActive('/sales/products')} onClick={() => { navigate('/sales/products'); onClose(); }} />
+              <SidebarItem icon={ClipboardList} label="Recolección de datos" isActive={isActive('/sales/data-collection')} onClick={() => { navigate('/sales/data-collection'); onClose(); }} />
             </nav>
           </div>
         )}

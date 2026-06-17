@@ -4,6 +4,7 @@ import { useAuth } from '@/context/AuthContext';
 import { getClientCards } from '@/services/loyaltyService';
 import type { LoyaltyCard as LoyaltyCardType } from '@/services/loyaltyService';
 import RealisticCard from '@/components/wallet/RealisticCard';
+import { getCardComponent, hasCardComponent } from '@/modules/fidelizacion/components/card-models';
 import { Smartphone, Compass, MapPin, Gift, Star, Share2, Sparkles, Navigation, QrCode, ArrowLeft, ShieldCheck } from 'lucide-react';
 
 interface StoreLocation {
@@ -211,15 +212,31 @@ export default function Wallet() {
                       const isSelected = selectedCardId === card.id;
                       return (
                         <div key={card.id} onClick={() => setSelectedCardId(card.id)}>
-                          <RealisticCard
-                            businessName={card.businessName || card.businessName}
-                            cardTitle={card.cardTitle || 'Tarjeta de Fidelidad'}
-                            cardTag={card.cardTag || 'Loyalty'}
-                            colorHex={card.colorHex || '#3525cd'}
-                            totalStamps={card.totalStamps}
-                            rewardDescription={card.rewardDescription || 'Recompensa'}
-                            category={card.category || ''}
-                          />
+                          {hasCardComponent(card.cardTag) ? (
+                            (() => {
+                              const CardComponent = getCardComponent(card.cardTag)!;
+                              return <CardComponent
+                                businessName={card.businessName}
+                                cardTitle={card.cardTitle || 'Tarjeta de Fidelidad'}
+                                cardTag={card.cardTag || 'Loyalty'}
+                                colorHex={card.colorHex || '#3525cd'}
+                                secondaryColorHex={(card as any).secondaryColorHex || undefined}
+                                totalStamps={card.totalStamps}
+                                rewardDescription={card.rewardDescription || 'Recompensa'}
+                                category={card.category || ''}
+                              />;
+                            })()
+                          ) : (
+                            <RealisticCard
+                              businessName={card.businessName}
+                              cardTitle={card.cardTitle || 'Tarjeta de Fidelidad'}
+                              cardTag={card.cardTag || 'Loyalty'}
+                              colorHex={card.colorHex || '#3525cd'}
+                              totalStamps={card.totalStamps}
+                              rewardDescription={card.rewardDescription || 'Recompensa'}
+                              category={card.category || ''}
+                            />
+                          )}
                         </div>
                       );
                     })
