@@ -19,7 +19,7 @@ npm install
 cp .env.example .env
 
 # Desarrollo
-npm run dev        # App en http://localhost:3001
+npm run dev        #App en http://localhost:3001
 
 # Type checking
 npm run lint
