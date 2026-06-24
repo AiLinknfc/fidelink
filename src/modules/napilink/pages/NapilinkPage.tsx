@@ -249,10 +249,10 @@ export default function NapilinkPage() {
     <div className="bg-[#f8fafc] text-slate-900 min-h-full font-sans">
 
       {/* Stats mini-bar */}
-      <div className="bg-white border-b border-slate-200 px-6 py-2.5 flex items-center gap-6 text-xs text-slate-500">
+      <div className="bg-white border-b border-slate-200 px-4 sm:px-6 h-12 flex flex-row items-center justify-between gap-2 select-none overflow-hidden flex-shrink-0">
         <div className="flex items-center gap-1.5">
           <div className="w-2 h-2 rounded-full bg-yellow-400 animate-ping"></div>
-          <span className="font-mono font-semibold text-slate-700">{formatCOP(state.userWallet.balanceCOP)}</span>
+          <span className="font-mono font-semibold text-slate-800 placeholder:text-slate-400">{formatCOP(state.userWallet.balanceCOP)}</span>
           <span>Billetera</span>
         </div>
         {state.puntosColombia.linked && (
@@ -299,7 +299,7 @@ export default function NapilinkPage() {
                   <div className="w-10 h-10 bg-white shadow-sm border border-slate-200 rounded-full flex items-center justify-center mb-2.5 text-slate-400">
                     <Camera className="h-5 w-5" />
                   </div>
-                  <span className="text-xs font-bold text-slate-700 block">Escanear Factura</span>
+                  <span className="text-xs font-bold text-slate-800 placeholder:text-slate-400 block">Escanear Factura</span>
                   <div className="mt-3 w-full space-y-1.5">
                     <p className="text-[10px] text-slate-400">Simula escaneo rápido de restaurantes registrados:</p>
                     <div className="grid grid-cols-3 gap-1.5">
@@ -332,7 +332,7 @@ export default function NapilinkPage() {
                       <div className="grid grid-cols-3 gap-1">
                         {(['8', '10', '15'] as const).map(pct => (
                           <button key={pct} onClick={() => setCustomTipAmount(scannedData.suggestedTips[pct].toString())}
-                            className="bg-white hover:bg-yellow-400 hover:text-slate-900 p-1 text-center rounded border border-slate-200 text-[10px] font-bold text-slate-700">
+                            className="bg-white hover:bg-yellow-400 hover:text-slate-900 p-1 text-center rounded border border-slate-200 text-[10px] font-bold text-slate-800 placeholder:text-slate-400">
                             <div>{pct}%</div>
                             <div className="font-mono">{formatCOP(scannedData.suggestedTips[pct])}</div>
                           </button>
@@ -348,14 +348,14 @@ export default function NapilinkPage() {
                 <h2 className="font-bold text-xs tracking-wider text-slate-500 uppercase mb-3.5">Asignación Rápida de Propina</h2>
                 <form onSubmit={handleSendTip} className="space-y-4">
                   <div>
-                    <label className="text-xs font-semibold text-slate-700 block mb-1">Buscar y Seleccionar Trabajador</label>
+                    <label className="text-xs font-semibold text-slate-800 placeholder:text-slate-400 block mb-1">Buscar y Seleccionar Trabajador</label>
                     <div className="relative">
                       <input type="text" placeholder="Filtra por nombre o comercio..." value={searchText} onChange={e => setSearchText(e.target.value)}
-                        className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-8 pr-3 py-1.5 text-xs text-slate-700 focus:outline-none focus:border-yellow-400 mb-2" />
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-8 pr-3 py-1.5 text-xs text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-yellow-400 mb-2" />
                       <Search className="absolute left-2.5 top-2.5 h-3.5 w-3.5 text-slate-400" />
                     </div>
                     <select value={selectedEmployeeId} onChange={e => setSelectedEmployeeId(e.target.value)} required
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-700 focus:outline-none focus:border-yellow-400">
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-yellow-400">
                       {filteredEmployees.map(emp => {
                         const biz = state.businesses.find(b => b.id === emp.businessId);
                         return <option key={emp.id} value={emp.id}>{emp.name} ({emp.role}) • {biz?.name || 'Establecimiento'}</option>;
@@ -366,7 +366,7 @@ export default function NapilinkPage() {
 
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="text-xs font-semibold text-slate-700 block mb-1">Monto (COP)</label>
+                      <label className="text-xs font-semibold text-slate-800 placeholder:text-slate-400 block mb-1">Monto (COP)</label>
                       <div className="relative">
                         <span className="absolute left-3 top-2 text-slate-400 font-bold">$</span>
                         <input type="number" placeholder="Monto" value={customTipAmount} onChange={e => setCustomTipAmount(e.target.value)} required
@@ -374,9 +374,9 @@ export default function NapilinkPage() {
                       </div>
                     </div>
                     <div>
-                      <label className="text-xs font-semibold text-slate-700 block mb-1">Medio de Pago</label>
+                      <label className="text-xs font-semibold text-slate-800 placeholder:text-slate-400 block mb-1">Medio de Pago</label>
                       <select value={tipSource} onChange={e => setTipSource(e.target.value as any)}
-                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-xs text-slate-700 focus:outline-none focus:border-yellow-400">
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-xs text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-yellow-400">
                         <option value="wallet">Billetera Bre-B</option>
                         {state.puntosColombia.linked && <option value="points">Puntos Colombia</option>}
                       </select>
@@ -385,13 +385,13 @@ export default function NapilinkPage() {
 
                   <div>
                     <div className="flex justify-between items-center mb-1">
-                      <label className="text-xs font-semibold text-slate-700 flex items-center gap-1">
+                      <label className="text-xs font-semibold text-slate-800 placeholder:text-slate-400 flex items-center gap-1">
                         <Clock className="h-3.5 w-3.5 text-slate-400" /> Confirmación en Espera
                       </label>
                       <span className="text-[10px] text-amber-600 font-bold">Evita Presión Social</span>
                     </div>
                     <select value={holdHours} onChange={e => setHoldHours(parseInt(e.target.value))}
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-xs text-slate-700 focus:outline-none focus:border-yellow-400">
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-xs text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-yellow-400">
                       <option value={2}>Cola de Retención: 2 Horas</option>
                       <option value={6}>Cola de Retención: 6 Horas</option>
                       <option value={12}>Cola de Retención: 12 Horas</option>
@@ -405,7 +405,7 @@ export default function NapilinkPage() {
 
                   <div className="grid grid-cols-2 gap-3 pt-1">
                     <div>
-                      <label className="text-xs font-semibold text-slate-700 block mb-1">Calificar Servicio</label>
+                      <label className="text-xs font-semibold text-slate-800 placeholder:text-slate-400 block mb-1">Calificar Servicio</label>
                       <div className="flex items-center gap-1.5 text-amber-400">
                         {[1, 2, 3, 4, 5].map(s => (
                           <button type="button" key={s} onClick={() => setRating(s)} className="focus:outline-none hover:scale-110 transition">
@@ -421,9 +421,9 @@ export default function NapilinkPage() {
                   </div>
 
                   <div>
-                    <label className="text-xs font-semibold text-slate-700 block mb-1">Feedback de motivación</label>
+                    <label className="text-xs font-semibold text-slate-800 placeholder:text-slate-400 block mb-1">Feedback de motivación</label>
                     <textarea rows={2} placeholder="Mensaje de apoyo para el colaborador..." value={review} onChange={e => setReview(e.target.value)}
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-xs text-slate-700 focus:outline-none focus:border-yellow-400" />
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-xs text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-yellow-400" />
                   </div>
 
                   <button type="submit"
@@ -498,7 +498,7 @@ export default function NapilinkPage() {
                   <div className="mt-4 pt-3 border-t border-slate-100 bg-yellow-400/5 p-3 rounded-xl border border-yellow-200/20 text-[10px] text-slate-500 flex items-start gap-2">
                     <Shield className="h-4 w-4 text-amber-500 flex-shrink-0 mt-0.5" />
                     <div>
-                      <span className="font-semibold text-slate-700 block">¿Por qué usar retractación?</span>
+                      <span className="font-semibold text-slate-800 placeholder:text-slate-400 block">¿Por qué usar retractación?</span>
                       Facilita un desahogo psicológico al dar propina. Si cambias de opinión, anula la transacción.
                     </div>
                   </div>
@@ -617,7 +617,7 @@ export default function NapilinkPage() {
               <h3 className="text-sm font-bold font-sans uppercase tracking-wider mb-2 text-amber-600">Simulación del Ecosistema de Pago Bre-B</h3>
               <p className="text-xs text-slate-500 leading-relaxed max-w-3xl mb-4">
                 El protocolo Bre-B unifica cuentas bancarias en Colombia a partir de llaves lógicas. Firma de Llave Pública activa:{' '}
-                <span className="font-mono text-slate-700 text-[11.5px] font-bold bg-slate-100 px-1.5 py-0.5 rounded">{state.userWallet.publicKey}</span>
+                <span className="font-mono text-slate-800 placeholder:text-slate-400 text-[11.5px] font-bold bg-slate-100 px-1.5 py-0.5 rounded">{state.userWallet.publicKey}</span>
               </p>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
                 {[
@@ -628,7 +628,7 @@ export default function NapilinkPage() {
                 ].map(({ icon, title, desc }) => (
                   <div key={title} className="p-4 bg-slate-50 border border-slate-200 rounded-xl text-center shadow-sm">
                     {icon}
-                    <span className="text-xs font-bold block text-slate-700">{title}</span>
+                    <span className="text-xs font-bold block text-slate-800 placeholder:text-slate-400">{title}</span>
                     <p className="text-[10px] text-slate-400 mt-1">{desc}</p>
                   </div>
                 ))}
@@ -726,10 +726,10 @@ export default function NapilinkPage() {
                             <span className="text-[10.5px] text-slate-500 block">{biz.category}</span>
                           </div>
                         </div>
-                        <span className="text-[10px] bg-slate-100 text-slate-700 font-bold rounded px-2 py-0.5">ID: {biz.id}</span>
+                        <span className="text-[10px] bg-slate-100 text-slate-800 placeholder:text-slate-400 font-bold rounded px-2 py-0.5">ID: {biz.id}</span>
                       </div>
                       <div className="space-y-1 text-xs text-slate-500">
-                        <div className="flex justify-between"><span>Ubicación:</span><span className="font-semibold text-slate-700 text-right max-w-[150px] truncate">{biz.address}</span></div>
+                        <div className="flex justify-between"><span>Ubicación:</span><span className="font-semibold text-slate-800 placeholder:text-slate-400 text-right max-w-[150px] truncate">{biz.address}</span></div>
                         <div className="flex justify-between"><span>Trabajadores:</span><span className="font-bold text-slate-800">{bizEmps.length} activos</span></div>
                       </div>
                       <div>
@@ -852,22 +852,22 @@ export default function NapilinkPage() {
             </h3>
             <form onSubmit={handleAddBusiness} className="space-y-4">
               <div>
-                <label className="text-xs font-semibold text-slate-700 block mb-1">Nombre Comercial</label>
+                <label className="text-xs font-semibold text-slate-800 placeholder:text-slate-400 block mb-1">Nombre Comercial</label>
                 <input type="text" required placeholder="Ej: Wok (Zona T)" value={newBizName} onChange={e => setNewBizName(e.target.value)}
                   className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-yellow-400" />
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-xs font-semibold text-slate-700 block mb-1">Categoría</label>
+                  <label className="text-xs font-semibold text-slate-800 placeholder:text-slate-400 block mb-1">Categoría</label>
                   <select value={newBizCategory} onChange={e => setNewBizCategory(e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-700 focus:outline-none focus:border-yellow-400">
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-yellow-400">
                     {['Restaurante', 'Gourmet', 'Bar', 'Cafetería', 'Almacén'].map(c => <option key={c} value={c}>{c}</option>)}
                   </select>
                 </div>
                 <div>
-                  <label className="text-xs font-semibold text-slate-700 block mb-1">Logo</label>
+                  <label className="text-xs font-semibold text-slate-800 placeholder:text-slate-400 block mb-1">Logo</label>
                   <select value={newBizLogo} onChange={e => setNewBizLogo(e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-700 focus:outline-none focus:border-yellow-400">
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-yellow-400">
                     {[['utensils','Cubiertos'],['sparkles','Alta Cocina'],['flame','Parrilla'],['coffee','Cafetería'],['award','Premium']].map(([v,l]) => (
                       <option key={v} value={v}>{l}</option>
                     ))}
@@ -875,7 +875,7 @@ export default function NapilinkPage() {
                 </div>
               </div>
               <div>
-                <label className="text-xs font-semibold text-slate-700 block mb-1">Dirección / Sede</label>
+                <label className="text-xs font-semibold text-slate-800 placeholder:text-slate-400 block mb-1">Dirección / Sede</label>
                 <input type="text" required placeholder="Ej: Cra 11 # 82-01, Bogotá" value={newBizAddress} onChange={e => setNewBizAddress(e.target.value)}
                   className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-yellow-400" />
               </div>
@@ -897,32 +897,32 @@ export default function NapilinkPage() {
             </h3>
             <form onSubmit={handleAddEmployee} className="space-y-4">
               <div>
-                <label className="text-xs font-semibold text-slate-700 block mb-1">Nombre Completo</label>
+                <label className="text-xs font-semibold text-slate-800 placeholder:text-slate-400 block mb-1">Nombre Completo</label>
                 <input type="text" required placeholder="Ej: Felipe Alarcón" value={newEmpName} onChange={e => setNewEmpName(e.target.value)}
                   className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-yellow-400" />
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-xs font-semibold text-slate-700 block mb-1">Puesto / Rol</label>
+                  <label className="text-xs font-semibold text-slate-800 placeholder:text-slate-400 block mb-1">Puesto / Rol</label>
                   <input type="text" required placeholder="Ej: Barista Maestro" value={newEmpRole} onChange={e => setNewEmpRole(e.target.value)}
                     className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-yellow-400" />
                 </div>
                 <div>
-                  <label className="text-xs font-semibold text-slate-700 block mb-1">Establecimiento</label>
+                  <label className="text-xs font-semibold text-slate-800 placeholder:text-slate-400 block mb-1">Establecimiento</label>
                   <select value={newEmpBizId} onChange={e => setNewEmpBizId(e.target.value)} required
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-700 focus:outline-none focus:border-yellow-400">
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-yellow-400">
                     {state.businesses.map(b => <option key={b.id} value={b.id}>{b.name}</option>)}
                   </select>
                 </div>
               </div>
               <div>
-                <label className="text-xs font-semibold text-slate-700 block mb-1">Alias Bre-B del Trabajador</label>
+                <label className="text-xs font-semibold text-slate-800 placeholder:text-slate-400 block mb-1">Alias Bre-B del Trabajador</label>
                 <input type="text" placeholder="Ej: felipe.barista@breb" value={newEmpAlias} onChange={e => setNewEmpAlias(e.target.value)}
                   className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-yellow-400 font-mono" />
                 <span className="text-[10px] text-slate-400 mt-1 block">Dejar en blanco para alias automático.</span>
               </div>
               <div>
-                <label className="text-xs font-semibold text-slate-700 block mb-1">Pequeña biografía</label>
+                <label className="text-xs font-semibold text-slate-800 placeholder:text-slate-400 block mb-1">Pequeña biografía</label>
                 <textarea rows={2} placeholder="Ej: Amante del buen trato..." value={newEmpBio} onChange={e => setNewEmpBio(e.target.value)}
                   className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-yellow-400" />
               </div>
@@ -948,7 +948,7 @@ export default function NapilinkPage() {
             <p className="text-xs text-slate-500 mb-4">Inserta el contenido textual del recibo para calcular la propina.</p>
             <form onSubmit={handleManualScanSubmit} className="space-y-4">
               <div>
-                <label className="text-xs font-semibold text-slate-700 block mb-1">Contenido de la Factura</label>
+                <label className="text-xs font-semibold text-slate-800 placeholder:text-slate-400 block mb-1">Contenido de la Factura</label>
                 <textarea rows={6} required
                   placeholder={`Ejemplo:\nCREPES & WAFFLES BOGOTA\nMesa 12\n1 Crepe de Pollo: 24,000\nTotal Factura COP: 64,500`}
                   value={customReceiptText} onChange={e => setCustomReceiptText(e.target.value)}

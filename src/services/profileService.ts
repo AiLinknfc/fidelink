@@ -10,12 +10,30 @@ export interface ProfileFull {
   publicBio: string | null;
   publicSlug: string | null;
   isPublicBio: boolean;
+  publicLocation: string | null;
+  publicSkills: string | null;
+  publicTagline: string | null;
+  profileBackgroundColor: string | null;
   createdAt: string;
 }
 
 export interface ServiceResult<T> {
   data: T | null;
   error: { message: string; code?: string } | null;
+}
+
+const BASE_PROFILE_SELECT = 'id, email, name, role, avatar_url, phone, public_bio, public_slug, is_public_bio, created_at';
+const FULL_PROFILE_SELECT = `${BASE_PROFILE_SELECT}, public_location, public_skills, public_tagline, profile_background_color`;
+
+function isMissingProfileColumn(error: { message?: string; code?: string } | null): boolean {
+  return Boolean(
+    error &&
+    (error.code === 'PGRST204' ||
+      error.message?.includes('public_location') ||
+      error.message?.includes('public_skills') ||
+      error.message?.includes('public_tagline') ||
+      error.message?.includes('profile_background_color'))
+  );
 }
 
 function toCamel(row: any): ProfileFull {
@@ -29,6 +47,10 @@ function toCamel(row: any): ProfileFull {
     publicBio: row.public_bio ?? null,
     publicSlug: row.public_slug ?? null,
     isPublicBio: row.is_public_bio ?? false,
+    publicLocation: row.public_location ?? null,
+    publicSkills: row.public_skills ?? null,
+    publicTagline: row.public_tagline ?? null,
+    profileBackgroundColor: row.profile_background_color ?? '#ffffff',
     createdAt: row.created_at,
   };
 }
@@ -36,9 +58,19 @@ function toCamel(row: any): ProfileFull {
 export async function getProfile(userId: string): Promise<ServiceResult<ProfileFull>> {
   const { data, error } = await supabase
     .from('profiles')
-    .select('id, email, name, role, avatar_url, phone, public_bio, public_slug, is_public_bio, created_at')
+    .select(FULL_PROFILE_SELECT)
     .eq('id', userId)
     .maybeSingle();
+  if (isMissingProfileColumn(error)) {
+    const legacy = await supabase
+      .from('profiles')
+      .select(BASE_PROFILE_SELECT)
+      .eq('id', userId)
+      .maybeSingle();
+    if (legacy.error) return { data: null, error: legacy.error };
+    if (!legacy.data) return { data: null, error: null };
+    return { data: toCamel(legacy.data), error: null };
+  }
   if (error) return { data: null, error };
   if (!data) return { data: null, error: null };
   return { data: toCamel(data), error: null };
@@ -53,6 +85,10 @@ export async function updateProfile(
     publicBio?: string | null;
     publicSlug?: string | null;
     isPublicBio?: boolean;
+    publicLocation?: string | null;
+    publicSkills?: string | null;
+    publicTagline?: string | null;
+    profileBackgroundColor?: string | null;
   }
 ): Promise<ServiceResult<ProfileFull>> {
   const payload: Record<string, any> = {};
@@ -62,13 +98,35 @@ export async function updateProfile(
   if (patch.publicBio !== undefined) payload.public_bio = patch.publicBio;
   if (patch.publicSlug !== undefined) payload.public_slug = patch.publicSlug || null;
   if (patch.isPublicBio !== undefined) payload.is_public_bio = patch.isPublicBio;
+  if (patch.publicLocation !== undefined) payload.public_location = patch.publicLocation;
+  if (patch.publicSkills !== undefined) payload.public_skills = patch.publicSkills;
+  if (patch.publicTagline !== undefined) payload.public_tagline = patch.publicTagline;
+  if (patch.profileBackgroundColor !== undefined) payload.profile_background_color = patch.profileBackgroundColor || '#ffffff';
 
   const { data, error } = await supabase
     .from('profiles')
     .update(payload)
     .eq('id', userId)
-    .select('id, email, name, role, avatar_url, phone, public_bio, public_slug, is_public_bio, created_at')
+    .select(FULL_PROFILE_SELECT)
     .single();
+  if (isMissingProfileColumn(error)) {
+    const {
+      public_location: _publicLocation,
+      public_skills: _publicSkills,
+      public_tagline: _publicTagline,
+      profile_background_color: _profileBackgroundColor,
+      ...legacyPayload
+    } = payload;
+
+    const legacy = await supabase
+      .from('profiles')
+      .update(legacyPayload)
+      .eq('id', userId)
+      .select(BASE_PROFILE_SELECT)
+      .single();
+    if (legacy.error) return { data: null, error: legacy.error };
+    return { data: toCamel(legacy.data), error: null };
+  }
   if (error) return { data: null, error };
   return { data: toCamel(data), error: null };
 }

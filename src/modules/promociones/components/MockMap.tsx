@@ -77,7 +77,7 @@ export default function MockMap({
             height: `${60 + radiusKm * 100}px`,
           }}
         >
-          <div className="w-full h-full border border-brand-primary/10 rounded-full animate-radar-pulse"></div>
+          <div className="w-full h-full border border-brand-primary/10 rounded-full animate-ping opacity-30"></div>
         </div>
       </div>
 

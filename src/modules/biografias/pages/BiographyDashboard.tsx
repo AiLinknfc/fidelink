@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Biography, DemoUserRole, TemplateType, FontStyle, CardStyle } from '../types/biography';
 import { getStoredBiographies, saveBiographies, INITIAL_BIOGRAPHIES } from '../data/biographyData';
+import { useModuleBrand } from '@/platform/theme/ModuleBrand';
 import { DesignerPanel } from '../components/DesignerPanel';
 import { ReviewsModule } from '../components/ReviewsModule';
 import { PetModule } from '../components/PetModule';
@@ -68,7 +69,7 @@ const ACCENT_COLORS: { [key: string]: { border: string; bg: string; text: string
   amber: { border: 'border-amber-500', bg: 'bg-amber-600', text: 'text-amber-700', textLight: 'text-amber-500', bgSoft: 'bg-amber-50/50', button: 'bg-amber-600 hover:bg-amber-700 text-white', hex: '#f59e0b' },
   slate: { border: 'border-slate-500', bg: 'bg-slate-700', text: 'text-slate-800', textLight: 'text-slate-500', bgSoft: 'bg-slate-100/50', button: 'bg-slate-700 hover:bg-slate-800 text-white', hex: '#64748b' },
   fuchsia: { border: 'border-fuchsia-500', bg: 'bg-fuchsia-600', text: 'text-fuchsia-700', textLight: 'text-fuchsia-500', bgSoft: 'bg-fuchsia-50/40', button: 'bg-fuchsia-600 hover:bg-fuchsia-700 text-white', hex: '#d946ef' },
-  blue: { border: 'border-blue-500', bg: 'bg-blue-600', text: 'text-blue-700', textLight: 'text-blue-500', bgSoft: 'bg-blue-50/40', button: 'bg-blue-600 hover:bg-blue-700 text-white', hex: '#3b82f6' },
+  blue: { border: 'border-indigo-500', bg: 'bg-indigo-500', text: 'text-indigo-700', textLight: 'text-indigo-500', bgSoft: 'bg-indigo-50/40', button: 'bg-indigo-500 hover:bg-indigo-600 text-white', hex: '#6366f1' },
   orange: { border: 'border-orange-500', bg: 'bg-orange-600', text: 'text-orange-700', textLight: 'text-orange-500', bgSoft: 'bg-orange-50/40', button: 'bg-orange-600 hover:bg-orange-700 text-white', hex: '#f97316' },
 };
 
@@ -92,6 +93,8 @@ const cardStylesMap: { [key in CardStyle]: string } = {
 };
 
 export default function BiographyDashboard() {
+  const { brand } = useModuleBrand();
+  const [chipHovered, setChipHovered] = useState(false);
   const [biographies, setBiographies] = useState<Biography[]>(() => getStoredBiographies());
   const [activeBioId, setActiveBioId] = useState<string>('bio-max-pet');
   const [currentRole, setCurrentRole] = useState<DemoUserRole>('creador');
@@ -239,7 +242,7 @@ export default function BiographyDashboard() {
     return (
       <div className="min-h-screen bg-slate-100 flex items-center justify-center">
         <div className="space-y-2 text-center">
-          <RefreshCw className="w-8 h-8 animate-spin mx-auto text-indigo-500" />
+            <RefreshCw className="w-8 h-8 animate-spin mx-auto" style={{ color: brand.colorHex }} />
           <p className="text-sm font-semibold tracking-wide">Cargando Ecosistema de Biografías...</p>
         </div>
       </div>
@@ -281,12 +284,12 @@ export default function BiographyDashboard() {
                   <div>
                     <label className="block text-[8px] sm:text-[10px] text-slate-400 uppercase font-black mb-0.5">Título del Servicio</label>
                     <input type="text" value={editTitleValue} onChange={(e) => setEditTitleValue(e.target.value)}
-                      className="w-full text-xs sm:text-sm font-bold p-1.5 sm:p-2 bg-white rounded text-slate-800" style={{ border: `1px solid ${accentHex}40` }} placeholder="Título" />
+                      className="w-full text-xs font-bold p-1.5 sm:p-2 bg-white rounded text-slate-800 placeholder:text-slate-400" style={{ border: `1px solid ${accentHex}40` }} placeholder="Título" />
                   </div>
                   <div>
                     <label className="block text-[8px] sm:text-[10px] text-slate-400 uppercase font-black mb-0.5">Descripción de la Bio</label>
                     <textarea value={editDescValue} onChange={(e) => setEditDescValue(e.target.value)}
-                      className="w-full text-[10px] sm:text-xs p-1.5 sm:p-2 bg-white rounded text-slate-600 h-16 sm:h-20 resize-none" style={{ border: `1px solid ${accentHex}40` }} placeholder="Introduce la biografía o detalles..." />
+                      className="w-full text-xs p-1.5 sm:p-2 bg-white rounded text-slate-800 placeholder:text-slate-400 h-16 sm:h-20 resize-none" style={{ border: `1px solid ${accentHex}40` }} placeholder="Introduce la biografía o detalles..." />
                   </div>
                   <div className="flex justify-end gap-1.5 pb-1">
                     <button type="button" onClick={() => setIsEditingDesc(false)} className="px-2 py-0.5 text-[8px] sm:text-xs bg-slate-100 text-slate-500 rounded font-bold">Conservar</button>
@@ -366,13 +369,47 @@ export default function BiographyDashboard() {
   };
 
   return (
-    <div className="min-h-full bg-slate-100 text-slate-800 flex flex-col antialiased">
-      {/* Dynamic Environment Sandbox Bar */}
-      <div className="bg-[#f8fafc] border-b border-slate-200 px-4 sm:px-6 lg:px-10 py-2 flex flex-col md:flex-row md:items-center md:justify-between gap-2 text-xs shrink-0 select-none">
+    <div className="h-full flex flex-col overflow-hidden text-slate-800">
+      {/* Secondary bar */}
+      <div className="bg-white border-b border-slate-200 px-4 sm:px-6 h-12 flex flex-row items-center justify-between gap-2 select-none overflow-hidden flex-shrink-0">
+        {/* LEFT — chip */}
         <div className="flex items-center gap-3">
-          <div className="flex items-center bg-slate-50 border border-slate-200/60 px-3 py-1.5 rounded-full text-xs">
-            <div className="w-2 h-2 bg-emerald-500 rounded-full mr-2 animate-pulse" />
-            <span className="text-[11px] font-semibold text-slate-600">Ecosistema Activo</span>
+          <div
+            className="relative flex items-center gap-1.5 px-3 py-1.5 rounded-full border bg-white cursor-default transition-all duration-500 ease-in-out min-w-0"
+            style={{
+              color: brand.colorHex,
+              borderColor: chipHovered ? `${brand.colorHex}55` : 'rgb(226 232 240 / 0.6)',
+              boxShadow: chipHovered
+                ? `0 0 0 3px ${brand.colorHex}18, 0 2px 12px ${brand.colorHex}22`
+                : '0 0 0 0px transparent',
+              flex: chipHovered ? '1 1 0%' : '0 0 auto',
+            }}
+            onMouseEnter={() => setChipHovered(true)}
+            onMouseLeave={() => setChipHovered(false)}
+          >
+            <div
+              className="absolute inset-0 pointer-events-none rounded-full transition-opacity duration-500"
+              style={{
+                opacity: chipHovered ? 1 : 0,
+                background: `linear-gradient(90deg, ${brand.colorHex}06 0%, ${brand.colorHex}14 50%, ${brand.colorHex}06 100%)`,
+              }}
+            />
+            <Globe
+              className="w-3.5 h-3.5 flex-shrink-0 transition-transform duration-300"
+              style={{ transform: chipHovered ? 'rotate(-15deg) scale(1.2)' : 'none' }}
+            />
+            <span className="text-[12px] font-bold font-sans whitespace-nowrap flex-shrink-0">Ecosistema Activo</span>
+            <span
+              className="text-[12px] font-light font-sans whitespace-nowrap overflow-hidden transition-all duration-500 ease-in-out"
+              style={{
+                maxWidth: chipHovered ? '600px' : '0px',
+                opacity: chipHovered ? 1 : 0,
+                paddingLeft: chipHovered ? '6px' : '0px',
+                color: `${brand.colorHex}99`,
+              }}
+            >
+              · Crea y administra biografías interactivas
+            </span>
           </div>
           <button onClick={() => setShowCreateModal(true)}
             className="inline-flex px-3 py-1.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-lg font-semibold text-xs transition-all active:scale-95 items-center gap-1.5"
@@ -381,12 +418,13 @@ export default function BiographyDashboard() {
           </button>
         </div>
 
+        {/* RIGHT — role toggle */}
         <div className="flex items-center gap-1.5 flex-wrap">
           <span className="text-slate-400 text-[10px] uppercase font-bold tracking-wider mr-1 flex items-center gap-1">
-            <UserCheck className="w-3.5 h-3.5 text-indigo-500" /> Vista:
+            <UserCheck className="w-3.5 h-3.5" style={{ color: brand.colorHex }} /> Vista:
           </span>
           <button onClick={() => setCurrentRole('creador')}
-            className={`px-3 py-1.5 rounded-lg font-bold transition-all flex items-center gap-1 text-xs border ${currentRole === 'creador' ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'}`}>
+            className={`px-3 py-1.5 rounded-lg font-bold transition-all flex items-center gap-1 text-xs border ${currentRole === 'creador' ? 'text-white shadow-sm' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'}`} style={currentRole === 'creador' ? { backgroundColor: brand.colorHex, borderColor: brand.colorHex } : undefined}>
             <Crown className="w-3 h-3" /> Propietario
           </button>
           <button onClick={() => setCurrentRole('publico')}
@@ -402,7 +440,7 @@ export default function BiographyDashboard() {
         <div className="w-full lg:w-[400px] xl:w-[450px] shrink-0 space-y-3 flex flex-col">
           <div className="flex flex-col">
             <div className="flex items-center gap-1.5">
-              <span className="text-[9px] font-bold text-indigo-600 uppercase tracking-widest">Biografías Con Propósito</span>
+              <span className="text-[9px] font-bold uppercase tracking-widest" style={{ color: brand.colorHex }}>Biografías Con Propósito</span>
               <span className="text-[9px] text-slate-300">/</span>
               <h1 className="text-base font-extrabold text-slate-900 tracking-tight font-display">BioBuilder modular</h1>
             </div>
@@ -412,9 +450,9 @@ export default function BiographyDashboard() {
           {currentRole === 'creador' && (
             <div className="bg-gradient-to-br from-indigo-900 to-slate-900 border border-indigo-950 text-white rounded-2xl p-3.5 shadow-sm">
               <div className="flex items-center gap-1.5 mb-2">
-                <Compass className="w-3 h-3 text-indigo-400 animate-pulse" />
-                <span className="text-[8px] font-extrabold uppercase tracking-widest text-indigo-300">Catálogo de Servicios</span>
-                <span className="ml-auto text-[8px] text-indigo-400/60">Pasa el cursor para vista previa</span>
+                  <Compass className="w-3 h-3 animate-pulse" style={{ color: brand.colorHex }} />
+                  <span className="text-[8px] font-extrabold uppercase tracking-widest" style={{ color: brand.colorHex }}>Catálogo de Servicios</span>
+                  <span className="ml-auto text-[8px]" style={{ color: `${brand.colorHex}99` }}>Pasa el cursor para vista previa</span>
               </div>
               <div className="flex flex-wrap gap-1.5">
                 {([
@@ -435,11 +473,12 @@ export default function BiographyDashboard() {
                   { type: 'taxis', label: 'Taxi', desc: 'Viajes urbanos, aeropuerto y rutas.' },
                 ] as { type: TemplateType; label: string; desc: string }[]).map((serv) => (
                   <button key={serv.type} onClick={() => handleDiscoverService(serv.type)}
-                    className="group relative px-2.5 py-1.5 bg-white/8 hover:bg-white/15 rounded-lg border border-white/5 hover:border-indigo-400/30 transition-all text-[10px] font-bold flex items-center gap-1.5"
-                    title={serv.desc}>
-                    {React.createElement(TEMPLATE_META[serv.type].icon, { className: 'w-3 h-3 text-indigo-300' })}
+                    className="group relative px-2.5 py-1.5 bg-white/8 hover:bg-white/15 rounded-lg border border-white/5 transition-all text-[10px] font-bold flex items-center gap-1.5"
+                    title={serv.desc}
+                    style={{ '--brand-color': brand.colorHex } as React.CSSProperties}>
+                    {React.createElement(TEMPLATE_META[serv.type].icon, { className: 'w-3 h-3', style: { color: brand.colorHex } })}
                     <span>{serv.label}</span>
-                    <span className="ml-0.5 text-[8px] text-indigo-400/50 group-hover:text-indigo-300">+</span>
+                    <span className="ml-0.5 text-[8px]" style={{ color: `${brand.colorHex}80` }}>+</span>
                     <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 px-2 py-1 bg-slate-900 text-white text-[9px] rounded-md opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none shadow-lg z-50">{serv.desc}</div>
                   </button>
                 ))}
@@ -450,45 +489,45 @@ export default function BiographyDashboard() {
           <div className="bg-white border border-slate-200 rounded-2xl p-3 shadow-sm space-y-2">
             <div className="flex items-center justify-between">
               <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Mis Biografías Activas</span>
-              <span className="text-[9px] font-mono font-bold text-indigo-500 bg-indigo-50 px-1.5 rounded-sm">{biographies.length} activas</span>
+              <span className="text-[9px] font-mono font-bold px-1.5 rounded-sm" style={{ color: brand.colorHex, backgroundColor: `${brand.colorHex}12` }}>{biographies.length} activas</span>
             </div>
             <div className="flex flex-wrap gap-1">
               {([{ id: 'todas', label: 'Todas' } as const, ...Object.entries(TEMPLATE_META).map(([id]) => ({ id: id as TemplateType, label: TEMPLATE_META[id as TemplateType].label }))]).map((cat) => (
                 <button key={cat.id} onClick={() => setCategoryFilter(cat.id)}
-                  className={`px-1.5 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider border transition-colors ${categoryFilter === cat.id ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-slate-400 border-slate-200 hover:border-slate-300'}`}>
+                  className={`px-1.5 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider border transition-colors ${categoryFilter === cat.id ? 'text-white' : 'bg-white text-slate-400 border-slate-200 hover:border-slate-300'}`} style={categoryFilter === cat.id ? { backgroundColor: brand.colorHex, borderColor: brand.colorHex } : undefined}>
                   {cat.label}
                 </button>
               ))}
             </div>
             <div className="relative group">
               <button type="button" onClick={() => carouselRef.current?.scrollBy({ left: -200, behavior: 'smooth' })}
-                className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-7 h-7 rounded-full bg-white/90 border border-slate-200 shadow-sm flex items-center justify-center text-slate-500 hover:text-indigo-600 opacity-0 group-hover:opacity-100 transition-opacity -ml-3">‹</button>
+                className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-7 h-7 rounded-full bg-white/90 border border-slate-200 shadow-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity -ml-3" style={{ color: brand.colorHex }}>‹</button>
               <button type="button" onClick={() => carouselRef.current?.scrollBy({ left: 200, behavior: 'smooth' })}
-                className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-7 h-7 rounded-full bg-white/90 border border-slate-200 shadow-sm flex items-center justify-center text-slate-500 hover:text-indigo-600 opacity-0 group-hover:opacity-100 transition-opacity -mr-3">›</button>
+                className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-7 h-7 rounded-full bg-white/90 border border-slate-200 shadow-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity -mr-3" style={{ color: brand.colorHex }}>›</button>
               <div ref={carouselRef} className="flex gap-2 overflow-x-auto pb-1 snap-x snap-mandatory scrollbar-none scroll-smooth">
                 {biographies.filter((bio) => categoryFilter === 'todas' || bio.templateType === categoryFilter).map((bio) => {
                   const isActive = bio.id === activeBioId;
                   const meta = TEMPLATE_META[bio.templateType];
                   const Icon = meta.icon;
                   return (
-                    <div key={bio.id} className={`snap-start shrink-0 w-[180px] p-3 rounded-xl border transition-all text-left flex flex-col justify-between min-h-[120px] ${isActive ? 'border-indigo-600 bg-indigo-50/30 shadow-xs ring-1 ring-indigo-500/10' : 'border-slate-200 bg-white/80 hover:border-slate-300'}`}>
+                    <div key={bio.id} className={`snap-start shrink-0 w-[180px] p-3 rounded-xl border transition-all text-left flex flex-col justify-between min-h-[120px] ${isActive ? 'shadow-xs' : 'border-slate-200 bg-white/80 hover:border-slate-300'}`} style={isActive ? { borderColor: brand.colorHex, backgroundColor: `${brand.colorHex}0D`, boxShadow: `0 0 0 1px ${brand.colorHex}1A` } : undefined}>
                       <div>
                         <div className="flex items-center gap-1.5 mb-1.5">
-                          <span className={`inline-flex items-center justify-center w-6 h-6 rounded-md ${isActive ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-500'}`}>
+                          <span className={`inline-flex items-center justify-center w-6 h-6 rounded-md ${isActive ? 'text-white' : 'bg-slate-100 text-slate-500'}`} style={isActive ? { backgroundColor: brand.colorHex } : undefined}>
                             <Icon className="w-3 h-3" />
                           </span>
-                          <span className={`text-[7px] font-extrabold uppercase tracking-widest px-1.5 py-0.5 rounded-full border ${isActive ? 'bg-indigo-600 border-indigo-600 text-white' : 'bg-slate-50 border-slate-200 text-slate-400'}`}>{meta.label}</span>
+                          <span className={`text-[7px] font-extrabold uppercase tracking-widest px-1.5 py-0.5 rounded-full border ${isActive ? 'text-white' : 'bg-slate-50 border-slate-200 text-slate-400'}`} style={isActive ? { backgroundColor: brand.colorHex, borderColor: brand.colorHex } : undefined}>{meta.label}</span>
                         </div>
-                        <h4 className={`text-[11px] font-bold truncate ${isActive ? 'text-indigo-900' : 'text-slate-800'}`}>{bio.title}</h4>
+                        <h4 className={`text-[11px] font-bold truncate ${isActive ? '' : 'text-slate-800'}`} style={isActive ? { color: brand.colorHex } : undefined}>{bio.title}</h4>
                         <p className="text-[9px] text-slate-400 line-clamp-2 mt-0.5 leading-tight">{bio.description}</p>
                       </div>
                       <div className="flex items-center gap-1.5 mt-2 pt-1.5 border-t border-slate-100">
                         <button onClick={() => handleBioSelect(bio.id, bio.templateType)}
-                          className={`text-[8px] font-bold px-2 py-1 rounded-md transition-colors flex items-center gap-1 ${isActive ? 'bg-indigo-100 text-indigo-700' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}>
+                          className={`text-[8px] font-bold px-2 py-1 rounded-md transition-colors flex items-center gap-1 ${isActive ? '' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`} style={isActive ? { backgroundColor: `${brand.colorHex}20`, color: brand.colorHex } : undefined}>
                           <Eye className="w-2.5 h-2.5" /> {isActive ? 'Viendo' : 'Ver'}
                         </button>
                         <button onClick={() => setBioDetailsId(bio.id)}
-                          className="text-[8px] font-bold px-2 py-1 rounded-md text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 border border-slate-200 transition-colors">
+                          className="text-[8px] font-bold px-2 py-1 rounded-md text-slate-400 border border-slate-200 transition-colors" style={{ color: brand.colorHex }} onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = `${brand.colorHex}12` }} onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '' }}>
                           <Pencil className="w-2.5 h-2.5" />
                         </button>
                       </div>
@@ -500,7 +539,7 @@ export default function BiographyDashboard() {
             {currentRole === 'creador' && (
               <div className="flex gap-2 pt-1 border-t border-slate-100">
                 <button onClick={() => setShowCreateModal(true)}
-                  className="flex-1 py-2 text-center font-bold text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition active:scale-95 flex items-center justify-center gap-1 text-[10px]">
+                  className="flex-1 py-2 text-center font-bold text-white rounded-lg hover:opacity-90 transition active:scale-95 flex items-center justify-center gap-1 text-[10px]" style={{ backgroundColor: brand.colorHex }}>
                   <Plus className="w-3 h-3" /> Nueva
                 </button>
                 <button onClick={handleResetToDefaults}
@@ -521,8 +560,8 @@ export default function BiographyDashboard() {
         <div className="flex-1 w-full flex flex-col items-stretch lg:sticky lg:top-0">
           <div className="w-full flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 pb-3">
             <span className="text-[10px] font-mono uppercase text-slate-500 tracking-wider flex items-center gap-1.5">
-              {currentRole === 'creador' && <><Crown className="w-3.5 h-3.5 text-indigo-500" /> MODO DISEÑO — Edita el estilo en el panel superior.</>}
-              {currentRole === 'publico' && <><Eye className="w-3.5 h-3.5 text-indigo-500" /> MODO PÚBLICO — Califica o programa servicios.</>}
+              {currentRole === 'creador' && <><Crown className="w-3.5 h-3.5" style={{ color: brand.colorHex }} /> MODO DISEÑO — Edita el estilo en el panel superior.</>}
+              {currentRole === 'publico' && <><Eye className="w-3.5 h-3.5" style={{ color: brand.colorHex }} /> MODO PÚBLICO — Califica o programa servicios.</>}
             </span>
             <div className="flex items-center gap-2">
               <div className="flex items-center gap-1 bg-white border border-slate-200 rounded-lg p-1">
@@ -531,7 +570,7 @@ export default function BiographyDashboard() {
                   const active = canvasDevice === dev;
                   return (
                     <button key={dev} onClick={() => setCanvasDevice(dev)}
-                      className={`flex items-center gap-1 px-2 py-1 rounded-md text-[10px] font-bold capitalize transition-colors ${active ? 'bg-indigo-600 text-white' : 'text-slate-500 hover:bg-slate-100'}`}
+                      className={`flex items-center gap-1 px-2 py-1 rounded-md text-[10px] font-bold capitalize transition-colors ${active ? 'text-white' : 'text-slate-500 hover:bg-slate-100'}`} style={active ? { backgroundColor: brand.colorHex } : undefined}
                       title={`Vista ${dev}`}>
                       <Icon className="w-3 h-3" /> {dev}
                     </button>
@@ -539,7 +578,7 @@ export default function BiographyDashboard() {
                 })}
               </div>
               <button onClick={() => setPreviewDevice(canvasDevice)}
-                className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-md border border-indigo-200 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 transition text-[10px] font-bold">
+                className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-md border transition text-[10px] font-bold" style={{ borderColor: `${brand.colorHex}40`, backgroundColor: `${brand.colorHex}12`, color: brand.colorHex }}>
                 <Rocket className="w-3 h-3" /> Pantalla completa
               </button>
             </div>
@@ -588,9 +627,9 @@ export default function BiographyDashboard() {
           <div className="fixed inset-0 z-50 bg-slate-900/95 backdrop-blur-md flex flex-col animate-in fade-in duration-200">
             <div className="h-14 bg-slate-950 border-b border-slate-800 flex items-center justify-between px-4 sm:px-6 text-white shrink-0">
               <div className="flex items-center gap-2 min-w-0">
-                <Rocket className="w-4 h-4 text-indigo-400 shrink-0" />
+                <Rocket className="w-4 h-4 shrink-0" style={{ color: brand.colorHex }} />
                 <div className="min-w-0">
-                  <p className="text-[10px] uppercase tracking-widest text-indigo-300 font-bold leading-none">Preview Publicación</p>
+                  <p className="text-[10px] uppercase tracking-widest font-bold leading-none" style={{ color: brand.colorHex }}>Preview Publicación</p>
                   <p className="text-xs font-semibold truncate text-white/90">{currentBio.title}</p>
                 </div>
               </div>
@@ -600,7 +639,7 @@ export default function BiographyDashboard() {
                   const meta = deviceSizes[dev];
                   return (
                     <button key={dev} onClick={() => setPreviewDevice(dev)}
-                      className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all ${active ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-300 hover:text-white hover:bg-slate-700'}`}>
+                      className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all ${active ? 'text-white shadow-sm' : 'text-slate-300 hover:text-white hover:bg-slate-700'}`} style={active ? { backgroundColor: brand.colorHex } : undefined}>
                       {meta.icon} <span className="capitalize hidden sm:inline">{dev}</span>
                     </button>
                   );
@@ -634,21 +673,21 @@ export default function BiographyDashboard() {
       {showCreateModal && (
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-sm border border-slate-200 overflow-hidden">
-            <div className="p-4 bg-indigo-600 text-white flex items-center justify-between">
+            <div className="p-4 text-white flex items-center justify-between" style={{ backgroundColor: brand.colorHex }}>
               <h3 className="text-xs font-bold uppercase tracking-wider">Crear Nueva Biografía Modular</h3>
-              <button onClick={() => setShowCreateModal(false)} className="text-white hover:text-indigo-200">✕</button>
+              <button onClick={() => setShowCreateModal(false)} className="text-white" style={{ color: `${brand.colorHex}CC` }}>✕</button>
             </div>
             <form onSubmit={handleCreateBiography} className="p-5 space-y-4">
               <div>
                 <label className="block text-[10px] uppercase font-bold text-slate-500 mb-1">Título de la Biografía</label>
                 <input type="text" placeholder="Ej. Mi Consultorio Dental" value={newTitle}
                   onChange={(e) => { setNewTitle(e.target.value); setNewSlug(e.target.value.toLowerCase().replace(/\s+/g, '-')); }}
-                  className="w-full text-xs p-2.5 border border-slate-200 rounded-lg text-slate-800" required />
+                  className="w-full text-xs p-2.5 border border-slate-200 rounded-lg text-slate-800 placeholder:text-slate-400" required />
               </div>
               <div>
                 <label className="block text-[10px] uppercase font-bold text-slate-500 mb-1">Enlace / Slug personalizado</label>
                 <input type="text" placeholder="ej. consultorio-oral" value={newSlug} onChange={(e) => setNewSlug(e.target.value)}
-                  className="w-full text-xs p-2.5 border border-slate-200 rounded-lg text-slate-800 font-mono" required />
+                  className="w-full text-xs p-2.5 border border-slate-200 rounded-lg text-slate-800 placeholder:text-slate-400 font-sans" required />
               </div>
               <div>
                 <label className="block text-[10px] uppercase font-bold text-slate-500 mb-1">Módulo / Tipo de Servicio</label>
@@ -674,7 +713,7 @@ export default function BiographyDashboard() {
               <div className="flex justify-end gap-2 pt-2">
                 <button type="button" onClick={() => setShowCreateModal(false)}
                   className="px-3.5 py-1.5 text-xs text-slate-500 hover:text-slate-800 font-semibold">Cancelar</button>
-                <button type="submit" className="px-4 py-1.5 text-xs font-bold bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg">Generar Biografía</button>
+                <button type="submit" className="px-4 py-1.5 text-xs font-bold text-white rounded-lg hover:opacity-90" style={{ backgroundColor: brand.colorHex }}>Generar Biografía</button>
               </div>
             </form>
           </div>
@@ -690,7 +729,7 @@ export default function BiographyDashboard() {
         return (
           <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
             <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg border border-slate-200 overflow-hidden max-h-[90vh] flex flex-col">
-              <div className="p-4 bg-indigo-600 text-white flex items-center justify-between">
+              <div className="p-4 text-white flex items-center justify-between" style={{ backgroundColor: brand.colorHex }}>
                 <h3 className="text-xs font-bold uppercase tracking-wider flex items-center gap-2"><Icon className="w-4 h-4" /> Detalles de la biografía</h3>
                 <button onClick={() => setBioDetailsId(null)} className="p-1 rounded hover:bg-white/10"><X className="w-4 h-4" /></button>
               </div>
@@ -698,25 +737,25 @@ export default function BiographyDashboard() {
                 <div>
                   <label className="block text-[10px] uppercase font-bold text-slate-500 mb-1">Título</label>
                   <input type="text" value={bio.title} onChange={(e) => handleUpdateBiography({ ...bio, title: e.target.value })}
-                    className="w-full text-sm p-2.5 border border-slate-200 rounded-lg text-slate-800 font-semibold" />
+                    className="w-full text-xs p-2.5 border border-slate-200 rounded-lg text-slate-800 placeholder:text-slate-400 font-semibold" />
                 </div>
                 <div>
                   <label className="block text-[10px] uppercase font-bold text-slate-500 mb-1">Descripción</label>
                   <textarea value={bio.description} onChange={(e) => handleUpdateBiography({ ...bio, description: e.target.value })}
-                    rows={3} className="w-full text-sm p-2.5 border border-slate-200 rounded-lg text-slate-800 resize-none" />
+                    rows={3} className="w-full text-xs p-2.5 border border-slate-200 rounded-lg text-slate-800 placeholder:text-slate-400 resize-none" />
                 </div>
                 <div>
                   <label className="block text-[10px] uppercase font-bold text-slate-500 mb-1">Slug / URL</label>
                   <div className="flex items-center gap-2">
                     <span className="text-[11px] text-slate-400 font-mono">biolink.pro/</span>
                     <input type="text" value={bio.slug} onChange={(e) => handleUpdateBiography({ ...bio, slug: e.target.value.toLowerCase().replace(/\s+/g, '-') })}
-                      className="flex-1 text-sm p-2.5 border border-slate-200 rounded-lg text-slate-800 font-mono" />
+                      className="flex-1 text-xs p-2.5 border border-slate-200 rounded-lg text-slate-800 placeholder:text-slate-400 font-sans" />
                   </div>
                 </div>
                 <div>
                   <label className="block text-[10px] uppercase font-bold text-slate-500 mb-1">Tipo de plantilla</label>
                   <div className="flex items-center gap-2 p-2.5 border border-slate-200 rounded-lg bg-slate-50">
-                    <Icon className="w-4 h-4 text-indigo-600" />
+                    <Icon className="w-4 h-4" style={{ color: brand.colorHex }} />
                     <span className="text-sm font-semibold text-slate-700">{meta.label}</span>
                   </div>
                 </div>
@@ -746,7 +785,7 @@ export default function BiographyDashboard() {
                     <Plus className="w-3.5 h-3.5" /> Nueva
                   </button>
                   <button onClick={() => setBioDetailsId(null)}
-                    className="px-4 py-2 text-xs font-bold bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg">Guardar cambios</button>
+                    className="px-4 py-2 text-xs font-bold text-white rounded-lg hover:opacity-90" style={{ backgroundColor: brand.colorHex }}>Guardar cambios</button>
                 </div>
               </div>
             </div>

@@ -158,7 +158,7 @@ export default function CampaignsTab({
             <div>
               <label className="block text-xs font-semibold text-slate-500 mb-1.5 uppercase">Nombre de la Campaña de Anuncios</label>
               <input type="text" required placeholder="Ej: Conversiones Barista - Landing Café" value={newCampName}
-                onChange={(e) => setNewCampName(e.target.value)} className="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-sm focus:outline-indigo-600" />
+                onChange={(e) => setNewCampName(e.target.value)} className="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-xs focus:outline-indigo-600 text-slate-800 placeholder:text-slate-400" />
             </div>
             <div>
               <label className="block text-xs font-semibold text-slate-500 mb-1.5 uppercase">Plataforma Ads</label>
@@ -171,12 +171,12 @@ export default function CampaignsTab({
             <div>
               <label className="block text-xs font-semibold text-slate-500 mb-1.5 uppercase">Presupuesto Diario ($ COP)</label>
               <input type="number" required min={1} value={newCampBudget} onChange={(e) => setNewCampBudget(Number(e.target.value))}
-                className="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-sm focus:outline-indigo-600" />
+                className="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-xs focus:outline-indigo-600 text-slate-800 placeholder:text-slate-400" />
             </div>
             <div>
               <label className="block text-xs font-semibold text-slate-500 mb-1.5 uppercase">Id del Pixel de Meta</label>
               <input type="text" required value={newCampPixel} onChange={(e) => setNewCampPixel(e.target.value)}
-                className="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-sm focus:outline-indigo-600 font-mono" />
+                className="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-xs focus:outline-indigo-600 text-slate-800 placeholder:text-slate-400 font-sans" />
             </div>
             <div className="md:col-span-2 pt-1">
               <button type="submit" className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-medium text-sm transition-all cursor-pointer">
@@ -274,7 +274,7 @@ export default function CampaignsTab({
               <label className="block text-xs font-semibold text-slate-500 mb-1.5 uppercase">Código Meta Pixel</label>
               <textarea rows={4} placeholder="Pega aquí el código <script> completo de Meta Pixel (desde Meta Ads Manager)"
                 value={localMetaCode} onChange={(e) => setLocalMetaCode(e.target.value)}
-                className="w-full px-3 py-2 border border-slate-200 rounded-xl text-xs font-mono focus:outline-indigo-600" />
+                className="w-full px-3 py-2 border border-slate-200 rounded-xl text-xs focus:outline-indigo-600 text-slate-800 placeholder:text-slate-400 font-sans" />
             </div>
             <button onClick={handleSaveTracking} disabled={saving}
               className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-medium text-sm transition-all cursor-pointer disabled:opacity-50">
@@ -296,7 +296,7 @@ export default function CampaignsTab({
               <label className="block text-xs font-semibold text-slate-500 mb-1.5 uppercase">Nombre Comercial</label>
               <input type="text" required value={tempConfig.merchantName}
                 onChange={(e) => setTempConfig({ ...tempConfig, merchantName: e.target.value })}
-                className="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-sm focus:outline-indigo-600" />
+                className="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-xs focus:outline-indigo-600 text-slate-800 placeholder:text-slate-400" />
             </div>
             <div>
               <label className="block text-xs font-semibold text-slate-500 mb-1.5 uppercase">Tono Conversacional</label>
@@ -312,13 +312,13 @@ export default function CampaignsTab({
               <label className="block text-xs font-semibold text-slate-500 mb-1.5 uppercase">Mensaje de Bienvenida</label>
               <input type="text" required value={tempConfig.welcomeMessage}
                 onChange={(e) => setTempConfig({ ...tempConfig, welcomeMessage: e.target.value })}
-                className="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-sm focus:outline-indigo-600" />
+                className="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-xs focus:outline-indigo-600 text-slate-800 placeholder:text-slate-400" />
             </div>
             <div>
               <label className="block text-xs font-semibold text-slate-500 mb-1.5 uppercase">Instrucciones del Sistema (System Prompt)</label>
               <textarea rows={4} required value={tempConfig.systemInstructions}
                 onChange={(e) => setTempConfig({ ...tempConfig, systemInstructions: e.target.value })}
-                className="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-sm focus:outline-indigo-600" />
+                className="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-xs focus:outline-indigo-600 text-slate-800 placeholder:text-slate-400" />
             </div>
             <div className="pt-2">
               <button type="submit"

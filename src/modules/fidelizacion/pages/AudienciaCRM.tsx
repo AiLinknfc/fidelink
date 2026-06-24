@@ -44,7 +44,7 @@ function Spinner({ label }: { label: string }) {
   return (
     <div className="min-h-screen bg-white flex items-center justify-center">
       <div className="text-center">
-        <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+        <div className="w-10 h-10 border-4 border-slate-400 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
         <p className="text-sm text-slate-600">{label}</p>
       </div>
     </div>
@@ -225,7 +225,7 @@ export default function AudienciaCRM() {
 
   return (
     <div className="h-full flex flex-col overflow-hidden">
-      <div className="bg-[#f8fafc] border-b border-slate-200 px-4 sm:px-6 h-10 flex flex-row items-center justify-between gap-2 select-none overflow-hidden flex-shrink-0">
+      <div className="bg-white border-b border-slate-200 px-4 sm:px-6 h-12 flex flex-row items-center justify-between gap-2 select-none overflow-hidden flex-shrink-0">
 
         {/* LEFT — chip expandible */}
         <div
@@ -254,13 +254,12 @@ export default function AudienciaCRM() {
           />
           <span className="text-[12px] font-bold font-sans whitespace-nowrap flex-shrink-0">Segmentación & CRM</span>
           <span
-            className="text-[12px] font-sans whitespace-nowrap overflow-hidden transition-all duration-500 ease-in-out"
+            className="text-[12px] font-light font-sans whitespace-nowrap overflow-hidden transition-all duration-500 ease-in-out"
             style={{
               maxWidth: chipHovered ? '600px' : '0px',
               opacity: chipHovered ? 1 : 0,
               paddingLeft: chipHovered ? '6px' : '0px',
               color: `${brand.colorHex}99`,
-              fontWeight: 500,
             }}
           >
             · Gestión avanzada de públicos, segmentación y análisis de clientes
@@ -280,7 +279,7 @@ export default function AudienciaCRM() {
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}
               placeholder="Buscar…"
-              className="w-full pl-9 pr-3 py-1.5 bg-white border border-slate-200 rounded-lg text-[12px] focus:outline-none focus:border-slate-400 text-slate-800 placeholder:text-slate-400"
+              className="w-full pl-9 pr-3 py-1.5 bg-white border border-slate-200 rounded-lg text-xs focus:outline-none focus:border-slate-400 text-slate-800 placeholder:text-slate-400"
             />
           </div>
         </div>
@@ -343,7 +342,7 @@ export default function AudienciaCRM() {
 
           {loading ? (
             <div className="flex justify-center py-16">
-              <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+              <Loader2 className="w-8 h-8 animate-spin" style={{ color: brand.colorHex }} />
             </div>
           ) : filtered.length === 0 ? (
             <div className="text-center py-16 border border-dashed border-slate-200 rounded-2xl">
@@ -384,8 +383,8 @@ export default function AudienciaCRM() {
                               backgroundColor: `${brand.colorHex}18`,
                               color: brand.colorHex,
                             } : {
-                              backgroundColor: '#dbeafe',
-                              color: '#1d4ed8',
+                              backgroundColor: `${brand.colorHex}18`,
+                              color: brand.colorHex,
                             }}
                           >
                             {c.name.slice(0, 2).toUpperCase()}
@@ -399,7 +398,7 @@ export default function AudienciaCRM() {
                             </p>
                             {c.notes && <p className="text-[11px] text-slate-400 mt-0.5">{c.notes}</p>}
                             {matchesReferredBy(c.referredBy) && (
-                              <span className="inline-flex items-center gap-0.5 text-[8px] text-blue-600 bg-blue-50 px-1 py-0.5 rounded-full mt-0.5">
+                              <span className="inline-flex items-center gap-0.5 text-[8px] px-1 py-0.5 rounded-full mt-0.5" style={{ color: brand.colorHex, backgroundColor: `${brand.colorHex}14` }}>
                                 <ArrowRight className="w-2.5 h-2.5" /> {matchesReferredBy(c.referredBy)}
                               </span>
                             )}
@@ -425,7 +424,7 @@ export default function AudienciaCRM() {
                       <td className="px-4 py-3 text-right">
                         <span
                           className="text-sm font-bold transition-colors duration-300"
-                          style={{ color: isHovered ? brand.colorHex : '#2563eb' }}
+                          style={{ color: isHovered ? brand.colorHex : '#64748b' }}
                         >
                           {c.pointsTotal}
                         </span>
@@ -437,8 +436,8 @@ export default function AudienciaCRM() {
                             backgroundColor: `${brand.colorHex}14`,
                             color: brand.colorHex,
                           } : {
-                            backgroundColor: '#eff6ff',
-                            color: '#2563eb',
+                            backgroundColor: `${brand.colorHex}08`,
+                            color: '#64748b',
                           }}
                         >
                           Ajustar Puntos
@@ -457,9 +456,9 @@ export default function AudienciaCRM() {
             const client = clients.find(c => c.id === adjustingId);
             if (!client) return null;
             return (
-              <div className="bg-blue-50 border border-blue-200 rounded-2xl p-4 space-y-3">
+              <div className="rounded-2xl p-4 space-y-3" style={{ backgroundColor: `${brand.colorHex}08`, borderColor: `${brand.colorHex}28` }}>
                 <div className="flex items-center justify-between">
-                  <p className="text-xs font-bold text-slate-700">Ajustar puntos: <span className="text-blue-600">{client.name}</span></p>
+                  <p className="text-xs font-bold text-slate-700">Ajustar puntos: <span style={{ color: brand.colorHex }}>{client.name}</span></p>
                   <button onClick={() => { setAdjustingId(null); setPointsDelta(1); }}
                     className="text-slate-400 hover:text-slate-600 p-1 rounded-full hover:bg-white transition-all">
                     <X className="w-4 h-4" />
@@ -472,15 +471,15 @@ export default function AudienciaCRM() {
                   <div className="flex-1 space-y-1">
                     <label className="text-[10px] text-slate-500 font-semibold">Cantidad (+/-)</label>
                     <input type="number" value={pointsDelta} onChange={e => setPointsDelta(Number(e.target.value))}
-                      className="w-full px-2.5 py-1.5 bg-white border border-slate-200 rounded-lg text-xs outline-none focus:border-blue-500 transition-all" />
+                      className="w-full px-2.5 py-1.5 bg-white border border-slate-200 rounded-lg text-xs outline-none focus:border-slate-400 transition-all text-slate-800 placeholder:text-slate-400" />
                   </div>
                   <div className="flex-[2] space-y-1">
                     <label className="text-[10px] text-slate-500 font-semibold">Motivo</label>
                     <input value={pointsReason} onChange={e => setPointsReason(e.target.value)}
-                      className="w-full px-2.5 py-1.5 bg-white border border-slate-200 rounded-lg text-xs outline-none focus:border-blue-500 transition-all" />
+                      className="w-full px-2.5 py-1.5 bg-white border border-slate-200 rounded-lg text-xs outline-none focus:border-slate-400 transition-all text-slate-800 placeholder:text-slate-400" />
                   </div>
                   <button onClick={() => handleModifyPoints(client.id, pointsDelta, pointsReason)}
-                    className="px-4 py-1.5 bg-blue-600 text-white rounded-lg text-[10px] font-bold hover:bg-blue-700 transition-all shadow-sm shrink-0">
+                    className="px-4 py-1.5 text-white rounded-lg text-[10px] font-bold transition-all shadow-sm shrink-0" style={{ backgroundColor: brand.colorHex }}>
                     Asignar
                   </button>
                 </div>
@@ -494,34 +493,34 @@ export default function AudienciaCRM() {
 
           {/* Add Client */}
           <div className="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm space-y-3">
-            <div className="flex items-center gap-2 text-blue-600">
+            <div className="flex items-center gap-2" style={{ color: brand.colorHex }}>
               <UserPlus className="w-4 h-4" />
-              <span className="text-section-heading text-blue-600">Registrar Cliente</span>
+              <span className="text-section-heading">Registrar Cliente</span>
             </div>
             <div className="space-y-2">
               <input value={newName} onChange={e => setNewName(e.target.value)}
                 placeholder="Nombre *" 
-                className="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs outline-none focus:border-blue-500 transition-all" />
+                className="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs outline-none focus:border-slate-400 transition-all text-slate-800 placeholder:text-slate-400" />
               <input value={newEmail} onChange={e => setNewEmail(e.target.value)}
                 placeholder="Email *" type="email"
-                className="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs outline-none focus:border-blue-500 transition-all" />
+                className="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs outline-none focus:border-slate-400 transition-all text-slate-800 placeholder:text-slate-400" />
               <input value={newPhone} onChange={e => setNewPhone(e.target.value)}
                 placeholder="Teléfono" type="tel"
-                className="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs outline-none focus:border-blue-500 transition-all" />
+                className="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs outline-none focus:border-slate-400 transition-all text-slate-800 placeholder:text-slate-400" />
               <div>
                 <label className="text-[9px] text-slate-500 font-semibold block mb-1">Cumpleaños</label>
                 <input value={newBirthday} onChange={e => setNewBirthday(e.target.value)} type="date"
-                  className="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs outline-none focus:border-blue-500 transition-all" />
+                  className="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs outline-none focus:border-slate-400 transition-all text-slate-800 placeholder:text-slate-400" />
               </div>
               <select value={newReferredBy} onChange={e => setNewReferredBy(e.target.value)}
-                className="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs outline-none focus:border-blue-500 transition-all">
+                className="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs outline-none focus:border-slate-400 transition-all text-slate-800 placeholder:text-slate-400">
                 <option value="">Sin referidor</option>
                 {clients.map(c => (
                   <option key={c.id} value={c.id}>{c.name}</option>
                 ))}
               </select>
               <button onClick={handleAddClient} disabled={saving || !newName.trim() || !newEmail.trim()}
-                className="w-full py-2 bg-blue-600 text-white rounded-lg text-[11px] font-bold hover:bg-blue-700 transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-1.5">
+                className="w-full py-2 text-white rounded-lg text-[11px] font-bold transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-1.5" style={{ backgroundColor: brand.colorHex }}>
                 {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <UserPlus className="w-3.5 h-3.5" />}
                 Agregar a la audiencia
               </button>
@@ -530,9 +529,9 @@ export default function AudienciaCRM() {
 
           {/* Referrals */}
           <div className="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm space-y-3">
-            <div className="flex items-center gap-2 text-blue-600">
+            <div className="flex items-center gap-2" style={{ color: brand.colorHex }}>
               <Gift className="w-4 h-4" />
-              <span className="text-section-heading text-blue-600">Red de Referidos</span>
+              <span className="text-section-heading">Red de Referidos</span>
             </div>
             {referrals.length === 0 ? (
               <div className="text-center py-6">
@@ -548,14 +547,15 @@ export default function AudienciaCRM() {
                   return (
                     <div key={r.id} className="bg-slate-50 rounded-xl p-3 border border-slate-100">
                       <div className="flex items-center justify-between mb-1.5">
-                        <span className={`px-1.5 py-0.5 rounded-full text-[8px] font-bold ${
-                          r.status === 'REWARDED' ? 'bg-emerald-100 text-emerald-700' :
-                          r.status === 'COMPLETED' ? 'bg-blue-100 text-blue-700' : 'bg-amber-100 text-amber-700'
-                        }`}>
+                        <span className="px-1.5 py-0.5 rounded-full text-[8px] font-bold"
+                          style={{
+                            backgroundColor: r.status === 'REWARDED' ? '#d1fae5' : r.status === 'COMPLETED' ? `${brand.colorHex}14` : '#fef3c7',
+                            color: r.status === 'REWARDED' ? '#065f46' : r.status === 'COMPLETED' ? brand.colorHex : '#92400e',
+                          }}>
                           {r.status}
                         </span>
                         {!r.rewardClaimed && (
-                          <span className="text-[8px] text-blue-600 font-bold">Disponible</span>
+                          <span className="text-[8px] font-bold" style={{ color: brand.colorHex }}>Disponible</span>
                         )}
                       </div>
                       <p className="text-[11px] font-semibold text-slate-700">
@@ -573,10 +573,10 @@ export default function AudienciaCRM() {
           </div>
 
           {/* Insights */}
-          <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl border border-blue-200 p-4">
-            <div className="flex items-center gap-2 mb-2">
-              <TrendingUp className="w-4 h-4 text-blue-600" />
-              <span className="text-section-heading text-blue-700">Segmentación Inteligente</span>
+          <div className="rounded-2xl p-4" style={{ background: `linear-gradient(135deg, ${brand.colorHex}08 0%, ${brand.colorHex}14 100%)`, borderColor: `${brand.colorHex}28` }}>
+            <div className="flex items-center gap-2 mb-2" style={{ color: brand.colorHex }}>
+              <TrendingUp className="w-4 h-4" />
+              <span className="text-section-heading">Segmentación Inteligente</span>
             </div>
             <p className="text-[10px] text-slate-600 leading-relaxed">
               {clients.length} clientes en tu audiencia. Segmenta por rango ({segStats.bronze} Bronce, {segStats.silver} Plata, {segStats.gold} Oro, {segStats.platinum} Platino) para campañas dirigidas.

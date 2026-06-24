@@ -113,7 +113,7 @@ export default function Automatizaciones() {
 
   return (
     <div className="h-full flex flex-col overflow-hidden">
-      <div className="bg-[#f8fafc] border-b border-slate-200 px-4 sm:px-6 h-10 flex flex-row items-center justify-between gap-2 select-none overflow-hidden flex-shrink-0">
+      <div className="bg-white border-b border-slate-200 px-4 sm:px-6 h-12 flex flex-row items-center justify-between gap-2 select-none overflow-hidden flex-shrink-0">
 
         {/* LEFT — chip interactivo con descripción en hover */}
         <div
@@ -145,13 +145,12 @@ export default function Automatizaciones() {
 
           {/* Separador + descripción — se revelan con clip */}
           <span
-            className="text-[12px] font-sans whitespace-nowrap overflow-hidden transition-all duration-500 ease-in-out"
+            className="text-[12px] font-light font-sans whitespace-nowrap overflow-hidden transition-all duration-500 ease-in-out"
             style={{
               maxWidth: chipHovered ? '600px' : '0px',
               opacity: chipHovered ? 1 : 0,
               paddingLeft: chipHovered ? '6px' : '0px',
               color: `${brand.colorHex}99`,
-              fontWeight: 500,
             }}
           >
             · Configura reglas inteligentes para campañas automatizadas de fidelización
@@ -167,7 +166,7 @@ export default function Automatizaciones() {
       <main className="flex-1 overflow-y-auto px-4 md:px-6 pt-3 pb-6 space-y-4">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           <div className="lg:col-span-8 bg-white border border-slate-200 rounded-2xl p-6 relative overflow-hidden shadow-sm">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/2 rounded-full filter blur-xl pointer-events-none" />
+            <div className="absolute top-0 right-0 w-32 h-32 rounded-full filter blur-xl pointer-events-none" style={{ backgroundColor: `${brand.colorHex}06` }} />
 
             <div className="space-y-3">
               {rules.length === 0 ? (
@@ -228,8 +227,8 @@ export default function Automatizaciones() {
                           <strong className="text-slate-400 font-jakarta text-[10px] uppercase font-bold tracking-wider">Acción:</strong> {rule.action}
                         </p>
                         <p className="sm:col-span-2 font-semibold mt-0.5 flex items-center gap-1 transition-colors duration-300"
-                           style={{ color: isHovered && rule.isActive ? brand.colorHex : '#2563eb' }}>
-                          <Gift className="w-3.5 h-3.5" style={{ color: isHovered && rule.isActive ? brand.colorHex : '#3b82f6' }} />
+                           style={{ color: isHovered && rule.isActive ? brand.colorHex : '#64748b' }}>
+                          <Gift className="w-3.5 h-3.5" style={{ color: isHovered && rule.isActive ? brand.colorHex : '#94a3b8' }} />
                           Recompensa: {rule.reward}
                         </p>
                       </div>
@@ -249,8 +248,8 @@ export default function Automatizaciones() {
                         onClick={() => runSimulation(rule)}
                         className="p-1.5 rounded-lg border transition-all duration-300"
                         style={rule.isActive ? {
-                          backgroundColor: isHovered ? `${brand.colorHex}14` : '#eff6ff',
-                          borderColor: isHovered ? `${brand.colorHex}66` : '#bfdbfe',
+                          backgroundColor: isHovered ? `${brand.colorHex}14` : `${brand.colorHex}0a`,
+                          borderColor: isHovered ? `${brand.colorHex}66` : `${brand.colorHex}28`,
                           color: brand.colorHex,
                         } : {
                           backgroundColor: '#ffffff',
@@ -281,19 +280,19 @@ export default function Automatizaciones() {
 
             <form onSubmit={handleCreateRule} className="mt-6 pt-5 border-t border-slate-100 space-y-3">
               <h3 className="text-section-heading text-slate-800 flex items-center gap-1.5">
-                <Plus className="w-4 h-4 text-blue-600" /> Creador de reglas de campaña
+                <Plus className="w-4 h-4" style={{ color: brand.colorHex }} /> Creador de reglas de campaña
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block text-[10.5px] font-bold text-slate-500 mb-1">Nombre Descriptivo</label>
                   <input type="text" value={newRuleName} onChange={e => setNewRuleName(e.target.value)}
-                    className="w-full px-3 py-1.5 text-xs bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 text-slate-800"
+                    className="w-full px-3 py-1.5 text-xs bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 text-slate-800 placeholder:text-slate-400"
                     placeholder="Por ej: Fidelidad de Fin de Año Premium" required />
                 </div>
                 <div>
                   <label className="block text-[10.5px] font-bold text-slate-500 mb-1">Otorga el Beneficio</label>
                   <input type="text" value={newRuleReward} onChange={e => setNewRuleReward(e.target.value)}
-                    className="w-full px-3 py-1.5 text-xs bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 text-slate-800"
+                    className="w-full px-3 py-1.5 text-xs bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 text-slate-800 placeholder:text-slate-400"
                     placeholder="Por ej: Otorga 1 Pase Café Latte extra" required />
                 </div>
               </div>
@@ -321,7 +320,7 @@ export default function Automatizaciones() {
               </div>
               <div className="flex justify-end pt-2">
                 <button type="submit"
-                  className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 text-xs rounded-lg transition-all shadow-sm flex items-center gap-1">
+                  className="text-white font-bold py-2 px-4 text-xs rounded-lg transition-all shadow-sm flex items-center gap-1" style={{ backgroundColor: brand.colorHex }}>
                   <Plus className="w-3.5 h-3.5" /> Agregar Nueva Automatización de Marca
                 </button>
               </div>
@@ -331,7 +330,7 @@ export default function Automatizaciones() {
           <div className="lg:col-span-4 bg-white border border-slate-200 rounded-2xl p-6 relative overflow-hidden shadow-sm flex flex-col justify-between">
             <div>
               <div className="flex items-center gap-1.5 mb-3">
-                <Bell className="w-4 h-4 text-blue-600 animate-pulse" />
+                <Bell className="w-4 h-4 animate-pulse" style={{ color: brand.colorHex }} />
                 <h3 className="text-section-heading text-slate-800">
                   Auditor de triggers en vivo
                 </h3>
@@ -366,8 +365,8 @@ export default function Automatizaciones() {
               )}
             </div>
 
-            <div className="p-3 bg-blue-50/50 border border-blue-100 rounded-xl">
-              <span className="text-[10px] font-jakarta text-blue-700 font-bold block uppercase tracking-wider">Servidor de Automatización</span>
+            <div className="p-3 rounded-xl" style={{ backgroundColor: `${brand.colorHex}08`, borderColor: `${brand.colorHex}20` }}>
+              <span className="text-[10px] font-jakarta font-bold block uppercase tracking-wider" style={{ color: brand.colorHex }}>Servidor de Automatización</span>
               <p className="text-[10.5px] text-slate-600 leading-relaxed mt-0.5">
                 Las reglas se conectan a un pipeline distribuido por medio del cual se envían notificaciones push interactivas a iPhones/Androids y correos a la base CRM corporativa.
               </p>

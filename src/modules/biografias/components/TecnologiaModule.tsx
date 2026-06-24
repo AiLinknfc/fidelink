@@ -1,6 +1,7 @@
 import React from 'react';
 import { Biography, DemoUserRole } from '../types/biography';
 import { Code, Monitor, Phone, Award } from 'lucide-react';
+import { useModuleBrand } from '@/platform/theme/ModuleBrand';
 
 interface Props {
   currentBio: Biography;
@@ -9,6 +10,7 @@ interface Props {
 }
 
 export function TecnologiaModule({ currentBio }: Props) {
+  const { brand } = useModuleBrand();
   const data = currentBio.tecnologia;
   if (!data) return null;
 
@@ -33,7 +35,7 @@ export function TecnologiaModule({ currentBio }: Props) {
         <h4 className="text-xs font-bold text-slate-700 flex items-center gap-1 mb-2"><Code className="w-3 h-3" /> Habilidades</h4>
         <div className="flex flex-wrap gap-1.5">
           {data.skills.map((s, i) => (
-            <span key={i} className="px-2 py-1 text-[10px] bg-indigo-50 text-indigo-700 rounded-lg border border-indigo-100">{s}</span>
+            <span key={i} className="px-2 py-1 text-[10px] rounded-lg border" style={{ backgroundColor: `${brand.colorHex}12`, color: brand.colorHex, borderColor: `${brand.colorHex}25` }}>{s}</span>
           ))}
         </div>
       </div>
@@ -44,7 +46,7 @@ export function TecnologiaModule({ currentBio }: Props) {
           <ul className="space-y-1">
             {data.projects.map((p, i) => (
               <li key={i} className="text-[11px] text-slate-500 flex items-center gap-1.5">
-                <span className="w-1 h-1 rounded-full bg-indigo-400 shrink-0" /> {p}
+                <span className="w-1 h-1 rounded-full shrink-0" style={{ backgroundColor: brand.colorHex }} /> {p}
               </li>
             ))}
           </ul>

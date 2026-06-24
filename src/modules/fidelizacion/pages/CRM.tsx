@@ -92,7 +92,7 @@ export default function CRM() {
   return (
     <div className="h-full flex flex-col overflow-hidden">
 
-      <div className="bg-[#f8fafc] border-b border-slate-200 px-4 sm:px-6 h-10 flex flex-row items-center justify-between gap-2 select-none overflow-hidden flex-shrink-0">
+      <div className="bg-white border-b border-slate-200 px-4 sm:px-6 h-12 flex flex-row items-center justify-between gap-2 select-none overflow-hidden flex-shrink-0">
 
         {/* LEFT — chip expandible */}
         <div
@@ -121,13 +121,12 @@ export default function CRM() {
           />
           <span className="text-[12px] font-bold font-sans whitespace-nowrap flex-shrink-0">Tarjetahabientes activos</span>
           <span
-            className="text-[12px] font-sans whitespace-nowrap overflow-hidden transition-all duration-500 ease-in-out"
+            className="text-[12px] font-light font-sans whitespace-nowrap overflow-hidden transition-all duration-500 ease-in-out"
             style={{
               maxWidth: chipHovered ? '600px' : '0px',
               opacity: chipHovered ? 1 : 0,
               paddingLeft: chipHovered ? '6px' : '0px',
               color: `${brand.colorHex}99`,
-              fontWeight: 500,
             }}
           >
             · Lista de tarjetahabientes activos de tu programa de fidelización
@@ -150,7 +149,7 @@ export default function CRM() {
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Buscar…"
-                className="w-full pl-9 pr-3 py-1.5 bg-white border border-slate-200 rounded-lg text-[12px] focus:outline-none focus:border-slate-400 text-slate-800 placeholder:text-slate-400"
+                className="w-full pl-9 pr-3 py-1.5 bg-white border border-slate-200 rounded-lg text-xs focus:outline-none focus:border-slate-400 text-slate-800 placeholder:text-slate-400"
               />
             </div>
           )}

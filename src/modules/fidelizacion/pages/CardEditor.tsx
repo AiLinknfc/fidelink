@@ -622,7 +622,7 @@ export default function CardEditor() {
         />
       </div>
 
-      <div className="bg-[#f8fafc] border-b border-slate-200 px-4 sm:px-6 h-10 flex flex-row items-center justify-between gap-2 select-none overflow-hidden flex-shrink-0">
+      <div className="bg-white border-b border-slate-200 px-4 sm:px-6 h-12 flex flex-row items-center justify-between gap-2 select-none overflow-hidden flex-shrink-0">
 
         {/* LEFT — chip expandible con descripción en hover */}
         <div
@@ -651,13 +651,12 @@ export default function CardEditor() {
           />
           <span className="text-[12px] font-bold font-sans whitespace-nowrap flex-shrink-0">Identidad & QR</span>
           <span
-            className="text-[12px] font-sans whitespace-nowrap overflow-hidden transition-all duration-500 ease-in-out"
+            className="text-[12px] font-light font-sans whitespace-nowrap overflow-hidden transition-all duration-500 ease-in-out"
             style={{
               maxWidth: chipHovered ? '600px' : '0px',
               opacity: chipHovered ? 1 : 0,
               paddingLeft: chipHovered ? '6px' : '0px',
               color: `${brand.colorHex}99`,
-              fontWeight: 500,
             }}
           >
             · Personaliza tu programa de fidelización y su identidad visual
@@ -692,15 +691,15 @@ export default function CardEditor() {
           </div>
         </div>
       </div>
-      <main className="flex-1 overflow-y-auto px-4 md:px-8 pt-3 pb-6">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      <main className="flex-1 overflow-y-auto px-4 md:px-6 pt-3 pb-6 space-y-4">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
 
           {/* ── Editor Controls ──────────────────────────────────────────── */}
           <section className="lg:col-span-7 space-y-6">
 
             {/* Category picker — full width, above bento */}
             <div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
-              <label className="text-[10px] font-bold text-blue-600 uppercase tracking-widest block mb-3 font-mono">
+              <label className="text-[10px] font-bold uppercase tracking-wider block mb-3 font-jakarta" style={{ color: brand.colorHex }}>
                 Categoría del negocio
               </label>
               <div className="grid grid-cols-5 gap-1.5">
@@ -711,11 +710,14 @@ export default function CardEditor() {
                       key={value}
                       type="button"
                       onClick={() => handleChange('category', value)}
-                      className={`flex flex-col items-center gap-1 p-2.5 rounded-xl border transition-all ${
-                        active
-                          ? 'bg-blue-600 text-white border-blue-600 shadow-md scale-[1.04]'
-                          : 'border-slate-200 text-slate-500 hover:bg-slate-50 hover:border-blue-400'
-                      }`}
+                      className="flex flex-col items-center gap-1 p-2.5 rounded-xl border border-slate-200 text-slate-500 hover:bg-slate-50 hover:border-slate-300 transition-all"
+                      style={active ? {
+                        backgroundColor: brand.colorHex,
+                        color: '#fff',
+                        borderColor: brand.colorHex,
+                        boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1)',
+                        transform: 'scale(1.04)',
+                      } : undefined}
                     >
                       <Icon className="w-4 h-4" />
                       <span className="text-[9px] font-bold leading-tight text-center">{label}</span>
@@ -736,7 +738,7 @@ export default function CardEditor() {
 
             {/* Card Type picker */}
             <div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
-              <label className="text-[10px] font-bold text-blue-600 uppercase tracking-widest block mb-3 font-mono">
+              <label className="text-[10px] font-bold uppercase tracking-wider block mb-3 font-jakarta" style={{ color: brand.colorHex }}>
                 Modelo de Tarjeta Digital
               </label>
               <div className="grid grid-cols-4 gap-1.5">
@@ -745,11 +747,14 @@ export default function CardEditor() {
                   const active = form.cardTag === typeKey;
                   return (
                     <button key={typeKey} type="button" onClick={() => handleChange('cardTag', typeKey)}
-                      className={`flex flex-col items-center gap-1 p-2.5 rounded-xl border transition-all ${
-                        active
-                          ? 'bg-blue-600 text-white border-blue-600 shadow-md scale-[1.04]'
-                          : 'border-slate-200 text-slate-500 hover:bg-slate-50 hover:border-blue-400'
-                      }`}>
+                      className="flex flex-col items-center gap-1 p-2.5 rounded-xl border border-slate-200 text-slate-500 hover:bg-slate-50 hover:border-slate-300 transition-all"
+                      style={active ? {
+                        backgroundColor: brand.colorHex,
+                        color: '#fff',
+                        borderColor: brand.colorHex,
+                        boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1)',
+                        transform: 'scale(1.04)',
+                      } : undefined}>
                       <span className="text-[9px] font-bold leading-tight text-center">{details.title}</span>
                     </button>
                   );
@@ -768,26 +773,26 @@ export default function CardEditor() {
 
               {/* Card Identity */}
               <div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4">
-                <label className="text-[10px] font-bold text-blue-600 uppercase tracking-widest font-mono">Identidad</label>
+                <label className="text-[10px] font-bold uppercase tracking-wider font-jakarta" style={{ color: brand.colorHex }}>Identidad</label>
 
                 <div className="space-y-1">
                   <span className="text-xs font-semibold text-slate-600">Nombre del negocio</span>
                   <input value={form.businessName} onChange={e => handleChange('businessName', e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 rounded-xl px-3 py-2 text-xs outline-none transition-all"
+                    className="w-full bg-slate-50 border border-slate-200 focus:border-slate-400 focus:ring-1 focus:ring-slate-400 rounded-xl px-3 py-2 text-xs outline-none transition-all text-slate-800 placeholder:text-slate-400"
                     placeholder="Ej. Café Central" type="text" />
                 </div>
 
                 <div className="space-y-1">
                   <span className="text-xs font-semibold text-slate-600">Beneficio o Regalo (Canjeable)</span>
                   <input value={form.rewardDescription} onChange={e => handleChange('rewardDescription', e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 rounded-xl px-3 py-2 text-xs outline-none transition-all"
+                    className="w-full bg-slate-50 border border-slate-200 focus:border-slate-400 focus:ring-1 focus:ring-slate-400 rounded-xl px-3 py-2 text-xs outline-none transition-all text-slate-800 placeholder:text-slate-400"
                     placeholder="Ej. Café gratis, 20% descuento…" type="text" />
                 </div>
               </div>
 
               {/* Points Engine */}
               <div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4">
-                <label className="text-[10px] font-bold text-blue-600 uppercase tracking-widest font-mono">Sistema de puntos</label>
+                <label className="text-[10px] font-bold uppercase tracking-wider font-jakarta" style={{ color: brand.colorHex }}>Sistema de puntos</label>
 
                 <div className="space-y-1.5">
                   <span className="text-xs font-semibold text-slate-600">Tipo de sistema</span>
@@ -795,27 +800,29 @@ export default function CardEditor() {
                     <button
                       type="button"
                       onClick={() => handleChange('programType', 'stamp_based')}
-                      className={`flex-1 px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all ${
-                        form.programType === 'stamp_based'
-                          ? 'bg-blue-600 text-white shadow-md'
-                          : 'border border-slate-200 text-slate-500 hover:bg-slate-50'
-                      }`}
+                      className="flex-1 px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all border border-slate-200 text-slate-500 hover:bg-slate-50"
+                      style={form.programType === 'stamp_based' ? {
+                        backgroundColor: brand.colorHex,
+                        color: '#fff',
+                        boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)',
+                      } : undefined}
                     >
                       Por sellos
                     </button>
                     <button
                       type="button"
                       onClick={() => handleChange('programType', 'accumulative')}
-                      className={`flex-1 px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all ${
-                        form.programType === 'accumulative'
-                          ? 'bg-blue-600 text-white shadow-md'
-                          : 'border border-slate-200 text-slate-500 hover:bg-slate-50'
-                      }`}
+                      className="flex-1 px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all border border-slate-200 text-slate-500 hover:bg-slate-50"
+                      style={form.programType === 'accumulative' ? {
+                        backgroundColor: brand.colorHex,
+                        color: '#fff',
+                        boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)',
+                      } : undefined}
                     >
                       Acumulativo
                     </button>
                   </div>
-                  <p className="text-[10px] text-slate-600 leading-snug">
+                  <p className="text-xs text-slate-600 leading-snug">
                     {form.programType === 'stamp_based'
                       ? '1 compra otorga 1 sello — independiente del monto. Ideal para cafés, salones, etc.'
                       : 'Cada compra otorga puntos según su monto. Ideal para retail con tickets variables.'}
@@ -835,7 +842,7 @@ export default function CardEditor() {
                         step={100}
                         value={form.amountPerPoint}
                         onChange={e => handleChange('amountPerPoint', Math.max(1, Number(e.target.value) || 1))}
-                        className="w-full pl-7 pr-16 bg-slate-50 border border-slate-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 rounded-xl py-2 text-sm outline-none transition-all"
+                        className="w-full pl-7 pr-16 bg-slate-50 border border-slate-200 focus:border-slate-400 focus:ring-1 focus:ring-slate-400 rounded-xl py-2 text-xs outline-none transition-all text-slate-800 placeholder:text-slate-400"
                       />
                       <span className="absolute right-3 text-[10px] text-slate-500 font-bold pointer-events-none select-none">=&nbsp;1&nbsp;pt</span>
                     </div>
@@ -848,7 +855,7 @@ export default function CardEditor() {
                 <div className="space-y-1.5">
                   <span className="text-xs font-semibold text-slate-600">
                     {form.programType === 'stamp_based' ? 'Sellos para recompensa' : 'Puntos para recompensa'}:{' '}
-                    <strong className="text-blue-600">{form.totalStamps}</strong>
+                    <strong style={{ color: brand.colorHex }}>{form.totalStamps}</strong>
                   </span>
                   <input
                     type="range"
@@ -856,7 +863,7 @@ export default function CardEditor() {
                     max={form.programType === 'stamp_based' ? 20 : 100}
                     value={form.totalStamps}
                     onChange={e => handleChange('totalStamps', Number(e.target.value))}
-                    className="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
+                    className="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-slate-500"
                   />
                   <div className="flex justify-between text-[9px] text-slate-500 font-bold">
                     <span>1</span>
@@ -868,71 +875,72 @@ export default function CardEditor() {
             </div>
 
             {/* Brand Identity — aparece en el reverso de la tarjeta del cliente */}
-            <div className="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 space-y-3">
+            <div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4">
               <div className="flex items-center gap-2">
-                <Building2 className="text-blue-600 w-4 h-4" />
+                <Building2 className="w-4 h-4" style={{ color: brand.colorHex }} />
                 <h3 className="text-sm font-bold text-slate-800">Identidad de Marca</h3>
                 <span className="text-[9px] text-slate-400 ml-auto">Reverso de la tarjeta</span>
               </div>
 
-              <div className="flex items-start gap-3">
+              <div className="flex items-start gap-4">
                 <div>
-                  <label className="text-[10px] font-semibold text-slate-600 block mb-1">Logo</label>
+                  <label className="text-xs font-semibold text-slate-600 block mb-1">Logo</label>
                   <div className="relative">
                     {form.logoUrl ? (
                       <img src={form.logoUrl} alt="Logo"
-                        className="w-11 h-11 rounded-lg object-cover shadow-sm border border-slate-200 bg-white" />
+                        className="w-16 h-16 rounded-xl object-cover shadow-sm border border-slate-200 bg-white" />
                     ) : (
-                      <div className="w-11 h-11 rounded-lg bg-slate-50 border border-dashed border-slate-200 flex items-center justify-center text-slate-400">
-                        <Building2 className="w-4 h-4" />
+                      <div className="w-16 h-16 rounded-xl bg-slate-50 border border-dashed border-slate-200 flex items-center justify-center text-slate-400">
+                        <Building2 className="w-5 h-5" />
                       </div>
                     )}
                     <button type="button" onClick={() => logoFileRef.current?.click()} disabled={uploadingLogo}
-                      className="absolute -bottom-1 -right-1 bg-blue-600 text-white p-0.5 rounded-full shadow hover:opacity-90 active:scale-95 transition-all disabled:opacity-60"
+                      className="absolute -bottom-1 -right-1 text-white p-1 rounded-full shadow hover:opacity-90 active:scale-95 transition-all disabled:opacity-60"
+                      style={{ backgroundColor: brand.colorHex }}
                       aria-label="Subir logo">
-                      {uploadingLogo ? <Loader2 className="w-2.5 h-2.5 animate-spin" /> : <Camera className="w-2.5 h-2.5" />}
+                      {uploadingLogo ? <Loader2 className="w-3 h-3 animate-spin" /> : <Camera className="w-3 h-3" />}
                     </button>
                     <input ref={logoFileRef} type="file" accept="image/*" className="hidden" onChange={handleLogoChange} />
                   </div>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <label className="text-[10px] font-semibold text-slate-600 block mb-1">Descripción</label>
+                  <label className="text-xs font-semibold text-slate-600 block mb-1">Descripción</label>
                   <textarea value={form.description} onChange={e => handleChange('description', e.target.value)}
                     rows={2} maxLength={240}
                     placeholder="¿Qué te hace especial? (máx. 240 caracteres)"
-                    className="w-full bg-slate-50 border border-slate-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 rounded-lg px-2.5 py-1.5 text-[11px] outline-none transition-all resize-none" />
-                  <p className="text-[8px] text-slate-400 text-right mt-0.5">{form.description.length} / 240</p>
+                    className="w-full bg-slate-50 border border-slate-200 focus:border-slate-400 focus:ring-1 focus:ring-slate-400 rounded-xl px-3 py-2 text-xs outline-none transition-all resize-none text-slate-800 placeholder:text-slate-400" />
+                  <p className="text-[10px] text-slate-400 text-right mt-0.5">{form.description.length} / 240</p>
                 </div>
               </div>
 
               <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
                 <div>
-                  <label className="text-[10px] font-semibold text-slate-600 flex items-center gap-0.5 mb-0.5">
-                    <MapPin className="w-2.5 h-2.5" /> Dirección
+                  <label className="text-xs font-semibold text-slate-600 flex items-center gap-0.5 mb-0.5">
+                    <MapPin className="w-3 h-3" /> Dirección
                   </label>
                   <input type="text" value={form.address} onChange={e => handleChange('address', e.target.value)}
                     placeholder="Calle 123 #45-67"
-                    className="w-full bg-slate-50 border border-slate-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 rounded-lg px-2 py-1.5 text-[11px] outline-none transition-all" />
+                    className="w-full bg-slate-50 border border-slate-200 focus:border-slate-400 focus:ring-1 focus:ring-slate-400 rounded-xl px-3 py-2 text-xs outline-none transition-all text-slate-800 placeholder:text-slate-400" />
                 </div>
                 <div>
-                  <label className="text-[10px] font-semibold text-slate-600 flex items-center gap-0.5 mb-0.5">
-                    <Globe className="w-2.5 h-2.5" /> Sitio web
+                  <label className="text-xs font-semibold text-slate-600 flex items-center gap-0.5 mb-0.5">
+                    <Globe className="w-3 h-3" /> Sitio web
                   </label>
                   <input type="url" value={form.website} onChange={e => handleChange('website', e.target.value)}
                     placeholder="mi-negocio.com"
-                    className="w-full bg-slate-50 border border-slate-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 rounded-lg px-2 py-1.5 text-[11px] outline-none transition-all" />
+                    className="w-full bg-slate-50 border border-slate-200 focus:border-slate-400 focus:ring-1 focus:ring-slate-400 rounded-xl px-3 py-2 text-xs outline-none transition-all text-slate-800 placeholder:text-slate-400" />
                 </div>
                 <div>
-                  <label className="text-[10px] font-semibold text-slate-600 mb-0.5 block">Email</label>
+                  <label className="text-xs font-semibold text-slate-600 mb-0.5 block">Email</label>
                   <input type="email" value={form.email} onChange={e => handleChange('email', e.target.value)}
                     placeholder="contacto@email.com"
-                    className="w-full bg-slate-50 border border-slate-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 rounded-lg px-2 py-1.5 text-[11px] outline-none transition-all" />
+                    className="w-full bg-slate-50 border border-slate-200 focus:border-slate-400 focus:ring-1 focus:ring-slate-400 rounded-xl px-3 py-2 text-xs outline-none transition-all text-slate-800 placeholder:text-slate-400" />
                 </div>
                 <div>
-                  <label className="text-[10px] font-semibold text-slate-600 mb-0.5 block">Instagram</label>
+                  <label className="text-xs font-semibold text-slate-600 mb-0.5 block">Instagram</label>
                   <input type="text" value={form.instagram} onChange={e => handleChange('instagram', e.target.value)}
                     placeholder="@mi_negocio"
-                    className="w-full bg-slate-50 border border-slate-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 rounded-lg px-2 py-1.5 text-[11px] outline-none transition-all" />
+                    className="w-full bg-slate-50 border border-slate-200 focus:border-slate-400 focus:ring-1 focus:ring-slate-400 rounded-xl px-3 py-2 text-xs outline-none transition-all text-slate-800 placeholder:text-slate-400" />
                 </div>
               </div>
 
@@ -958,7 +966,7 @@ export default function CardEditor() {
                               <button key={color} type="button" style={{ backgroundColor: color }}
                                 onClick={() => { setCardColorBase(color); setCardColorBlend(50); handleChange('colorHex', color); }}
                                 className={`w-6 h-6 rounded-full border border-white/40 shadow-sm hover:scale-110 transition-transform ${
-                                  form.colorHex === color ? 'ring-2 ring-blue-500 ring-offset-2' : ''
+                                  form.colorHex === color ? 'ring-2 ring-slate-400 ring-offset-2' : ''
                                 } ${color === '#ffffff' ? 'border-slate-300' : ''}`} />
                             ))}
                           </div>
@@ -989,14 +997,14 @@ export default function CardEditor() {
                               <input type="text" value={form.colorHex}
                                 onChange={e => { const v = e.target.value; if (/^#[0-9a-fA-F]{0,6}$/.test(v)) { handleChange('colorHex', v); setCardColorBase(v); setCardColorBlend(50); } }}
                                 onBlur={() => { if (!/^#[0-9a-fA-F]{6}$/.test(form.colorHex)) handleChange('colorHex', DEFAULT_MODEL_COLORS[form.cardTag] ?? '#3525cd'); }}
-                                className="w-full bg-slate-50 border border-slate-200 rounded-full px-3 py-1.5 text-[11px] font-mono outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all text-center text-slate-400" />
+                                className="w-full bg-slate-50 border border-slate-200 rounded-full px-3 py-1.5 text-[11px] font-mono outline-none focus:ring-2 focus:ring-slate-400 focus:border-slate-400 transition-all text-center text-slate-400" />
                             </div>
                             <button type="button" onClick={() => {
                               const original = DEFAULT_MODEL_COLORS[form.cardTag] ?? '#3525cd';
                               setCardColorBase(original); setCardColorBlend(50); handleChange('colorHex', original);
                               setShowCardColorPicker(false);
                             }}
-                              className="text-[10px] text-slate-400 hover:text-blue-600 font-medium whitespace-nowrap shrink-0">
+                              className="text-[10px] text-slate-400 hover:text-slate-700 font-medium whitespace-nowrap shrink-0">
                               Reset
                             </button>
                           </div>
@@ -1026,7 +1034,7 @@ export default function CardEditor() {
                               <button key={color} type="button" style={{ backgroundColor: color }}
                                 onClick={() => { setSecondaryColorBase(color); setSecondaryColorBlend(50); handleChange('secondaryColorHex', color); }}
                                 className={`w-6 h-6 rounded-full border border-white/40 shadow-sm hover:scale-110 transition-transform ${
-                                  form.secondaryColorHex === color ? 'ring-2 ring-blue-500 ring-offset-2' : ''
+                                  form.secondaryColorHex === color ? 'ring-2 ring-slate-400 ring-offset-2' : ''
                                 } ${color === '#ffffff' ? 'border-slate-300' : ''}`} />
                             ))}
                           </div>
@@ -1057,14 +1065,14 @@ export default function CardEditor() {
                               <input type="text" value={form.secondaryColorHex}
                                 onChange={e => { const v = e.target.value; if (/^#[0-9a-fA-F]{0,6}$/.test(v)) { handleChange('secondaryColorHex', v); setSecondaryColorBase(v); setSecondaryColorBlend(50); } }}
                                 onBlur={() => { if (!/^#[0-9a-fA-F]{6}$/.test(form.secondaryColorHex)) handleChange('secondaryColorHex', DEFAULT_MODEL_SECONDARY_COLORS[form.cardTag] ?? '#ffd700'); }}
-                                className="w-full bg-slate-50 border border-slate-200 rounded-full px-3 py-1.5 text-[11px] font-mono outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all text-center text-slate-400" />
+                                className="w-full bg-slate-50 border border-slate-200 rounded-full px-3 py-1.5 text-[11px] font-mono outline-none focus:ring-2 focus:ring-slate-400 focus:border-slate-400 transition-all text-center text-slate-400" />
                             </div>
                             <button type="button" onClick={() => {
                               const original = DEFAULT_MODEL_SECONDARY_COLORS[form.cardTag] ?? '#ffd700';
                               setSecondaryColorBase(original); setSecondaryColorBlend(50); handleChange('secondaryColorHex', original);
                               setShowSecondaryColorPicker(false);
                             }}
-                              className="text-[10px] text-slate-400 hover:text-blue-600 font-medium whitespace-nowrap shrink-0">
+                              className="text-[10px] text-slate-400 hover:text-slate-700 font-medium whitespace-nowrap shrink-0">
                               Reset
                             </button>
                           </div>
@@ -1079,7 +1087,7 @@ export default function CardEditor() {
             {/* Términos del Servicio */}
             <div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
               <div className="flex items-center gap-2 mb-1">
-                <Settings className="text-blue-600 w-5 h-5" />
+                <Settings className="w-5 h-5" style={{ color: brand.colorHex }} />
                 <h3 className="text-sm font-bold text-slate-800">Términos del Servicio</h3>
               </div>
               <p className="text-xs text-slate-600 mb-3">
@@ -1090,9 +1098,13 @@ export default function CardEditor() {
                   <button key={label} type="button" onClick={() => handleChange('termsOfService', text)}
                     className={`px-2 py-1 text-[10px] font-bold rounded-full border transition-all ${
                       form.termsOfService === text
-                        ? 'bg-blue-600 text-white border-blue-600'
-                        : 'border-slate-200 text-slate-500 hover:bg-slate-50 hover:border-blue-400'
-                    }`}>
+                        ? 'text-white'
+                        : 'border-slate-200 text-slate-500 hover:bg-slate-50 hover:border-slate-300'
+                    }`}
+                    style={form.termsOfService === text ? {
+                      backgroundColor: brand.colorHex,
+                      borderColor: brand.colorHex,
+                    } : undefined}>
                     {label}
                   </button>
                 ))}
@@ -1100,7 +1112,7 @@ export default function CardEditor() {
               <textarea value={form.termsOfService} onChange={e => handleChange('termsOfService', e.target.value)}
                 rows={3} maxLength={400}
                 placeholder="Elige una plantilla o escribe aquí. Reemplaza [X], [monto] y [beneficio] con tus datos reales…"
-                className="w-full bg-slate-50 border border-slate-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 rounded-xl px-3 py-2 text-xs outline-none transition-all resize-none" />
+                className="w-full bg-slate-50 border border-slate-200 focus:border-slate-400 focus:ring-1 focus:ring-slate-400 rounded-xl px-3 py-2 text-xs outline-none transition-all text-slate-800 placeholder:text-slate-400 resize-none" />
               <p className="text-[10px] text-slate-600 text-right mt-1">{form.termsOfService.length} / 400</p>
             </div>
           </section>
@@ -1112,7 +1124,7 @@ export default function CardEditor() {
             <div className="bg-white/80 backdrop-blur-sm p-5 rounded-[24px] flex flex-col items-center gap-5 border border-slate-200 shadow-sm">
 
               <div className="w-full flex items-center justify-between px-1">
-                <span className="text-[10px] font-bold text-slate-500 tracking-widest uppercase font-mono">
+                <span className="text-[10px] font-bold text-slate-500 tracking-wider uppercase font-jakarta">
                   Vista previa
                 </span>
               </div>
@@ -1150,13 +1162,17 @@ export default function CardEditor() {
               )}
 
               <div className="w-full">
-                <p className="text-[9px] font-bold text-slate-500 text-center mb-2 uppercase tracking-widest font-mono">Ícono de sello</p>
+                <p className="text-[9px] font-bold text-slate-500 text-center mb-2 uppercase tracking-wider font-jakarta">Ícono de sello</p>
                 <div className="flex justify-center gap-1.5">
                   {STAMP_ICON_OPTIONS.map(({ key, label, Icon }) => (
                     <button key={key} type="button" onClick={() => handleChange('category', ICON_TO_CATEGORY[key] ?? '')}
-                      className={`flex flex-col items-center gap-1 p-2 rounded-xl transition-all ${
-                        previewIconKey === key ? 'bg-blue-600 text-white scale-110 shadow-md' : 'text-slate-500 hover:bg-slate-100'
-                      }`}>
+                      className="flex flex-col items-center gap-1 p-2 rounded-xl transition-all text-slate-500 hover:bg-slate-100"
+                      style={previewIconKey === key ? {
+                        backgroundColor: brand.colorHex,
+                        color: '#fff',
+                        transform: 'scale(1.1)',
+                        boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)',
+                      } : undefined}>
                       <Icon className="w-4 h-4" />
                       <span className="text-[8px] font-bold leading-none">{label}</span>
                     </button>
@@ -1170,8 +1186,8 @@ export default function CardEditor() {
                 </div>
                 <div className="text-center space-y-0.5 w-full">
                   <p className="text-xs font-bold text-slate-800">Escanear para registrar compra</p>
-                  <p className="text-[10px] text-slate-600 font-mono truncate" title={qrValue}>{qrValue}</p>
-                  <p className="text-[9px] text-slate-400">Nivel <strong className="text-blue-600">{ecLevel}</strong> — {selectedEc.desc.split(' — ')[0]}</p>
+                  <p className="text-xs text-slate-600 font-mono truncate" title={qrValue}>{qrValue}</p>
+                  <p className="text-[9px] text-slate-400">Nivel <strong style={{ color: brand.colorHex }}>{ecLevel}</strong> — {selectedEc.desc.split(' — ')[0]}</p>
                 </div>
               </div>
 
@@ -1185,9 +1201,14 @@ export default function CardEditor() {
                   <Download className="w-3.5 h-3.5" /> TARJETA
                 </button>
                 <button type="button" onClick={handleShareQR}
-                  className={`flex-1 py-2.5 rounded-xl font-bold text-[10px] flex items-center justify-center gap-1.5 transition-all shadow-sm active:scale-[0.98] ${
-                    copied ? 'bg-emerald-500 text-white' : 'bg-blue-600 text-white hover:bg-blue-700'
-                  }`}>
+                  className="flex-1 py-2.5 rounded-xl font-bold text-[10px] flex items-center justify-center gap-1.5 transition-all shadow-sm active:scale-[0.98]"
+                  style={copied ? {
+                    backgroundColor: '#10b981',
+                    color: '#fff',
+                  } : {
+                    backgroundColor: brand.colorHex,
+                    color: '#fff',
+                  }}>
                   {copied ? <><Check className="w-3.5 h-3.5" />OK</> : <><Share2 className="w-3.5 h-3.5" />COMPARTIR</>}
                 </button>
               </div>
@@ -1199,24 +1220,24 @@ export default function CardEditor() {
             </div>
 
             {/* QR Customization */}
-            <div className="bg-white p-4 rounded-2xl shadow-sm border border-slate-200">
+            <div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
               <div className="flex items-center gap-2 mb-3">
-                <QrCode className="text-blue-600 w-4 h-4" />
-                <h3 className="text-xs font-bold text-slate-800">Personalización del QR</h3>
+                <QrCode className="w-4 h-4" style={{ color: brand.colorHex }} />
+                <h3 className="text-sm font-bold text-slate-800">Personalización del QR</h3>
               </div>
 
               <div className="mb-3 space-y-2">
-                <div className="flex items-start gap-2 p-2.5 bg-blue-50/50 rounded-xl border border-blue-100">
-                  <LinkIcon className="w-3 h-3 text-blue-600 mt-0.5 shrink-0" />
+                  <div className="flex items-start gap-2 p-2.5 bg-slate-50 rounded-xl border border-slate-200">
+                  <LinkIcon className="w-3 h-3 mt-0.5 shrink-0" style={{ color: brand.colorHex }} />
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between gap-2">
-                      <p className="text-[10px] font-bold text-slate-800">Link estable del QR</p>
-                      <span className="text-[8px] uppercase tracking-widest text-blue-600 font-bold">
+                      <p className="text-xs font-bold text-slate-800">Link estable del QR</p>
+                      <span className="text-[8px] uppercase tracking-widest font-bold" style={{ color: brand.colorHex }}>
                         no cambia jamás
                       </span>
                     </div>
-                    <p className="text-[10px] font-mono text-blue-600 mt-0.5 break-all">{qrValue}</p>
-                    <p className="text-[9px] text-slate-500 mt-0.5">
+                    <p className="text-xs font-mono mt-0.5 break-all" style={{ color: brand.colorHex }}>{qrValue}</p>
+                    <p className="text-[10px] text-slate-500 mt-0.5">
                       El QR siempre apuntará a este link. Puedes cambiar el destino real cuantas veces quieras sin reimprimir.
                     </p>
                   </div>
@@ -1226,10 +1247,10 @@ export default function CardEditor() {
                   <Settings className="w-3 h-3 text-slate-500 mt-0.5 shrink-0" />
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between gap-2 mb-0.5">
-                      <p className="text-[10px] font-bold text-slate-800">Destino actual</p>
+                      <p className="text-xs font-bold text-slate-800">Destino actual</p>
                       {!editingTarget && (
                         <button type="button" onClick={() => setEditingTarget(true)}
-                          className="text-blue-600 text-[9px] font-bold hover:underline flex items-center gap-0.5">
+                          className="text-[10px] font-bold hover:underline flex items-center gap-0.5" style={{ color: brand.colorHex }}>
                           <Pencil className="w-2.5 h-2.5" /> Editar
                         </button>
                       )}
@@ -1238,20 +1259,21 @@ export default function CardEditor() {
                       <div className="flex gap-1.5 mt-1">
                         <input type="url" value={targetUrl} onChange={(e) => setTargetUrl(e.target.value)}
                           placeholder="https://tu-pagina.com/promo"
-                          className="flex-1 px-2 py-1.5 bg-white border border-slate-200 rounded-lg text-[10px] focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                          className="flex-1 px-3 py-2 bg-white border border-slate-200 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-slate-400 text-slate-800 placeholder:text-slate-400" />
                         <button type="button" onClick={handleSaveTarget}
                           disabled={savingTarget || !targetUrl.trim() || targetUrl === qrLink?.targetUrl}
-                          className="px-2.5 py-1.5 bg-blue-600 text-white rounded-lg text-[9px] font-bold disabled:opacity-40">
+                          className="px-2.5 py-1.5 text-white rounded-lg text-[10px] font-bold disabled:opacity-40"
+                          style={{ backgroundColor: brand.colorHex }}>
                           {savingTarget ? '…' : 'Guardar'}
                         </button>
                         <button type="button"
                           onClick={() => { setEditingTarget(false); setTargetUrl(qrLink?.targetUrl ?? ''); }}
-                          className="px-2.5 py-1.5 border border-slate-200 rounded-lg text-[9px] text-slate-500">
+                          className="px-2.5 py-1.5 border border-slate-200 rounded-lg text-[10px] text-slate-500">
                           Cancelar
                         </button>
                       </div>
                     ) : (
-                      <p className="text-[10px] text-slate-500 font-mono break-all">{qrLink?.targetUrl ?? '—'}</p>
+                      <p className="text-xs text-slate-500 font-mono break-all">{qrLink?.targetUrl ?? '—'}</p>
                     )}
                   </div>
                 </div>
@@ -1259,15 +1281,16 @@ export default function CardEditor() {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-[10px] font-semibold text-slate-600 block mb-0.5">Color del QR</label>
+                  <label className="text-xs font-semibold text-slate-600 block mb-0.5">Color del QR</label>
                   <div className="flex gap-1">
                     {(['black', 'white', 'custom'] as const).map(option => (
                       <button key={option} type="button" onClick={() => setQrColorOption(option)}
-                        className={`flex items-center gap-1 px-2 py-1.5 rounded-lg text-[9px] font-bold transition-all ${
-                          qrColorOption === option
-                            ? 'bg-blue-600 text-white shadow-md'
-                            : 'border border-slate-200 text-slate-500 hover:bg-slate-50'
-                        }`}>
+                        className="flex items-center gap-1 px-2 py-1.5 rounded-lg text-[10px] font-bold transition-all border border-slate-200 text-slate-500 hover:bg-slate-50"
+                        style={qrColorOption === option ? {
+                          backgroundColor: brand.colorHex,
+                          color: '#fff',
+                          boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)',
+                        } : undefined}>
                         <span className={`w-3 h-3 rounded-full border ${option === 'white' ? 'border-slate-300' : 'border-white/40'} shadow-sm shrink-0`}
                           style={{ backgroundColor: option === 'custom' ? qrCustomColor : (option === 'black' ? '#000' : '#fff') }} />
                         {option === 'black' ? 'Negro' : option === 'white' ? 'Blanco' : 'Color'}
@@ -1293,7 +1316,7 @@ export default function CardEditor() {
                                   <button key={color} type="button" style={{ backgroundColor: color }}
                                     onClick={() => { setQrCustomColorBase(color); setQrCustomColorBlend(50); setQrCustomColor(color); }}
                                     className={`w-6 h-6 rounded-full border border-white/40 shadow-sm hover:scale-110 transition-transform ${
-                                      qrCustomColor === color ? 'ring-2 ring-blue-500 ring-offset-2' : ''
+                                      qrCustomColor === color ? 'ring-2 ring-slate-400 ring-offset-2' : ''
                                     } ${color === '#ffffff' ? 'border-slate-300' : ''}`} />
                                 ))}
                               </div>
@@ -1324,13 +1347,13 @@ export default function CardEditor() {
                                   <input type="text" value={qrCustomColor}
                                     onChange={e => { const v = e.target.value; if (/^#[0-9a-fA-F]{0,6}$/.test(v)) { setQrCustomColor(v); setQrCustomColorBase(v); setQrCustomColorBlend(50); } }}
                                     onBlur={() => { if (!/^#[0-9a-fA-F]{6}$/.test(qrCustomColor)) setQrCustomColor('#3525cd'); }}
-                                    className="w-full bg-slate-50 border border-slate-200 rounded-full px-3 py-1.5 text-[11px] font-mono outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all text-center text-slate-400" />
+                                    className="w-full bg-slate-50 border border-slate-200 rounded-full px-3 py-1.5 text-[11px] font-mono outline-none focus:ring-2 focus:ring-slate-400 focus:border-slate-400 transition-all text-center text-slate-400" />
                                 </div>
                                 <button type="button" onClick={() => {
                                   setQrCustomColorBase('#3525cd'); setQrCustomColorBlend(50); setQrCustomColor('#3525cd');
                                   setShowQrColorPicker(false);
                                 }}
-                                  className="text-[10px] text-slate-400 hover:text-blue-600 font-medium whitespace-nowrap shrink-0">
+                                  className="text-[10px] text-slate-400 hover:text-slate-700 font-medium whitespace-nowrap shrink-0">
                                   Reset
                                 </button>
                               </div>
@@ -1342,18 +1365,21 @@ export default function CardEditor() {
                   </div>
                 </div>
                 <div>
-                  <label className="text-[10px] font-semibold text-slate-600 block mb-0.5">Corrección de error</label>
+                  <label className="text-xs font-semibold text-slate-600 block mb-0.5">Corrección de error</label>
                   <div className="flex gap-0.5">
                     {EC_LEVELS.map(({ value, label }) => (
                       <button key={value} type="button" onClick={() => setEcLevel(value)}
-                        className={`flex-1 py-1 rounded-lg text-[9px] font-bold transition-all ${
-                          ecLevel === value ? 'bg-blue-600 text-white shadow-md' : 'border border-slate-200 text-slate-500 hover:bg-slate-50'
-                        }`}>
+                      className="flex-1 py-1 rounded-lg text-[10px] font-bold transition-all border border-slate-200 text-slate-500 hover:bg-slate-50"
+                      style={ecLevel === value ? {
+                        backgroundColor: brand.colorHex,
+                        color: '#fff',
+                        boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)',
+                      } : undefined}>
                         {label}
                       </button>
                     ))}
                   </div>
-                  <p className="text-[9px] text-slate-500 leading-snug mt-0.5">{selectedEc.desc}</p>
+                  <p className="text-[10px] text-slate-500 leading-snug mt-0.5">{selectedEc.desc}</p>
                 </div>
               </div>
             </div>

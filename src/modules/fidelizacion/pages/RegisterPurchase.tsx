@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, type FormEvent } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
-import { Receipt as ReceiptIcon, Camera, CheckCircle, Smartphone, AlertCircle, ScanLine } from 'lucide-react';
+import { Receipt as ReceiptIcon, Camera, CheckCircle, Smartphone, AlertCircle, ScanLine, ShoppingCart } from 'lucide-react';
 import QrScanner from '@/components/qr/QrScanner';
 import { parseScannedClientCardId } from '@/services/qrLinkService';
 import { resolveClientByCardId } from '@/services/loyaltyService';
@@ -18,6 +18,7 @@ import { sendPurchaseNotification } from '@/services/whatsappService';
 import ReceiptCapture from '@/components/receipt/ReceiptCapture';
 import type { Receipt } from '@/services/receiptService';
 import { useI18n } from '@/i18n/index';
+import { useModuleBrand } from '@/platform/theme/ModuleBrand';
 
 function Spinner() {
   return (
@@ -30,6 +31,7 @@ function Spinner() {
 export default function RegisterPurchase() {
   const { t } = useI18n();
   const { user, loading: authLoading } = useAuth();
+  const { brand } = useModuleBrand();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const businessId = user?.id;
@@ -49,7 +51,9 @@ export default function RegisterPurchase() {
   const [purchaseAmount, setPurchaseAmount] = useState<string>('');
   const [scannerOpen, setScannerOpen] = useState(false);
   const [scanError, setScanError] = useState<string | null>(null);
+  const [chipHovered, setChipHovered] = useState(false);
   const autoStampedRef = useRef(false);
+  const accent = brand.colorHex;
 
   // Cargamos la config del programa para conocer programType (stamps vs acumulativo).
   useEffect(() => {
@@ -231,42 +235,91 @@ export default function RegisterPurchase() {
   if (!businessId) return null;
 
   return (
-    <div className="min-h-screen bg-surface pb-32">
-      <main className="max-w-7xl mx-auto px-4 md:px-12 pt-8 space-y-8">
-        <div className="bg-surface-container-lowest p-8 rounded-2xl border border-outline-variant shadow-sm max-w-2xl mx-auto">
-          <div className="flex items-start justify-between gap-3 mb-2">
-            <h2 className="text-headline-lg text-on-surface font-bold">Registrar Compra</h2>
-            <button
-              type="button"
-              onClick={() => { setScanError(null); setScannerOpen(true); }}
-              className="flex items-center gap-2 px-3 py-2 rounded-xl bg-primary/10 text-primary hover:bg-primary/20 transition-all text-[13px] font-bold flex-shrink-0"
-            >
-              <ScanLine className="w-4 h-4" />
-              Escanear QR
-            </button>
-          </div>
-          <p className="text-body-md text-on-surface-variant mb-4">
-            {isAccumulative
-              ? 'Suma puntos a la tarjeta del cliente según el monto de la compra'
-              : 'Agrega un sello a la tarjeta de un cliente'}
-          </p>
+    <div className="h-full flex flex-col overflow-hidden">
 
+      {/* Barra secundaria */}
+      <div className="bg-white border-b border-slate-200 px-4 sm:px-6 h-12 flex flex-row items-center justify-between gap-2 select-none overflow-hidden flex-shrink-0">
+
+        {/* LEFT — chip expandible */}
+        <div
+          className="relative flex items-center gap-1.5 px-3 py-1.5 rounded-full border bg-white cursor-default transition-all duration-500 ease-in-out min-w-0"
+          style={{
+            color: accent,
+            borderColor: chipHovered ? `${accent}55` : 'rgb(226 232 240 / 0.6)',
+            boxShadow: chipHovered
+              ? `0 0 0 3px ${accent}18, 0 2px 12px ${accent}22`
+              : '0 0 0 0px transparent',
+            flex: chipHovered ? '1 1 0%' : '0 0 auto',
+          }}
+          onMouseEnter={() => setChipHovered(true)}
+          onMouseLeave={() => setChipHovered(false)}
+        >
+          <div
+            className="absolute inset-0 pointer-events-none rounded-full transition-opacity duration-500"
+            style={{
+              opacity: chipHovered ? 1 : 0,
+              background: `linear-gradient(90deg, ${accent}06 0%, ${accent}14 50%, ${accent}06 100%)`,
+            }}
+          />
+          <ShoppingCart
+            className="w-3.5 h-3.5 flex-shrink-0 transition-transform duration-300"
+            style={{ transform: chipHovered ? 'rotate(-15deg) scale(1.2)' : 'none' }}
+          />
+          <span className="text-[12px] font-bold font-sans whitespace-nowrap flex-shrink-0 tracking-wide">Registrar Compra</span>
+          <span
+            className="text-[12px] font-light font-sans whitespace-nowrap overflow-hidden transition-all duration-500 ease-in-out"
+            style={{
+              maxWidth: chipHovered ? '600px' : '0px',
+              opacity: chipHovered ? 1 : 0,
+              paddingLeft: chipHovered ? '6px' : '0px',
+              color: `${accent}99`,
+            }}
+          >
+            · {isAccumulative ? 'Suma puntos según el monto de la compra' : 'Agrega un sello a la tarjeta del cliente'}
+          </span>
+        </div>
+
+        {/* RIGHT — acciones */}
+        <div className="flex items-center gap-2 flex-shrink-0">
+          <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200/60 px-3 py-1.5 rounded-full flex-shrink-0">
+            <div className="w-2 h-2 rounded-full animate-pulse flex-shrink-0" style={{ backgroundColor: accent }} />
+            <span className="text-status text-slate-600 whitespace-nowrap">Registro de sellos</span>
+          </div>
+          <button
+            type="button"
+            onClick={() => { setScanError(null); setScannerOpen(true); }}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full font-light text-[11px] transition-all active:scale-[0.97] shadow-sm text-white tracking-wide"
+            style={{ backgroundColor: accent }}
+          >
+            <ScanLine className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">Escanear QR</span>
+          </button>
+        </div>
+      </div>
+
+      <main className="flex-1 overflow-y-auto px-4 md:px-6 pt-3 pb-6 space-y-4">
+
+        <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm max-w-2xl mx-auto">
           {scannedNotice && (
-            <div className="mb-6 p-3 bg-primary-container text-on-primary-container rounded-xl text-body-sm flex items-center gap-2">
+            <div className="mb-4 p-3 rounded-xl text-sm flex items-center gap-2 border"
+              style={{ backgroundColor: `${accent}10`, color: accent, borderColor: `${accent}30` }}>
               <Camera className="w-4 h-4 shrink-0" />
               <span className="flex-1">{scannedNotice}</span>
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-6" noValidate>
+          <form onSubmit={handleSubmit} className="space-y-5" noValidate>
             <div>
-              <label className="block text-label-md text-on-surface-variant font-bold mb-2" htmlFor="clientEmail">
+              <label className="block text-data-primary text-slate-700 mb-1.5" htmlFor="clientEmail">
                 Correo del cliente
               </label>
               <input
                 id="clientEmail"
                 type="email"
-                className="w-full px-4 py-3 bg-surface-container border border-outline-variant rounded-xl text-on-surface placeholder:text-on-surface-variant focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 transition-all"
+                style={{ focusRing: accent }}
+                onFocus={(e) => { e.target.style.borderColor = accent; e.target.style.setProperty('--tw-ring-color', `${accent}40`); }}
+                onBlur={(e) => { e.target.style.borderColor = ''; e.target.style.setProperty('--tw-ring-color', ''); }}
                 value={email}
                 onChange={(e) => {
                   setEmail(e.target.value);
@@ -282,26 +335,28 @@ export default function RegisterPurchase() {
 
             {isAccumulative && (
               <div>
-                <label className="block text-label-md text-on-surface-variant font-bold mb-2" htmlFor="purchaseAmount">
+                <label className="block text-data-primary text-slate-700 mb-1.5" htmlFor="purchaseAmount">
                   Monto de la compra
                 </label>
                 <div className="flex items-center gap-2">
-                  <span className="text-body-md text-on-surface-variant">$</span>
+                  <span className="text-data-secondary text-slate-500">$</span>
                   <input
                     id="purchaseAmount"
                     type="number"
                     min={0}
                     step={amountPerPoint}
-                    className="flex-1 px-4 py-3 bg-surface-container border border-outline-variant rounded-xl text-on-surface placeholder:text-on-surface-variant focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                    className="flex-1 px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 transition-all"
+                    onFocus={(e) => { e.target.style.borderColor = accent; e.target.style.setProperty('--tw-ring-color', `${accent}40`); }}
+                    onBlur={(e) => { e.target.style.borderColor = ''; e.target.style.setProperty('--tw-ring-color', ''); }}
                     value={purchaseAmount}
                     onChange={e => { setPurchaseAmount(e.target.value); setErrorMsg(''); }}
                     placeholder={String(amountPerPoint * 5)}
                     disabled={loading}
                   />
                 </div>
-                <p className="text-[12px] text-on-surface-variant mt-2">
+                <p className="text-data-secondary text-slate-500 mt-1.5">
                   {computedPoints > 0 ? (
-                    <>Esto otorgará <strong className="text-primary">{computedPoints} {computedPoints === 1 ? 'punto' : 'puntos'}</strong> · 1 punto = ${amountPerPoint.toLocaleString()}.</>
+                    <>Esto otorgará <strong style={{ color: accent }}>{computedPoints} {computedPoints === 1 ? 'punto' : 'puntos'}</strong> · 1 punto = ${amountPerPoint.toLocaleString()}.</>
                   ) : (
                     <>Mínimo por punto: ${amountPerPoint.toLocaleString()}.</>
                   )}
@@ -309,17 +364,18 @@ export default function RegisterPurchase() {
               </div>
             )}
 
-            {/* Recibo opcional (validación cruzada) */}
-            <div className="p-4 border border-dashed border-outline-variant rounded-xl space-y-3">
+            {/* Recibo opcional */}
+            <div className="p-4 border border-dashed border-slate-200 rounded-xl space-y-3">
               <div className="flex items-center justify-between gap-2">
                 <div className="flex items-center gap-2">
-                  <ReceiptIcon className="w-4 h-4 text-on-surface-variant" />
-                  <p className="text-body-sm font-bold text-on-surface">{t('Recibo (opcional)')}</p>
+                  <ReceiptIcon className="w-4 h-4 text-slate-400" />
+                  <p className="text-data-primary text-slate-700">{t('Recibo (opcional)')}</p>
                 </div>
                 {!showReceiptCapture && !attachedReceipt && (
                   <button
                     type="button"
-                    className="text-primary text-label-md font-bold hover:underline"
+                    className="text-[11px] font-light hover:underline tracking-wide"
+                    style={{ color: accent }}
                     onClick={() => setShowReceiptCapture(true)}
                   >
                     Escanear recibo
@@ -327,7 +383,7 @@ export default function RegisterPurchase() {
                 )}
               </div>
               {attachedReceipt && (
-                <div className="flex items-center gap-2 text-body-sm text-on-surface-variant">
+                <div className="flex items-center gap-2 text-data-secondary text-slate-500">
                   <CheckCircle className="w-4 h-4 shrink-0" />
                   <span>Recibo adjunto · Total: {attachedReceipt.ocrPayload.total ?? '—'} {attachedReceipt.ocrPayload.currency ?? ''}</span>
                 </div>
@@ -335,7 +391,7 @@ export default function RegisterPurchase() {
               {showReceiptCapture && businessId && (
                 <ReceiptCapture
                   businessId={businessId}
-                  clientId={businessId /* placeholder — empresa registra; recibo se asigna al pre-resolver email */}
+                  clientId={businessId}
                   source="business"
                   onSuccess={(r) => { setAttachedReceipt(r); setShowReceiptCapture(false); }}
                   onCancel={() => setShowReceiptCapture(false)}
@@ -344,34 +400,35 @@ export default function RegisterPurchase() {
             </div>
 
             {errorMsg && (
-              <div className="p-4 bg-error-container text-on-error-container rounded-xl" role="alert">
+              <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-sm text-red-700">
                 {errorMsg}
               </div>
             )}
 
             {successData && (
-              <div className="p-4 bg-secondary-container text-on-secondary-container rounded-xl" role="status">
-                <div className="flex items-center gap-2 font-bold mb-2">
-                  <CheckCircle className="w-4 h-4 shrink-0" />
-                  <span>{successData.name}</span>
+              <div className="p-4 rounded-xl border" role="status"
+                style={{ backgroundColor: `${accent}08`, borderColor: `${accent}25` }}>
+                <div className="flex items-center gap-2 font-medium mb-2">
+                  <CheckCircle className="w-4 h-4 shrink-0" style={{ color: accent }} />
+                  <span className="text-data-primary" style={{ color: accent }}>{successData.name}</span>
                 </div>
-                <p className="mb-3">
+                <p className="text-data-secondary text-slate-600 mb-2">
                   {isAccumulative ? 'Puntos' : 'Sellos'}: {successData.currentStamps} / {successData.totalStamps}
                 </p>
-                <div className="h-3 bg-white/30 rounded-full overflow-hidden">
+                <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-white rounded-full transition-all"
-                    style={{ width: `${(successData.currentStamps / successData.totalStamps) * 100}%` }}
+                    className="h-full rounded-full transition-all"
+                    style={{ width: `${(successData.currentStamps / successData.totalStamps) * 100}%`, backgroundColor: accent }}
                   />
                 </div>
                 {notifyStatus === 'sent' && (
-                  <div className="flex items-center gap-1.5 text-[11px] mt-2 opacity-80">
+                  <div className="flex items-center gap-1.5 text-status text-slate-500 mt-2">
                     <Smartphone className="w-3.5 h-3.5 shrink-0" />
                     <span>WhatsApp enviado al cliente (modo simulacro).</span>
                   </div>
                 )}
                 {notifyStatus === 'skipped' && (
-                  <div className="flex items-center gap-1.5 text-[11px] mt-2 opacity-80">
+                  <div className="flex items-center gap-1.5 text-status text-slate-500 mt-2">
                     <AlertCircle className="w-3.5 h-3.5 shrink-0" />
                     <span>El cliente no tiene WhatsApp registrado — no se envió notificación.</span>
                   </div>
@@ -380,18 +437,18 @@ export default function RegisterPurchase() {
             )}
 
             {completeCard && (
-              <div className="p-4 bg-tertiary-container text-on-tertiary-container rounded-xl" role="alert">
-                <p className="font-bold mb-3">
+              <div className="p-4 bg-amber-50 border border-amber-200 rounded-xl" role="alert">
+                <p className="text-data-primary text-amber-800 mb-3">
                   Este cliente ya completó su tarjeta. Puedes reiniciarla.
                 </p>
                 <button
                   type="button"
-                  className="w-full bg-white text-tertiary px-6 py-3 rounded-xl font-bold hover:bg-surface-container transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  className="w-full bg-white text-amber-700 px-5 py-2.5 rounded-xl font-light tracking-wide text-sm hover:bg-amber-50 transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 border border-amber-200"
                   onClick={handleResetCard}
                   disabled={loading}
                 >
                   {loading ? (
-                    <div className="w-5 h-5 border-2 border-tertiary border-t-transparent rounded-full animate-spin" />
+                    <div className="w-4 h-4 border-2 border-amber-600 border-t-transparent rounded-full animate-spin" />
                   ) : (
                     'Reiniciar tarjeta'
                   )}
@@ -399,14 +456,15 @@ export default function RegisterPurchase() {
               </div>
             )}
 
-            <div className="flex gap-4">
+            <div className="flex gap-3">
               <button
                 type="submit"
-                className="flex-1 bg-primary text-on-primary px-6 py-3 rounded-xl font-bold hover:opacity-90 transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                className="flex-1 text-white px-5 py-2.5 rounded-xl font-light tracking-wide text-sm transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-sm"
+                style={{ backgroundColor: accent }}
                 disabled={loading || !email.trim()}
               >
                 {loading ? (
-                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                 ) : isAccumulative ? (
                   computedPoints > 0 ? `Sumar ${computedPoints} ${computedPoints === 1 ? 'punto' : 'puntos'}` : 'Sumar puntos'
                 ) : (
@@ -417,7 +475,7 @@ export default function RegisterPurchase() {
               {(successData || completeCard || errorMsg) && (
                 <button
                   type="button"
-                  className="px-6 py-3 border border-outline-variant text-on-surface rounded-xl font-bold hover:bg-surface-container transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-5 py-2.5 border border-slate-200 text-slate-600 rounded-xl font-light tracking-wide text-sm hover:bg-slate-50 transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
                   onClick={reset}
                   disabled={loading}
                 >
@@ -427,6 +485,7 @@ export default function RegisterPurchase() {
             </div>
           </form>
         </div>
+
       </main>
 
       <QrScanner

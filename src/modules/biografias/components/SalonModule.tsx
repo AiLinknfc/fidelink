@@ -4,6 +4,7 @@ import {
  Scissors, Paintbrush, Sparkles, Smile, Calendar, Clock, 
  MapPin, Phone, User, Check, Trash, Plus, ShieldCheck, AlertCircle 
 } from'lucide-react';
+import { useModuleBrand } from '@/platform/theme/ModuleBrand';
 
 interface SalonModuleProps {
  currentBio: Biography;
@@ -18,6 +19,7 @@ const TIME_SLOTS = ['09:00 AM','10:15 AM','11:30 AM','01:00 PM','02:30 PM','04:0
 ];
 
 export function SalonModule({ currentBio, role, onUpdateBio }: SalonModuleProps) {
+ const { brand } = useModuleBrand();
  const salon = currentBio.salon;
 
  // New Booking scheduler states
@@ -96,7 +98,7 @@ export function SalonModule({ currentBio, role, onUpdateBio }: SalonModuleProps)
  <div className="space-y-6">
  {/* Salon Info Header */}
  <div className="p-5 bg-white rounded-2xl border border-slate-100 shadow-xs flex flex-col md:flex-row items-center gap-5">
- <div className="w-16 h-16 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 flex-shrink-0 animate-pulse">
+ <div className="w-16 h-16 rounded-2xl flex items-center justify-center flex-shrink-0 animate-pulse" style={{ backgroundColor: `${brand.colorHex}12`, borderColor: `${brand.colorHex}25`, color: brand.colorHex }}>
  <Scissors className="w-8 h-8" />
  </div>
 
@@ -117,7 +119,7 @@ export function SalonModule({ currentBio, role, onUpdateBio }: SalonModuleProps)
  {/* Services Menu Catalog */}
  <div className="space-y-3">
  <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
- <Scissors className="w-3.5 h-3.5 text-indigo-500" /> Catálogo de Servicios y Tratamientos Especiales
+ <Scissors className="w-3.5 h-3.5" style={{ color: brand.colorHex }} /> Catálogo de Servicios y Tratamientos Especiales
  </h3>
 
  <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
@@ -127,20 +129,20 @@ export function SalonModule({ currentBio, role, onUpdateBio }: SalonModuleProps)
  <div
  key={srv.id}
  onClick={() => setSelectedServiceId(srv.id)}
- className={`p-4 bg-white rounded-xl border transition-all cursor-pointer text-left flex items-start gap-3.5 shadow-2xs hover:shadow-xs group ${
- selectedServiceId === srv.id ?'border-indigo-500 ring-1 ring-indigo-500/20 bg-indigo-50/10' :'border-slate-100'
- }`}
- >
- <div className={`p-2.5 rounded-lg flex-shrink-0 transition-all ${
- selectedServiceId === srv.id ?'bg-indigo-600 text-white' :'bg-slate-50 text-slate-600 group-hover:bg-slate-100'
- }`}>
+  className={`p-4 bg-white rounded-xl border transition-all cursor-pointer text-left flex items-start gap-3.5 shadow-2xs hover:shadow-xs group ${
+  selectedServiceId === srv.id ?'border-slate-400' :'border-slate-100'
+  }`} style={selectedServiceId === srv.id ? { boxShadow: `0 0 0 1px ${brand.colorHex}40` } : undefined}
+  >
+  <div className={`p-2.5 rounded-lg flex-shrink-0 transition-all ${
+  selectedServiceId === srv.id ?'text-white' :'bg-slate-50 text-slate-600 group-hover:bg-slate-100'
+  }`} style={selectedServiceId === srv.id ? { backgroundColor: brand.colorHex } : undefined}>
  <IconComponent className="w-5 h-5" />
  </div>
 
  <div className="flex-1 space-y-1">
  <div className="flex items-center justify-between gap-2">
  <h4 className="text-xs font-extrabold text-slate-800">{srv.name}</h4>
- <span className="text-xs font-mono font-bold text-indigo-600">${srv.price.toLocaleString()}</span>
+ <span className="text-xs font-mono font-bold" style={{ color: brand.colorHex }}>${srv.price.toLocaleString()}</span>
  </div>
 
  <p className="text-[10px] text-slate-400 font-semibold">{srv.category} • {srv.duration} mins de duración</p>
@@ -158,7 +160,7 @@ export function SalonModule({ currentBio, role, onUpdateBio }: SalonModuleProps)
  {/* Reservation scheduler block */}
  <div className="p-4 bg-white rounded-2xl border border-slate-100 shadow-xs space-y-4">
  <div className="space-y-1">
- <h3 className="text-xs font-bold text-indigo-600 uppercase tracking-widest flex items-center gap-1.5">
+ <h3 className="text-xs font-bold uppercase tracking-widest flex items-center gap-1.5" style={{ color: brand.colorHex }}>
  <Calendar className="w-4 h-4" /> Agendar Nueva Cita
  </h3>
  <p className="text-[11px] text-slate-400">Selecciona tu tratamiento en el catálogo arriba y escoge fecha/hora.</p>
@@ -243,7 +245,7 @@ export function SalonModule({ currentBio, role, onUpdateBio }: SalonModuleProps)
  <div className="flex justify-end pt-2">
  <button
  type="submit"
- className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white text-xs font-bold rounded-lg transition-all"
+ className="px-4 py-2 active:scale-95 text-white text-xs font-bold rounded-lg transition-all hover:opacity-90" style={{ backgroundColor: brand.colorHex }}
  >
  Confirmar Agendado 
  </button>
@@ -262,7 +264,7 @@ export function SalonModule({ currentBio, role, onUpdateBio }: SalonModuleProps)
  </div>
 
  <span className={`text-[10px] font-extrabold px-2.5 py-0.5 rounded border ${
- role ==='estilista' || role ==='creador' ?'bg-indigo-50 border-indigo-100 text-indigo-700' :'bg-slate-100 text-slate-500'
+  role ==='estilista' || role ==='creador' ?'bg-slate-100 border-slate-300 text-slate-700' :'bg-slate-100 text-slate-500'
  }`}>
  {role ==='estilista' ?'Estilista Profesional' : role ==='creador' ?'Dueña' :'Vista Cliente'}
  </span>

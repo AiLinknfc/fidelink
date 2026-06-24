@@ -69,7 +69,7 @@ export default function TopBar({ onSidebarOpen }: TopBarProps) {
 
   return (
     <>
-      <header className="bg-white/90 backdrop-blur-md sticky top-0 z-40 border-b border-slate-200 w-full">
+      <header className="bg-white sticky top-0 z-40 border-b border-slate-200 w-full">
         <div className="flex items-center w-full px-3 sm:px-4 h-14 gap-2">
 
           {/* ── Izquierda: botón menú + nombre de marca ── */}
@@ -80,7 +80,7 @@ export default function TopBar({ onSidebarOpen }: TopBarProps) {
                 style={{ color: isPromo ? '#be123c' : isNapi ? '#b45309' : brand.colorHex }}
                 onClick={onSidebarOpen}
               >
-                <Menu className="w-[22px] h-[22px]" strokeWidth={2.25} />
+                <Menu className="w-[22px] h-[22px]" strokeWidth={1.5} />
               </button>
             ) : (
               <button
@@ -88,11 +88,11 @@ export default function TopBar({ onSidebarOpen }: TopBarProps) {
                 style={{ color: brand.colorHex }}
                 onClick={() => setMenuOpen(!menuOpen)}
               >
-                {menuOpen ? <X className="w-[22px] h-[22px]" strokeWidth={2.25} /> : <Menu className="w-[22px] h-[22px]" strokeWidth={2.25} />}
+                {menuOpen ? <X className="w-[22px] h-[22px]" strokeWidth={1.5} /> : <Menu className="w-[22px] h-[22px]" strokeWidth={1.5} />}
               </button>
             )}
             <h1
-              className="text-lg sm:text-xl font-extrabold font-headline cursor-pointer tracking-[-0.03em] truncate"
+              className="text-lg sm:text-xl font-bold font-headline cursor-pointer tracking-wide truncate"
               style={{ color: isPromo ? '#be123c' : isNapi ? '#b45309' : brand.colorHex }}
               onClick={() => navigate(isPromo ? '/promociones/explorar' : isNapi ? '/napilink/dashboard' : isBusiness ? '/business' : '/wallet')}
             >
@@ -104,12 +104,12 @@ export default function TopBar({ onSidebarOpen }: TopBarProps) {
           <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0 ml-auto">
             {/* Chip de rol */}
             <div
-              className="flex items-center gap-1.5 w-8 h-8 sm:w-auto sm:px-3 sm:h-8 rounded-full justify-center transition-all"
-              style={{ backgroundColor: `${isPromo ? '#be123c' : isNapi ? '#b45309' : brand.colorHex}18`, color: isPromo ? '#be123c' : isNapi ? '#b45309' : brand.colorHex }}
+              className="flex items-center gap-1.5 w-8 h-8 sm:w-auto sm:px-3 sm:h-8 rounded-full justify-center transition-all ring-1 ring-black/[0.04]"
+              style={{ backgroundColor: `${isPromo ? '#be123c' : isNapi ? '#b45309' : brand.colorHex}14`, color: isPromo ? '#be123c' : isNapi ? '#b45309' : brand.colorHex }}
               title={roleLabel}
             >
-              <RoleIcon className="w-4 h-4 flex-shrink-0" />
-              <span className="hidden sm:inline text-[11px] font-bold">{roleLabel}</span>
+              <RoleIcon className="w-4 h-4 flex-shrink-0" strokeWidth={1.5} />
+              <span className="hidden sm:inline text-[10px] font-bold tracking-widest">{roleLabel}</span>
             </div>
 
             {/* Cart */}

@@ -90,7 +90,7 @@ export default function WhatsAppView({
       <form onSubmit={handleSendMessage} className="p-2.5 bg-slate-100 border-t border-slate-200 flex items-center gap-2 flex-shrink-0">
         <input type="text" placeholder="Escribe tu pregunta sobre el caf&eacute;..." value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
-          className="flex-1 px-3 py-2 bg-white rounded-full text-xs border border-slate-200 focus:outline-none" />
+          className="flex-1 px-3 py-2 bg-white rounded-full text-xs border border-slate-200 focus:outline-none text-slate-800 placeholder:text-slate-400" />
         <button type="submit" className="p-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-full transition-all cursor-pointer">
           <Send className="w-3.5 h-3.5" />
         </button>

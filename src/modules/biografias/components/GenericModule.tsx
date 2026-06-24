@@ -1,9 +1,10 @@
 import React, { useState } from'react';
 import { Biography, GenericLink, DemoUserRole } from '../types/biography';
 import { 
- Globe, Link as LinkIcon, Camera, Download, ExternalLink, 
- Trash, Plus, Check, Info, HelpCircle, FileText 
+  Globe, Link as LinkIcon, Camera, Download, ExternalLink, 
+  Trash, Plus, Check, Info, HelpCircle, FileText 
 } from'lucide-react';
+import { useModuleBrand } from '@/platform/theme/ModuleBrand';
 
 interface GenericModuleProps {
  currentBio: Biography;
@@ -15,7 +16,8 @@ const ICON_PICKER_OPTIONS: { [key: string]: any } = {'Globe': Globe,'ExternalLin
 };
 
 export function GenericModule({ currentBio, role, onUpdateBio }: GenericModuleProps) {
- const generic = currentBio.generic;
+  const { brand } = useModuleBrand();
+  const generic = currentBio.generic;
 
  // New Link states
  const [showAddLink, setShowAddLink] = useState(false);
@@ -85,7 +87,7 @@ export function GenericModule({ currentBio, role, onUpdateBio }: GenericModulePr
 
  <div className="space-y-1">
  <h2 className="text-xl font-extrabold text-slate-800 tracking-tight">{generic.title}</h2>
- <p className="text-xs font-bold text-indigo-600 uppercase tracking-widest">{generic.subtitle}</p>
+  <p className="text-xs font-bold uppercase tracking-widest" style={{ color: brand.colorHex }}>{generic.subtitle}</p>
  <p className="text-xs text-slate-500 leading-relaxed max-w-md pt-1.5">{generic.description}</p>
  </div>
 
@@ -107,10 +109,10 @@ export function GenericModule({ currentBio, role, onUpdateBio }: GenericModulePr
  href={generic.socialLinks.linkedin}
  target="_blank"
  rel="noreferrer"
- className="p-2 rounded-full bg-slate-50 hover:bg-slate-100/80 text-slate-600 hover:text-blue-600 transition"
- title="LinkedIn"
- >
- <Globe className="w-4 h-4" />
+  className="p-2 rounded-full bg-slate-50 hover:bg-slate-100/80 transition" style={{ color: brand.colorHex }}
+  title="LinkedIn"
+  >
+  <Globe className="w-4 h-4" />
  </a>
  )}
  {generic.socialLinks.whatsapp && (
@@ -131,12 +133,12 @@ export function GenericModule({ currentBio, role, onUpdateBio }: GenericModulePr
  <div className="space-y-3">
  <div className="flex items-center justify-between border-b border-slate-100 pb-2">
  <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
- <LinkIcon className="w-3.5 h-3.5 text-indigo-500" /> Accesos y Enlaces de Interés
+  <LinkIcon className="w-3.5 h-3.5" style={{ color: brand.colorHex }} /> Accesos y Enlaces de Interés
  </h3>
  {role ==='creador' && (
  <button
  onClick={() => setShowAddLink(!showAddLink)}
- className="py-1 px-2.5 bg-[#4f46e5] text-white text-xs font-bold rounded-lg hover:bg-[#4338ca] transition"
+  className="py-1 px-2.5 text-white text-xs font-bold rounded-lg hover:opacity-90 transition" style={{ backgroundColor: brand.colorHex }}
  >
  {showAddLink ?'Cancelar' :'Añadir Enlace'}
  </button>
@@ -206,7 +208,7 @@ export function GenericModule({ currentBio, role, onUpdateBio }: GenericModulePr
  id="check-highlight"
  checked={isHighlight}
  onChange={(e) => setIsHighlight(e.target.checked)}
- className="rounded text-indigo-600 focus:ring-indigo-500"
+  className="rounded focus:ring-slate-400" style={{ color: brand.colorHex }}
  />
  <label htmlFor="check-highlight" className="text-xs text-slate-500 cursor-pointer selection:bg-indigo-100">
  Resaltar este enlace (Llamar la atención del visitante con diseño destacado)
@@ -223,7 +225,7 @@ export function GenericModule({ currentBio, role, onUpdateBio }: GenericModulePr
  </button>
  <button
  type="submit"
- className="px-4 py-1.5 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg shadow-2xs"
+  className="px-4 py-1.5 text-xs font-bold text-white rounded-lg shadow-2xs hover:opacity-90" style={{ backgroundColor: brand.colorHex }}
  >
  Generar Enlace Directo
  </button>
@@ -238,27 +240,28 @@ export function GenericModule({ currentBio, role, onUpdateBio }: GenericModulePr
  return (
  <div
  key={link.id}
- className={`p-1.5 rounded-2xl border transition-all flex items-center justify-between gap-4 group ${
- link.isHighlighted 
- ?'border-indigo-500 bg-gradient-to-r from-indigo-50/25 to-indigo-100/5 hover:-translate-y-0.5 shadow-xs' 
- :'border-slate-100 bg-white hover:border-slate-200 hover:-translate-y-0.5 shadow-2xs'
- }`}
- >
+  className={`p-1.5 rounded-2xl border transition-all flex items-center justify-between gap-4 group ${
+  link.isHighlighted 
+  ?'hover:-translate-y-0.5 shadow-xs' 
+  :'border-slate-100 bg-white hover:border-slate-200 hover:-translate-y-0.5 shadow-2xs'
+  }`}
+  style={link.isHighlighted ? { borderColor: brand.colorHex, background: `linear-gradient(135deg, ${brand.colorHex}0A, ${brand.colorHex}05)` } : undefined}
+  >
  <a
  href={link.url}
  target="_blank"
  rel="noreferrer"
  className="flex-1 p-2 flex items-center gap-3.5"
  >
- <div className={`p-2.5 rounded-xl ${
- link.isHighlighted ?'bg-indigo-600 text-white animate-pulse' :'bg-slate-50 text-slate-600'
- }`}>
+<div className={`p-2.5 rounded-xl ${
+  link.isHighlighted ?'text-white animate-pulse' :'bg-slate-50 text-slate-600'
+}`} style={link.isHighlighted ? { backgroundColor: brand.colorHex } : undefined}>
  <IconComponent className="w-5 h-5" />
  </div>
 
  <div className="text-left space-y-0.5">
  <span className="text-xs font-extrabold text-slate-800 flex items-center gap-1">
- {link.title} {link.isHighlighted && <span className="text-[8px] bg-indigo-100 text-indigo-700 font-extrabold rounded px-1 text-center animate-bounce">TOP</span>}
+ {link.title} {link.isHighlighted && <span className="text-[8px] font-extrabold rounded px-1 text-center animate-bounce" style={{ backgroundColor: `${brand.colorHex}20`, color: brand.colorHex }}>TOP</span>}
  </span>
  {link.description && <p className="text-[10px] text-slate-400 leading-tight">{link.description}</p>}
  </div>

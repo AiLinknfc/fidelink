@@ -5,6 +5,7 @@ import {
   Phone, User, Plus, Check, Plane, Scissors, Trash, Info, Sparkles
 } from 'lucide-react';
 import { PhotoInput } from './PhotoInput';
+import { useModuleBrand } from '@/platform/theme/ModuleBrand';
 
 interface PetModuleProps {
  currentBio: Biography;
@@ -13,6 +14,7 @@ interface PetModuleProps {
 }
 
 export function PetModule({ currentBio, role, onUpdateBio }: PetModuleProps) {
+ const { brand } = useModuleBrand();
  const pet = currentBio.pet;
  const [showCertificateModal, setShowCertificateModal] = useState<MedicalCertificate | null>(null);
  const [showServiceModal, setShowServiceModal] = useState<string | null>(null);
@@ -201,7 +203,7 @@ export function PetModule({ currentBio, role, onUpdateBio }: PetModuleProps) {
  {/* Specialty Pet Services Block (Training, Travel Flight, Funeral, Grooming) */}
  <div className="space-y-3">
  <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
- <Sparkles className="w-3.5 h-3.5 text-indigo-500" /> Servicios Especiales Integrados
+ <Sparkles className="w-3.5 h-3.5" style={{ color: brand.colorHex }} /> Servicios Especiales Integrados
  </h3>
  <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
  {/* Training */}
@@ -209,7 +211,7 @@ export function PetModule({ currentBio, role, onUpdateBio }: PetModuleProps) {
  onClick={() => setShowServiceModal('adiestramiento')}
  className="p-3 bg-white rounded-xl border border-slate-100 shadow-2xs hover:shadow-xs hover:border-slate-200 hover:-translate-y-0.5 transition-all text-left space-y-2 group"
  >
- <div className="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600 transition-colors">
+ <div className="w-8 h-8 rounded-lg flex items-center justify-center transition-colors" style={{ backgroundColor: `${brand.colorHex}12`, color: brand.colorHex }}>
  <Activity className="w-4 h-4" />
  </div>
  <div>
@@ -271,7 +273,7 @@ export function PetModule({ currentBio, role, onUpdateBio }: PetModuleProps) {
  {(role ==='veterinario' || role ==='creador') && (
  <button
  onClick={() => setShowAddCert(!showAddCert)}
- className="text-[10px] font-bold text-indigo-600 hover:text-indigo-800 flex items-center gap-0.5"
+ className="text-[10px] font-bold flex items-center gap-0.5" style={{ color: brand.colorHex }}
  >
  {showAddCert ?'Cancelar' :'Generar Certificado'}
  </button>
@@ -290,7 +292,7 @@ export function PetModule({ currentBio, role, onUpdateBio }: PetModuleProps) {
  placeholder="Ej. Licencia de Aptitud de Viaje Europeo"
  value={certTitle}
  onChange={(e) => setCertTitle(e.target.value)}
- className="w-full p-2 border border-slate-200 bg-white text-xs rounded-lg text-slate-700"
+ className="w-full p-2 border border-slate-200 bg-white text-xs rounded-lg text-slate-800 placeholder:text-slate-400"
  required
  />
  </div>
@@ -301,7 +303,7 @@ export function PetModule({ currentBio, role, onUpdateBio }: PetModuleProps) {
  placeholder="Ej. Dra. Amelia Ortiz (Mat. Prof 82923)"
  value={certAuthor}
  onChange={(e) => setCertAuthor(e.target.value)}
- className="w-full p-2 border border-slate-200 bg-white text-xs rounded-lg text-slate-700"
+ className="w-full p-2 border border-slate-200 bg-white text-xs rounded-lg text-slate-800 placeholder:text-slate-400"
  />
  </div>
  </div>
@@ -311,7 +313,7 @@ export function PetModule({ currentBio, role, onUpdateBio }: PetModuleProps) {
  placeholder="Declare el estado óptimo de salud, antiparasitarios activos y cumplimiento térmico de vacunas..."
  value={certDesc}
  onChange={(e) => setCertDesc(e.target.value)}
- className="w-full p-2 border border-slate-200 bg-white text-xs rounded-lg text-slate-700"
+ className="w-full p-2 border border-slate-200 bg-white text-xs rounded-lg text-slate-800 placeholder:text-slate-400"
  rows={2}
  required
  />
@@ -356,7 +358,7 @@ export function PetModule({ currentBio, role, onUpdateBio }: PetModuleProps) {
  <div className="flex flex-col items-end gap-1 flex-shrink-0 z-10">
  <button
  onClick={() => setShowCertificateModal(cert)}
- className="p-1.5 h-8 bg-indigo-50 hover:bg-indigo-100 rounded-lg text-indigo-600 transition-all active:scale-95 flex items-center justify-center gap-1 font-bold text-[9px]"
+ className="p-1.5 h-8 rounded-lg transition-all active:scale-95 flex items-center justify-center gap-1 font-bold text-[9px]" style={{ backgroundColor: `${brand.colorHex}12`, color: brand.colorHex }}
  title="Ver y Descargar Certificado"
  >
  <Download className="w-3.5 h-3.5" /> Descargar
@@ -408,10 +410,10 @@ export function PetModule({ currentBio, role, onUpdateBio }: PetModuleProps) {
  <input
  type="text"
  placeholder="Ej. Vacuna Rabia Anual"
- value={recTitle}
- onChange={(e) => setRecTitle(e.target.value)}
- className="w-full text-xs p-2 border border-slate-200 bg-white rounded-lg text-slate-700"
- required
+value={recTitle}
+  onChange={(e) => setRecTitle(e.target.value)}
+  className="w-full text-xs p-2 border border-slate-200 bg-white rounded-lg text-slate-800 placeholder:text-slate-400"
+  required
  />
  </div>
  <div>
@@ -419,9 +421,9 @@ export function PetModule({ currentBio, role, onUpdateBio }: PetModuleProps) {
  <input
  type="text"
  placeholder="Dra. Amelia Ortiz"
- value={recDr}
- onChange={(e) => setRecDr(e.target.value)}
- className="w-full text-xs p-2 border border-slate-200 bg-white rounded-lg text-slate-700"
+value={recDr}
+  onChange={(e) => setRecDr(e.target.value)}
+  className="w-full text-xs p-2 border border-slate-200 bg-white rounded-lg text-slate-800 placeholder:text-slate-400"
  />
  </div>
  <div>
@@ -444,10 +446,10 @@ export function PetModule({ currentBio, role, onUpdateBio }: PetModuleProps) {
  <label className="block text-[10px] text-slate-500">Fecha de Aplicación / Cita</label>
  <input
  type="date"
- value={recDate}
- onChange={(e) => setRecDate(e.target.value)}
- className="w-full text-xs p-2 border border-slate-200 bg-white rounded-lg text-slate-700"
- required
+value={recDate}
+  onChange={(e) => setRecDate(e.target.value)}
+  className="w-full text-xs p-2 border border-slate-200 bg-white rounded-lg text-slate-800 placeholder:text-slate-400"
+  required
  />
  </div>
  <div>
@@ -464,7 +466,7 @@ export function PetModule({ currentBio, role, onUpdateBio }: PetModuleProps) {
  placeholder="Describa el diagnóstico, número de lote de vacunas, dosis, recomendaciones post-procedimiento..."
  value={recDesc}
  onChange={(e) => setRecDesc(e.target.value)}
- className="w-full text-xs p-2 border border-slate-200 bg-white rounded-lg text-slate-700 shadow-2xs"
+ className="w-full text-xs p-2 border border-slate-200 bg-white rounded-lg text-slate-800 placeholder:text-slate-400 shadow-2xs"
  rows={2}
  required
  />
@@ -499,11 +501,11 @@ export function PetModule({ currentBio, role, onUpdateBio }: PetModuleProps) {
  } flex flex-col sm:flex-row items-start justify-between gap-4`}
  >
  <div className="flex gap-3">
- <div className={`p-2 rounded-lg flex-shrink-0 ${
- rec.type ==='vacuna' ?'bg-emerald-50 text-emerald-600' :
- rec.type ==='cirugia' ?'bg-rose-50 text-rose-600' :
- rec.type ==='desparasitacion' ?'bg-indigo-50 text-indigo-600' :'bg-slate-50 text-slate-600'
- }`}>
+  <div className={`p-2 rounded-lg flex-shrink-0 ${
+  rec.type ==='vacuna' ?'bg-emerald-50 text-emerald-600' :
+  rec.type ==='cirugia' ?'bg-rose-50 text-rose-600' :
+  rec.type ==='desparasitacion' ?'bg-slate-50' :'bg-slate-50 text-slate-600'
+  }`} style={rec.type ==='desparasitacion' ? { backgroundColor: `${brand.colorHex}12`, color: brand.colorHex } : undefined}>
  {rec.type ==='vacuna' ? <ShieldAlert className="w-5 h-5 animate-pulse" /> : <Activity className="w-5 h-5" />}
  </div>
 
@@ -633,7 +635,7 @@ export function PetModule({ currentBio, role, onUpdateBio }: PetModuleProps) {
  <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-fade-in">
  <div className="w-full max-w-md bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-100 animate-slide-up p-5 space-y-4">
  <div className="flex items-center gap-3">
- <div className="p-3 bg-indigo-50 text-indigo-600 rounded-xl">
+ <div className="p-3 rounded-xl" style={{ backgroundColor: `${brand.colorHex}12`, color: brand.colorHex }}>
  {showServiceModal ==='adiestramiento' && <Activity className="w-6 h-6" />}
  {showServiceModal ==='viajes' && <Plane className="w-6 h-6" />}
  {showServiceModal ==='peluqueria' && <Scissors className="w-6 h-6" />}
@@ -646,7 +648,7 @@ export function PetModule({ currentBio, role, onUpdateBio }: PetModuleProps) {
  {showServiceModal ==='peluqueria' &&'Estética y Peluquería Canina Can-Care'}
  {showServiceModal ==='funerario' &&'Funeral Memorial y Despedida Digna'}
  </h3>
- <p className="text-[10px] text-indigo-600 font-semibold uppercase tracking-wider">Enlaces Aliados del Ecosistema de Max</p>
+ <p className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: brand.colorHex }}>Enlaces Aliados del Ecosistema de Max</p>
  </div>
  </div>
 
@@ -662,7 +664,7 @@ export function PetModule({ currentBio, role, onUpdateBio }: PetModuleProps) {
  href="https://google.com"
  target="_blank"
  rel="noreferrer"
- className="flex-1 text-center py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold active:scale-95 transition-all"
+ className="flex-1 text-center py-2 text-white rounded-lg text-xs font-bold active:scale-95 transition-all hover:opacity-90" style={{ backgroundColor: brand.colorHex }}
  >
  Contactar Servicio Aliado
  </a>

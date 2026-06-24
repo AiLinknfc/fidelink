@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}
+:root,:root[data-theme="dark"]{
+  --bg:#07070d; --surface:#14141f;
+  --surf-03:rgba(255,255,255,.03); --surf-04:rgba(255,255,255,.04); --surf-05:rgba(255,255,255,.05); --surf-06:rgba(255,255,255,.06);
+  --bd-08:rgba(255,255,255,.08); --bd-10:rgba(255,255,255,.1); --bd-12:rgba(255,255,255,.12); --bd-14:rgba(255,255,255,.14); --bd-16:rgba(255,255,255,.16);
+  --fg:#f2f2fa; --fg-2:#dcdce8; --fg-muted:#b8b8cf; --fg-faint:#8a8aa3; --fg-dim:#6a6a85; --fg-dimm:#5a5a72;
+  --glass:rgba(20,20,31,.62); --glass-input:rgba(20,20,31,.52);
+  --overlay:rgba(7,7,13,.55); --scrim:rgba(5,5,10,.74);
+  --header-grad:linear-gradient(180deg,rgba(7,7,13,.82),rgba(7,7,13,0));
+  --winds-opacity:1;
+}
+:root[data-theme="light"]{
+  --bg:#eceaf3; --surface:#ffffff;
+  --surf-03:rgba(46,32,86,.035); --surf-04:rgba(46,32,86,.05); --surf-05:rgba(46,32,86,.06); --surf-06:rgba(46,32,86,.07);
+  --bd-08:rgba(46,32,86,.1); --bd-10:rgba(46,32,86,.13); --bd-12:rgba(46,32,86,.15); --bd-14:rgba(46,32,86,.18); --bd-16:rgba(46,32,86,.22);
+  --fg:#1d1a2e; --fg-2:#3a3552; --fg-muted:#5a5570; --fg-faint:#7a7592; --fg-dim:#9a96ad; --fg-dimm:#b6b2c6;
+  --glass:rgba(255,255,255,.72); --glass-input:rgba(255,255,255,.66);
+  --overlay:rgba(236,234,243,.5); --scrim:rgba(40,36,62,.42);
+  --header-grad:linear-gradient(180deg,rgba(236,234,243,.92),rgba(236,234,243,0));
+  --winds-opacity:.5;
+}
+html,body{margin:0;padding:0;background:var(--bg);transition:background-color .4s ease}
+.ai-winds{opacity:var(--winds-opacity);transition:opacity .4s ease}
+::selection{background:rgba(177,79,255,.35)}
+input,textarea,button{font-family:inherit}
+input::placeholder,textarea::placeholder{color:var(--fg-dim)}
+@keyframes drift1{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(8vw,6vh) scale(1.12)}}
+@keyframes drift2{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-7vw,-5vh) scale(1.15)}}
+@keyframes drift3{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(5vw,-7vh) scale(1.08)}}
+@keyframes drift4{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-6vw,8vh) scale(1.2)}}
+@keyframes floatIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes ripple{0%{transform:scale(.7);opacity:.7}100%{transform:scale(2.1);opacity:0}}
+@keyframes orbBreath{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+@keyframes wave{0%,100%{transform:scaleY(.3)}50%{transform:scaleY(1)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes blink{0%,49%{opacity:1}50%,100%{opacity:0}}
+@keyframes shimmer{to{background-position:200% center}}
+@keyframes pop{0%{transform:scale(.6);opacity:0}60%{transform:scale(1.05)}100%{transform:scale(1);opacity:1}}
+</style>
+</helmet>
+
+<div style="position:relative;width:100%;min-height:100vh;background:var(--bg);color:var(--fg);font-family:Inter,-apple-system,sans-serif;overflow-x:hidden">
+
+  <!-- NEON WINDS BACKGROUND -->
+  <div class="ai-winds" style="position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0">
+    <div style="position:absolute;width:70vw;height:70vw;left:-15vw;top:-20vh;border-radius:50%;background:radial-gradient(circle at 40% 40%,rgba(177,79,255,.5),rgba(84,42,173,.18) 45%,transparent 70%);filter:blur(80px);animation:drift1 24s ease-in-out infinite"></div>
+    <div style="position:absolute;width:60vw;height:60vw;right:-15vw;top:10vh;border-radius:50%;background:radial-gradient(circle at 50% 50%,rgba(46,46,255,.42),rgba(46,46,255,.1) 50%,transparent 72%);filter:blur(90px);animation:drift2 28s ease-in-out infinite"></div>
+    <div style="position:absolute;width:45vw;height:45vw;left:25vw;bottom:-20vh;border-radius:50%;background:radial-gradient(circle at 50% 50%,rgba(76,245,255,.22),transparent 68%);filter:blur(90px);animation:drift3 30s ease-in-out infinite"></div>
+    <div style="position:absolute;width:35vw;height:35vw;right:10vw;bottom:5vh;border-radius:50%;background:radial-gradient(circle at 50% 50%,rgba(255,61,240,.16),transparent 70%);filter:blur(80px);animation:drift4 26s ease-in-out infinite"></div>
+    <div ref="{{ glowRef }}" style="position:absolute;width:520px;height:520px;left:0;top:0;margin:-260px 0 0 -260px;border-radius:50%;background:radial-gradient(circle,rgba(177,79,255,.16),transparent 65%);filter:blur(20px);transition:transform .5s cubic-bezier(.22,1,.36,1);will-change:transform"></div>
+    <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,transparent 30%,var(--overlay) 100%)"></div>
+  </div>
+
+  <div style="position:relative;z-index:1">
+
+  <!-- ===================== LANDING ===================== -->
+  <sc-if value="{{ isLanding }}" hint-placeholder-val="{{ true }}">
+  <div style="min-height:100vh;display:flex;flex-direction:column">
+    <!-- nav -->
+    <nav style="display:flex;align-items:center;justify-content:space-between;padding:24px clamp(20px,5vw,56px)">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="width:30px;height:30px;border-radius:50%;background:conic-gradient(from 140deg,#c878ff,#2e2eff,#4cf5ff,#c878ff);box-shadow:0 0 22px rgba(177,79,255,.6);position:relative">
+          <div style="position:absolute;inset:7px;border-radius:50%;background:var(--bg)"></div>
+          <div style="position:absolute;inset:12px;border-radius:50%;background:#c878ff"></div>
+        </div>
+        <span style="font-size:20px;font-weight:600;letter-spacing:-.02em">BioLink</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <button onClick="{{ toggleTheme }}" title="Tema claro / oscuro" style="width:38px;height:38px;border-radius:50%;border:1px solid var(--bd-12);background:var(--surf-05);color:var(--fg);cursor:pointer;display:flex;align-items:center;justify-content:center;flex:none">{{ themeIcon }}</button>
+        <button onClick="{{ goPublishedDemo }}" style="background:none;border:none;color:var(--fg-muted);font-size:14px;cursor:pointer;padding:8px 10px">Ver ejemplo</button>
+        <button onClick="{{ start }}" style="background:var(--surf-06);border:1px solid var(--bd-12);color:var(--fg);font-size:14px;cursor:pointer;padding:9px 18px;border-radius:999px;backdrop-filter:blur(10px)">Iniciar sesión</button>
+      </div>
+    </nav>
+
+    <!-- VARIANT A : centered, voice-first (BLUE) -->
+    <sc-if value="{{ isVariantA }}" hint-placeholder-val="{{ true }}">
+    <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px clamp(20px,5vw,56px) 60px;max-width:920px;margin:0 auto">
+      <div style="font-size:12px;letter-spacing:.16em;text-transform:uppercase;font-weight:600;color:#5b9bff;margin-bottom:22px;animation:floatIn .7s both">Presencia profesional con IA</div>
+      <h1 style="font-size:clamp(40px,6.4vw,76px);font-weight:200;line-height:1.04;letter-spacing:-.03em;margin:0 0 22px;animation:fadeUp .8s both .05s">Crea tu perfil profesional<br>en <span style="font-weight:500;background:linear-gradient(90deg,#5b9bff,#2e6fff 45%,#4cf5ff);background-size:200% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shimmer 6s linear infinite">menos de 2 minutos</span></h1>
+      <p style="font-size:clamp(16px,1.7vw,19px);line-height:1.55;color:var(--fg-muted);font-weight:300;max-width:560px;margin:0 0 44px;animation:fadeUp .8s both .12s">Responde unas pocas preguntas y obtén una página optimizada para mostrar tus servicios, experiencia y habilidades.</p>
+
+      <!-- mic orb -->
+      <div style="position:relative;width:132px;height:132px;margin-bottom:18px;animation:pop .7s both .2s">
+        <div style="position:absolute;inset:0;border-radius:50%;border:1px solid rgba(46,111,255,.55);animation:ripple 2.6s ease-out infinite"></div>
+        <div style="position:absolute;inset:0;border-radius:50%;border:1px solid rgba(46,111,255,.55);animation:ripple 2.6s ease-out infinite 1.3s"></div>
+        <button onClick="{{ start }}" style="position:absolute;inset:0;border-radius:50%;border:none;cursor:pointer;background:radial-gradient(circle at 38% 32%,#5b9bff,#2e44d6 55%,#142a7a);box-shadow:0 0 50px rgba(46,111,255,.65),inset 0 2px 12px rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;animation:orbBreath 4s ease-in-out infinite">
+          <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"></rect><path d="M5 10a7 7 0 0 0 14 0"></path><path d="M12 18v4"></path></svg>
+        </button>
+      </div>
+      <div style="font-size:14px;color:var(--fg-muted);margin-bottom:34px;font-weight:300">Toca y <span style="color:var(--fg)">háblame</span> — yo construyo tu perfil</div>
+
+      <!-- transparent text box -->
+      <div style="width:100%;max-width:560px;display:flex;align-items:center;gap:10px;padding:8px 8px 8px 22px;border-radius:999px;background:var(--glass-input);border:1px solid var(--bd-12);backdrop-filter:blur(20px);box-shadow:0 8px 40px rgba(0,0,0,.4);animation:fadeUp .8s both .28s">
+        <input onKeyDown="{{ onLandingKey }}" value="{{ landingInput }}" onInput="{{ onLandingInput }}" placeholder="…o escríbelo aquí: «Soy diseñadora freelance»" style="flex:1;background:none;border:none;outline:none;color:var(--fg);font-size:15px;padding:8px 0">
+        <button onClick="{{ startFromInput }}" style="width:42px;height:42px;border-radius:50%;border:none;cursor:pointer;background:linear-gradient(135deg,#2e6fff,#1b2ed0);display:flex;align-items:center;justify-content:center;flex:none">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg>
+        </button>
+      </div>
+
+      <!-- benefits -->
+      <div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:34px;max-width:680px;animation:fadeUp .8s both .36s">
+        <sc-for list="{{ benefits }}" as="b" hint-placeholder-count="6">
+          <div style="display:flex;align-items:center;gap:7px;padding:8px 14px;border-radius:999px;background:var(--surf-04);border:1px solid var(--bd-08);font-size:13px;color:var(--fg-muted)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4cf5ff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>
+            <span>{{ b }}</span>
+          </div>
+        </sc-for>
+      </div>
+
+      <button onClick="{{ start }}" style="margin-top:40px;padding:16px 40px;border-radius:999px;border:none;cursor:pointer;background:linear-gradient(135deg,#2e6fff,#1d3aa8);color:#fff;font-size:16px;font-weight:600;box-shadow:0 0 32px rgba(46,111,255,.5);animation:fadeUp .8s both .44s">Crear mi perfil gratis</button>
+      <div style="margin-top:14px;font-size:12.5px;color:var(--fg-dim);animation:fadeUp .8s both .5s">Sin contraseña · Sin tarjeta · Resultado antes de registrarte</div>
+    </div>
+    </sc-if>
+
+    <!-- VARIANT B : split / product OS -->
+    <sc-if value="{{ isVariantB }}" hint-placeholder-val="{{ false }}">
+    <div style="flex:1;display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center;padding:20px clamp(20px,5vw,72px) 60px;max-width:1240px;margin:0 auto;width:100%">
+      <div>
+        <div style="font-size:12px;letter-spacing:.16em;text-transform:uppercase;font-weight:600;color:#c878ff;margin-bottom:22px;animation:floatIn .7s both">Presencia profesional con IA</div>
+        <h1 style="font-size:clamp(38px,4.6vw,64px);font-weight:200;line-height:1.05;letter-spacing:-.03em;margin:0 0 24px;animation:fadeUp .8s both .05s">Crea tu perfil profesional en <span style="font-weight:500;background:linear-gradient(90deg,#c878ff,#b14fff 45%,#4cf5ff);background-size:200% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shimmer 6s linear infinite">menos de 2 minutos</span></h1>
+        <p style="font-size:18px;line-height:1.55;color:var(--fg-muted);font-weight:300;max-width:480px;margin:0 0 32px;animation:fadeUp .8s both .12s">Cuéntame a qué te dedicas y armo tu perfil optimizado para conseguir clientes. Sin formularios, sin diseño, sin complicaciones.</p>
+        <div style="display:flex;flex-direction:column;gap:13px;margin-bottom:36px;animation:fadeUp .8s both .2s">
+          <sc-for list="{{ benefits }}" as="b" hint-placeholder-count="6">
+            <div style="display:flex;align-items:center;gap:11px;font-size:15px;color:var(--fg-2);font-weight:300">
+              <span style="width:22px;height:22px;border-radius:50%;background:rgba(76,245,255,.12);border:1px solid rgba(76,245,255,.3);display:flex;align-items:center;justify-content:center;flex:none"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#4cf5ff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span>
+              {{ b }}
+            </div>
+          </sc-for>
+        </div>
+        <div style="display:flex;align-items:center;gap:16px;animation:fadeUp .8s both .3s">
+          <button onClick="{{ start }}" style="padding:16px 36px;border-radius:999px;border:none;cursor:pointer;background:linear-gradient(135deg,#b14fff,#542aad);color:#fff;font-size:16px;font-weight:600;box-shadow:0 0 32px rgba(177,79,255,.45)">Crear mi perfil gratis</button>
+          <button onClick="{{ goPublishedDemo }}" style="background:none;border:none;color:var(--fg-muted);font-size:14px;cursor:pointer">Ver un ejemplo →</button>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:center;animation:pop .8s both .2s">
+        <div style="position:relative;width:300px;height:300px">
+          <div style="position:absolute;inset:-10px;border-radius:50%;border:1px solid rgba(177,79,255,.4);animation:ripple 3s ease-out infinite"></div>
+          <div style="position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 36% 30%,#c878ff,#6a28c4 50%,#2a1560 100%);box-shadow:0 0 80px rgba(177,79,255,.55),inset 0 4px 30px rgba(255,255,255,.3);animation:orbBreath 5s ease-in-out infinite"></div>
+          <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:6px">
+            <sc-for list="{{ waveBars }}" as="w" hint-placeholder-count="7">
+              <span style="{{ w }}"></span>
+            </sc-for>
+          </div>
+          <button onClick="{{ start }}" style="position:absolute;inset:0;border-radius:50%;border:none;background:transparent;cursor:pointer"></button>
+        </div>
+      </div>
+    </div>
+    </sc-if>
+
+    <!-- variant toggle -->
+    <div style="position:fixed;left:50%;bottom:22px;transform:translateX(-50%);display:flex;gap:6px;padding:5px;border-radius:999px;background:var(--glass);border:1px solid var(--bd-10);backdrop-filter:blur(16px);z-index:5">
+      <button onClick="{{ setVariantA }}" style="border:none;cursor:pointer;padding:7px 16px;border-radius:999px;font-size:12.5px;background:{{ tabAbg }};color:{{ tabAfg }}">Inicio · A</button>
+      <button onClick="{{ setVariantB }}" style="border:none;cursor:pointer;padding:7px 16px;border-radius:999px;font-size:12.5px;background:{{ tabBbg }};color:{{ tabBfg }}">Inicio · B</button>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- ===================== CHAT / PROFILING ===================== -->
+  <sc-if value="{{ isChat }}" hint-placeholder-val="{{ false }}">
+  <div style="min-height:100vh;display:flex;flex-direction:column">
+    <!-- progress header -->
+    <div style="position:sticky;top:0;z-index:6;padding:18px clamp(20px,5vw,56px) 16px;background:var(--header-grad);backdrop-filter:blur(8px)">
+      <div style="max-width:760px;margin:0 auto;display:flex;align-items:center;gap:16px">
+        <div style="display:flex;align-items:center;gap:9px;flex:none">
+          <div style="width:24px;height:24px;border-radius:50%;background:conic-gradient(from 140deg,#c878ff,#2e2eff,#4cf5ff,#c878ff);position:relative"><div style="position:absolute;inset:6px;border-radius:50%;background:var(--bg)"></div><div style="position:absolute;inset:9px;border-radius:50%;background:#c878ff"></div></div>
+          <span style="font-size:16px;font-weight:600;letter-spacing:-.02em">BioLink</span>
+        </div>
+        <div style="flex:1">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px">
+            <span style="font-size:12.5px;color:var(--fg-muted)">Perfil Profesional</span>
+            <span style="font-size:12.5px;font-weight:600"><span style="color:#c878ff">{{ progress }}%</span> <span style="color:var(--fg-dim)">completo</span></span>
+          </div>
+          <div style="height:6px;border-radius:999px;background:var(--bd-08);overflow:hidden">
+            <div style="{{ barStyle }}"></div>
+          </div>
+        </div>
+        <button onClick="{{ toggleTheme }}" title="Tema claro / oscuro" style="flex:none;width:34px;height:34px;border-radius:50%;border:1px solid var(--bd-12);background:var(--surf-05);color:var(--fg);cursor:pointer;display:flex;align-items:center;justify-content:center">{{ themeIcon }}</button>
+        <button onClick="{{ exitToLanding }}" style="flex:none;background:none;border:none;color:var(--fg-dim);font-size:12.5px;cursor:pointer;padding:6px 2px" style-hover="color:#c878ff;text-decoration:underline">Saltar</button>
+      </div>
+      <!-- phase rail -->
+      <div style="max-width:760px;margin:12px auto 0;display:flex;gap:6px;justify-content:center">
+        <sc-for list="{{ phaseItems }}" as="p" hint-placeholder-count="6">
+          <div style="flex:1;text-align:center" title="{{ p.label }}">
+            <div style="{{ p.style }}"></div>
+            <div style="{{ p.labelStyle }}">{{ p.label }}</div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <!-- gamification msg -->
+    <div style="text-align:center;padding:8px 20px;min-height:30px">
+      <span style="{{ gamStyle }}">
+        <span style="width:6px;height:6px;border-radius:50%;background:#4cf5ff;flex:none"></span>{{ gamMsg }}
+      </span>
+    </div>
+
+    <!-- question card -->
+    <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px clamp(20px,5vw,56px) 30px;width:100%">
+      <div style="{{ cardStyle }}">
+        <div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--fg-dim);font-weight:600;margin-bottom:14px">{{ qPhaseLabel }}</div>
+        <h2 style="font-size:clamp(26px,3.6vw,40px);font-weight:300;line-height:1.12;letter-spacing:-.02em;margin:0 0 12px">{{ qPrompt }}</h2>
+        <sc-if value="{{ hasSub }}" hint-placeholder-val="{{ false }}"><p style="font-size:15px;color:var(--fg-faint);font-weight:300;margin:0 0 30px;max-width:520px">{{ qSub }}</p></sc-if>
+
+        <!-- chips -->
+        <sc-if value="{{ hasChips }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:30px">
+          <sc-for list="{{ chipItems }}" as="c" hint-placeholder-count="4">
+            <button onClick="{{ c.onClick }}" style="{{ c.style }}">
+              <sc-if value="{{ c.sel }}" hint-placeholder-val="{{ false }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4cf5ff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px"><path d="M20 6 9 17l-5-5"></path></svg></sc-if>
+              {{ c.label }}
+            </button>
+          </sc-for>
+        </div>
+        </sc-if>
+
+        <!-- continue (multi) -->
+        <sc-if value="{{ isMulti }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px">
+          <button onClick="{{ continueMulti }}" style="{{ continueStyle }}">Continuar →</button>
+          <sc-if value="{{ skippable }}" hint-placeholder-val="{{ false }}"><button onClick="{{ skipStep }}" style="background:none;border:none;color:var(--fg-dim);font-size:14px;cursor:pointer">Omitir esta sección</button></sc-if>
+        </div>
+        </sc-if>
+
+        <!-- input bar -->
+        <div style="display:flex;align-items:center;gap:12px;padding:8px 8px 8px 20px;border-radius:18px;background:var(--glass-input);border:1px solid var(--bd-12);backdrop-filter:blur(20px);box-shadow:0 8px 40px rgba(0,0,0,.4)">
+          <input onKeyDown="{{ onChatKey }}" value="{{ chatInput }}" onInput="{{ onChatInput }}" placeholder="{{ qPlaceholder }}" style="flex:1;background:none;border:none;outline:none;color:var(--fg);font-size:15.5px;font-weight:300;padding:10px 0">
+          <button onClick="{{ toggleMic }}" style="{{ micStyle }}">
+            <sc-if value="{{ listening }}" hint-placeholder-val="{{ false }}">
+              <span style="display:flex;align-items:center;gap:3px">
+                <span style="width:3px;height:16px;border-radius:9px;background:#fff;animation:wave .8s ease-in-out infinite"></span>
+                <span style="width:3px;height:16px;border-radius:9px;background:#fff;animation:wave .8s ease-in-out infinite .15s"></span>
+                <span style="width:3px;height:16px;border-radius:9px;background:#fff;animation:wave .8s ease-in-out infinite .3s"></span>
+                <span style="width:3px;height:16px;border-radius:9px;background:#fff;animation:wave .8s ease-in-out infinite .45s"></span>
+              </span>
+            </sc-if>
+            <sc-if value="{{ notListening }}" hint-placeholder-val="{{ true }}">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"></rect><path d="M5 10a7 7 0 0 0 14 0"></path><path d="M12 18v4"></path></svg>
+            </sc-if>
+          </button>
+          <button onClick="{{ sendChat }}" style="width:46px;height:46px;border-radius:13px;border:none;cursor:pointer;background:linear-gradient(135deg,#b14fff,#2e2eff);display:flex;align-items:center;justify-content:center;flex:none">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg>
+          </button>
+        </div>
+        <div style="margin-top:12px;font-size:12px;color:var(--fg-dim)">Enter para enviar · toca el micrófono para responder hablando</div>
+        <sc-if value="{{ showSkip }}" hint-placeholder-val="{{ false }}">
+        <button onClick="{{ skipStep }}" style="margin-top:12px;background:none;border:none;color:var(--fg-faint);font-size:13px;cursor:pointer;text-decoration:underline;text-underline-offset:3px">Omitir esta pregunta</button>
+        </sc-if>
+      </div>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- ===================== GENERATING ===================== -->
+  <sc-if value="{{ isGenerating }}" hint-placeholder-val="{{ false }}">
+  <div style="position:fixed;inset:0;z-index:20;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(7,7,13,.7);backdrop-filter:blur(10px)">
+    <div style="width:96px;height:96px;border-radius:50%;background:conic-gradient(from 0deg,transparent,#b14fff,#4cf5ff,transparent);animation:spin 1.1s linear infinite;display:flex;align-items:center;justify-content:center">
+      <div style="width:78px;height:78px;border-radius:50%;background:var(--bg);display:flex;align-items:center;justify-content:center"><div style="width:46px;height:46px;border-radius:50%;background:radial-gradient(circle at 38% 32%,#c878ff,#542aad)"></div></div>
+    </div>
+    <div style="margin-top:30px;font-size:22px;font-weight:300;letter-spacing:-.01em">Construyendo tu perfil profesional</div>
+    <div style="margin-top:10px;font-size:14px;color:#c878ff;font-family:'JetBrains Mono',monospace">{{ genLine }}</div>
+  </div>
+  </sc-if>
+
+  <!-- ===================== PREVIEW ===================== -->
+  <sc-if value="{{ isPreview }}" hint-placeholder-val="{{ false }}">
+  <div>
+    <!-- preview top bar -->
+    <div style="position:sticky;top:0;z-index:8;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px clamp(20px,5vw,56px);background:var(--glass);backdrop-filter:blur(20px);border-bottom:1px solid var(--bd-08)">
+      <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--fg-muted)">
+        <span style="width:8px;height:8px;border-radius:50%;background:#ffb020"></span>Vista previa · sin publicar
+      </div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <button onClick="{{ toggleTheme }}" title="Tema claro / oscuro" style="width:38px;height:38px;border-radius:50%;border:1px solid var(--bd-12);background:var(--surf-05);color:var(--fg);cursor:pointer;display:flex;align-items:center;justify-content:center;flex:none">{{ themeIcon }}</button>
+        <button onClick="{{ editProfile }}" style="background:var(--surf-06);border:1px solid var(--bd-12);color:var(--fg);font-size:14px;cursor:pointer;padding:10px 18px;border-radius:999px">Seguir editando</button>
+        <button onClick="{{ goConvert }}" style="background:linear-gradient(135deg,#b14fff,#542aad);border:none;color:#fff;font-size:14px;font-weight:600;cursor:pointer;padding:10px 22px;border-radius:999px;box-shadow:0 0 24px rgba(177,79,255,.4)">Guardar y publicar</button>
+      </div>
+    </div>
+
+    <div style="width:100%;max-width:412px;margin:0 auto;padding:30px 20px 80px;animation:fadeUp .7s both">
+      <!-- hero -->
+      <div style="display:flex;flex-direction:column;align-items:center;text-align:center">
+        <div style="width:84px;height:84px;border-radius:50%;background:conic-gradient(from 140deg,#c878ff,#2e2eff,#4cf5ff,#c878ff);padding:2px;flex:none;box-shadow:0 0 36px rgba(177,79,255,.4)">
+          <div style="width:100%;height:100%;border-radius:50%;background:linear-gradient(135deg,#1a1230,#2a1560);display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:300;letter-spacing:.02em;color:#fff">{{ profile.initials }}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:7px;margin-top:14px">
+          <h1 style="font-size:24px;font-weight:500;letter-spacing:-.02em;margin:0">{{ profile.name }}</h1>
+          <span title="Cuenta verificada" style="display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,#b14fff,#2e6fff);flex:none;box-shadow:0 0 12px rgba(177,79,255,.5)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span>
+        </div>
+        <div style="font-size:15px;color:#c878ff;font-weight:500;margin-top:5px">{{ profile.title }}</div>
+        <div style="font-size:13px;color:var(--fg-faint);margin-top:6px">{{ profile.metaLine }}</div>
+
+        <!-- contact links: web, mail, socials -->
+        <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:14px">
+          <sc-for list="{{ contactItems }}" as="ct" hint-placeholder-count="4">
+            <a href="{{ ct.href }}" title="{{ ct.label }}" style="display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:50%;background:var(--surf-05);border:1px solid var(--bd-12);color:var(--fg-2);text-decoration:none" style-hover="border-color:rgba(177,79,255,.6);color:#fff">
+              {{ ct.iconEl }}
+            </a>
+          </sc-for>
+        </div>
+
+        <!-- review stars -->
+        <button onClick="{{ openReview }}" style="display:inline-flex;align-items:center;gap:8px;margin-top:16px;background:none;border:none;cursor:pointer;padding:4px">
+          <span style="display:inline-flex;gap:2px">
+            <sc-for list="{{ starItems }}" as="star" hint-placeholder-count="5">
+              <svg width="18" height="18" viewBox="0 0 24 24" style="{{ star.style }}"><path d="M12 2 15 9l7 .5-5.5 4.5L18 21l-6-4-6 4 1.5-7L2 9.5 9 9z" stroke-linejoin="round"></path></svg>
+            </sc-for>
+          </span>
+          <span style="font-size:13px;color:var(--fg-2);font-weight:500">{{ ratingAvg }}</span>
+          <span style="font-size:12px;color:var(--fg-dim)">({{ ratingCount }})</span>
+        </button>
+      </div>
+
+      <!-- value prop -->
+      <p style="font-size:16px;font-weight:300;line-height:1.5;color:var(--fg);text-align:center;margin:18px 0 16px;letter-spacing:-.01em">{{ profile.valueProp }}</p>
+
+      <!-- primary actions -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px">
+        <div style="display:flex;align-items:center;justify-content:center;gap:7px;padding:12px;border-radius:13px;background:linear-gradient(135deg,#b14fff,#542aad);color:#fff;font-size:14px;font-weight:600;box-shadow:0 0 22px rgba(177,79,255,.3);cursor:pointer"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v12H5.2L4 17.2z"></path></svg>Contactar</div>
+        <div style="display:flex;align-items:center;justify-content:center;gap:7px;padding:12px;border-radius:13px;background:rgba(37,211,102,.14);border:1px solid rgba(37,211,102,.4);color:#5cf08a;font-size:14px;font-weight:500;cursor:pointer"><svg width="15" height="15" viewBox="0 0 24 24" fill="#5cf08a"><path d="M12 2a10 10 0 0 0-8.7 15l-1.3 5 5.1-1.3A10 10 0 1 0 12 2z"></path></svg>WhatsApp</div>
+      </div>
+
+      <!-- compact exp + win chips -->
+      <div style="display:flex;gap:8px;margin-bottom:18px">
+        <button onClick="{{ toggleExp }}" style="{{ expBtnStyle }}">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4cf5ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex:none"><path d="M12 8v4l3 2"></path><circle cx="12" cy="12" r="9"></circle></svg>
+          {{ profile.expChip }}
+        </button>
+        <button onClick="{{ toggleWin }}" style="{{ winBtnStyle }}">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#c878ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex:none"><path d="M12 2 15 9l7 .5-5.5 4.5L18 21l-6-4-6 4 1.5-7L2 9.5 9 9z" stroke-linejoin="round"></path></svg>
+          Logro
+        </button>
+      </div>
+      <sc-if value="{{ expandOpen }}" hint-placeholder-val="{{ false }}">
+      <div style="padding:14px 16px;border-radius:14px;background:rgba(177,79,255,.07);border:1px solid rgba(177,79,255,.18);font-size:13.5px;line-height:1.55;color:var(--fg-2);font-weight:300;margin-bottom:18px;animation:floatIn .35s both">{{ expandText }}</div>
+      </sc-if>
+
+      <!-- about (short, AI-suggest) -->
+      <div style="margin-bottom:20px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+          <div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--fg-dim);font-weight:600">Sobre mí</div>
+          <button onClick="{{ suggestBio }}" style="display:inline-flex;align-items:center;gap:5px;background:rgba(177,79,255,.1);border:1px solid rgba(177,79,255,.3);color:#c878ff;font-size:11.5px;font-weight:500;cursor:pointer;padding:5px 10px;border-radius:999px">
+            <sc-if value="{{ bioBusy }}" hint-placeholder-val="{{ false }}"><span style="width:11px;height:11px;border-radius:50%;border:2px solid rgba(200,120,255,.4);border-top-color:#c878ff;animation:spin .7s linear infinite;flex:none"></span></sc-if>
+            <sc-if value="{{ bioIdle }}" hint-placeholder-val="{{ true }}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#c878ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"></path></svg></sc-if>
+            {{ bioBtnLabel }}
+          </button>
+        </div>
+        <p style="font-size:14.5px;line-height:1.6;color:var(--fg-2);font-weight:300;margin:0">{{ bioShort }}</p>
+        <div style="font-size:11px;color:var(--fg-dimm);margin-top:6px">{{ bioWordCount }} / 30 palabras</div>
+      </div>
+
+      <!-- gallery (collapsible) -->
+      <div style="margin-bottom:20px">
+        <button onClick="{{ toggleGallery }}" style="display:flex;align-items:center;justify-content:space-between;width:100%;padding:13px 16px;border-radius:14px;background:var(--surf-04);border:1px solid var(--bd-10);color:var(--fg-2);font-size:14px;font-weight:500;cursor:pointer">
+          <span style="display:inline-flex;align-items:center;gap:9px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4cf5ff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="8.5" cy="8.5" r="1.6"></circle><path d="m21 15-5-5L5 21"></path></svg>Galería de trabajo</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="{{ galleryChevron }}"><path d="m6 9 6 6 6-6"></path></svg>
+        </button>
+        <sc-if value="{{ galleryOpen }}" hint-placeholder-val="{{ false }}">
+        <div style="margin-top:12px;animation:floatIn .35s both">
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+            <sc-for list="{{ gallerySlots }}" as="g" hint-placeholder-count="3">
+              <div onClick="{{ g.onClick }}" style="{{ g.style }}">
+                <sc-if value="{{ g.filled }}" hint-placeholder-val="{{ false }}">{{ g.imgEl }}</sc-if>
+                <sc-if value="{{ g.empty }}" hint-placeholder-val="{{ true }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"></path></svg></sc-if>
+              </div>
+            </sc-for>
+          </div>
+          <div style="font-size:11px;color:var(--fg-dim);margin-top:8px;text-align:center">Sube hasta 3 fotos · toca una miniatura para ampliarla</div>
+        </div>
+        </sc-if>
+      </div>
+
+      <!-- services (tap = pay) -->
+      <div style="margin-bottom:18px">
+        <div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--fg-dim);font-weight:600;margin-bottom:10px">Servicios</div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <sc-for list="{{ serviceItems }}" as="s" hint-placeholder-count="3">
+            <div onClick="{{ s.onClick }}" style="{{ s.style }}">
+              <div style="flex:1;min-width:0">
+                <div style="font-size:14.5px;font-weight:600">{{ s.name }}</div>
+                <div style="font-size:12px;color:var(--fg-faint);font-weight:300;margin-top:2px">{{ s.price }} · {{ s.time }}</div>
+              </div>
+              <span style="display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;color:#c878ff;flex:none">Pagar<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#c878ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+
+    <!-- hidden gallery file input -->
+    <input ref="{{ fileRef }}" type="file" accept="image/*" onChange="{{ onPickPhoto }}" style="display:none">
+
+    <!-- LIGHTBOX -->
+    <sc-if value="{{ lightboxOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeLightbox }}" style="position:fixed;inset:0;z-index:40;background:var(--scrim);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:24px;animation:floatIn .25s both">
+      {{ lightboxImgEl }}
+      <button onClick="{{ closeLightbox }}" style="position:absolute;top:20px;right:20px;width:42px;height:42px;border-radius:50%;border:1px solid rgba(255,255,255,.2);background:var(--glass);color:#fff;cursor:pointer;font-size:20px;display:flex;align-items:center;justify-content:center">✕</button>
+    </div>
+    </sc-if>
+
+    <!-- REVIEW MODAL -->
+    <sc-if value="{{ reviewOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeReview }}" style="position:fixed;inset:0;z-index:40;background:var(--scrim);backdrop-filter:blur(8px);display:flex;align-items:flex-end;justify-content:center;padding:0;animation:floatIn .25s both">
+      <div onClick="{{ stop }}" style="width:100%;max-width:440px;background:var(--surface);border:1px solid var(--bd-12);border-radius:26px 26px 0 0;padding:26px 24px 32px;box-shadow:0 -20px 60px rgba(0,0,0,.6)">
+        <div style="width:40px;height:4px;border-radius:999px;background:var(--bd-16);margin:0 auto 18px"></div>
+        <sc-if value="{{ reviewForm }}" hint-placeholder-val="{{ true }}">
+          <h3 style="font-size:20px;font-weight:400;margin:0 0 4px;text-align:center">Califica este servicio</h3>
+          <p style="font-size:13px;color:var(--fg-faint);font-weight:300;text-align:center;margin:0 0 18px">Tu opinión aumenta la reputación del perfil.</p>
+          <div style="display:flex;justify-content:center;gap:8px;margin-bottom:18px">
+            <sc-for list="{{ pickStars }}" as="p" hint-placeholder-count="5">
+              <button onClick="{{ p.onClick }}" style="background:none;border:none;cursor:pointer;padding:2px"><svg width="34" height="34" viewBox="0 0 24 24" style="{{ p.style }}"><path d="M12 2 15 9l7 .5-5.5 4.5L18 21l-6-4-6 4 1.5-7L2 9.5 9 9z" stroke-linejoin="round"></path></svg></button>
+            </sc-for>
+          </div>
+          <textarea value="{{ reviewText }}" onInput="{{ onReviewText }}" placeholder="Cuenta tu experiencia (opcional)…" style="width:100%;box-sizing:border-box;min-height:84px;resize:none;background:var(--surf-04);border:1px solid var(--bd-12);border-radius:14px;color:var(--fg);font-size:14px;padding:13px 15px;outline:none;font-weight:300"></textarea>
+          <button onClick="{{ submitReview }}" style="{{ submitReviewStyle }}">Publicar reseña</button>
+        </sc-if>
+        <sc-if value="{{ reviewDone }}" hint-placeholder-val="{{ false }}">
+          <div style="text-align:center;padding:14px 0 8px">
+            <div style="width:58px;height:58px;margin:0 auto 16px;border-radius:50%;background:radial-gradient(circle at 38% 32%,#c878ff,#542aad);display:flex;align-items:center;justify-content:center;box-shadow:0 0 36px rgba(177,79,255,.5)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></div>
+            <h3 style="font-size:20px;font-weight:400;margin:0 0 6px">¡Gracias por tu reseña!</h3>
+            <p style="font-size:14px;color:var(--fg-muted);font-weight:300;margin:0 0 20px">La reputación del perfil ahora es <span style="color:#c878ff;font-weight:600">{{ ratingAvg }}</span> con {{ ratingCount }} reseñas.</p>
+            <button onClick="{{ closeReview }}" style="width:100%;padding:13px;border-radius:13px;border:none;cursor:pointer;background:var(--surf-06);border:1px solid var(--bd-14);color:var(--fg-2);font-size:14px">Cerrar</button>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+    </sc-if>
+
+    <!-- PAYMENT SHEET -->
+    <sc-if value="{{ payOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closePay }}" style="position:fixed;inset:0;z-index:40;background:var(--scrim);backdrop-filter:blur(8px);display:flex;align-items:flex-end;justify-content:center;animation:floatIn .25s both">
+      <div onClick="{{ stop }}" style="width:100%;max-width:440px;background:var(--surface);border:1px solid var(--bd-12);border-radius:26px 26px 0 0;padding:24px 22px 30px;box-shadow:0 -20px 60px rgba(0,0,0,.6)">
+        <div style="width:40px;height:4px;border-radius:999px;background:var(--bd-16);margin:0 auto 16px"></div>
+        <div style="font-size:12px;color:var(--fg-faint);text-align:center;font-weight:300">Pagar servicio</div>
+        <h3 style="font-size:19px;font-weight:500;margin:4px 0 2px;text-align:center">{{ payName }}</h3>
+        <div style="font-size:22px;font-weight:300;color:#c878ff;text-align:center;margin-bottom:18px">{{ payPrice }}</div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <sc-for list="{{ payMethods }}" as="m" hint-placeholder-count="6">
+            <div onClick="{{ stop }}" style="display:flex;align-items:center;gap:13px;padding:13px 15px;border-radius:14px;background:var(--surf-04);border:1px solid var(--bd-10);cursor:pointer" style-hover="border-color:rgba(177,79,255,.5);background:rgba(177,79,255,.06)">
+              <span style="{{ m.badge }}">{{ m.tag }}</span>
+              <div style="flex:1;min-width:0"><div style="font-size:14.5px;font-weight:600">{{ m.name }}</div><div style="font-size:11.5px;color:var(--fg-faint);font-weight:300">{{ m.desc }}</div></div>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:none"><path d="m9 6 6 6-6 6"></path></svg>
+            </div>
+          </sc-for>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:center;gap:6px;margin-top:16px;font-size:11.5px;color:var(--fg-dim)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="11" width="14" height="9" rx="2"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg>Pago seguro y cifrado</div>
+      </div>
+    </div>
+    </sc-if>
+  </div>
+  </sc-if>
+
+  <!-- ===================== CONVERT + AUTH ===================== -->
+  <sc-if value="{{ isConvert }}" hint-placeholder-val="{{ false }}">
+  <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px 20px">
+    <div style="width:100%;max-width:440px;padding:40px 34px;border-radius:28px;background:var(--glass);border:1px solid var(--bd-12);backdrop-filter:blur(24px);box-shadow:0 24px 80px rgba(0,0,0,.6);text-align:center;animation:pop .6s both">
+      <!-- step: pitch -->
+      <sc-if value="{{ convertPitch }}" hint-placeholder-val="{{ true }}">
+        <div style="width:64px;height:64px;margin:0 auto 22px;border-radius:50%;background:radial-gradient(circle at 38% 32%,#c878ff,#542aad);display:flex;align-items:center;justify-content:center;box-shadow:0 0 40px rgba(177,79,255,.5)"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></div>
+        <h2 style="font-size:28px;font-weight:300;letter-spacing:-.02em;margin:0 0 10px">Tu perfil está listo</h2>
+        <p style="font-size:15px;color:var(--fg-muted);font-weight:300;line-height:1.55;margin:0 0 26px">Guárdalo para compartirlo con clientes y comenzar a recibir oportunidades.</p>
+        <div style="text-align:left;display:flex;flex-direction:column;gap:11px;margin-bottom:28px">
+          <sc-for list="{{ convertBenefits }}" as="cb" hint-placeholder-count="5">
+            <div style="display:flex;align-items:center;gap:10px;font-size:14px;color:var(--fg-2);font-weight:300"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4cf5ff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="flex:none"><path d="M20 6 9 17l-5-5"></path></svg>{{ cb }}</div>
+          </sc-for>
+        </div>
+        <button onClick="{{ goAuth }}" style="width:100%;padding:15px;border-radius:14px;border:none;cursor:pointer;background:linear-gradient(135deg,#b14fff,#542aad);color:#fff;font-size:16px;font-weight:600;box-shadow:0 0 28px rgba(177,79,255,.4)">Guardar y publicar</button>
+        <button onClick="{{ editProfile }}" style="margin-top:14px;background:none;border:none;color:var(--fg-faint);font-size:13px;cursor:pointer">Volver a la vista previa</button>
+      </sc-if>
+      <!-- step: auth -->
+      <sc-if value="{{ convertAuth }}" hint-placeholder-val="{{ false }}">
+        <h2 style="font-size:24px;font-weight:300;letter-spacing:-.02em;margin:0 0 8px">Guarda tu perfil</h2>
+        <p style="font-size:14px;color:var(--fg-faint);font-weight:300;margin:0 0 26px">Elige cómo continuar. Sin contraseñas.</p>
+        <sc-if value="{{ authIdle }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex;flex-direction:column;gap:11px">
+          <button onClick="{{ authGoogle }}" style="display:flex;align-items:center;justify-content:center;gap:11px;width:100%;padding:14px;border-radius:13px;border:1px solid var(--bd-16);cursor:pointer;background:#fff;color:#1a1a1a;font-size:15px;font-weight:500">
+            <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.5 12.2c0-.7-.1-1.4-.2-2H12v3.8h5.9a5 5 0 0 1-2.2 3.3v2.7h3.6c2.1-2 3.2-4.9 3.2-7.8z"></path><path fill="#34A853" d="M12 23c2.9 0 5.4-1 7.2-2.6l-3.6-2.7c-1 .7-2.3 1.1-3.6 1.1-2.8 0-5.1-1.9-6-4.4H2.3v2.8A11 11 0 0 0 12 23z"></path><path fill="#FBBC05" d="M6 14.4a6.6 6.6 0 0 1 0-4.2V7.4H2.3a11 11 0 0 0 0 9.8z"></path><path fill="#EA4335" d="M12 5.4c1.6 0 3 .5 4.1 1.6l3.1-3.1A11 11 0 0 0 2.3 7.4L6 10.2c.9-2.6 3.2-4.4 6-4.4z"></path></svg>
+            Continuar con Google
+          </button>
+          <button onClick="{{ authWhatsApp }}" style="display:flex;align-items:center;justify-content:center;gap:11px;width:100%;padding:14px;border-radius:13px;border:1px solid rgba(37,211,102,.4);cursor:pointer;background:rgba(37,211,102,.12);color:#5cf08a;font-size:15px;font-weight:500">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="#5cf08a"><path d="M12 2a10 10 0 0 0-8.7 15l-1.3 5 5.1-1.3A10 10 0 1 0 12 2z"></path></svg>
+            Continuar con WhatsApp
+          </button>
+          <button onClick="{{ authMagic }}" style="display:flex;align-items:center;justify-content:center;gap:11px;width:100%;padding:14px;border-radius:13px;border:1px solid var(--bd-16);cursor:pointer;background:var(--surf-05);color:var(--fg-2);font-size:15px;font-weight:500">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="m3 7 9 6 9-6"></path></svg>
+            Enlace mágico por correo
+          </button>
+        </div>
+        <div style="margin-top:20px;font-size:12px;color:var(--fg-dim);display:flex;align-items:center;justify-content:center;gap:6px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="11" width="14" height="9" rx="2"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg>Tus datos están protegidos · sin spam</div>
+        </sc-if>
+        <sc-if value="{{ authBusy }}" hint-placeholder-val="{{ false }}">
+        <div style="padding:30px 0">
+          <div style="width:56px;height:56px;margin:0 auto 18px;border-radius:50%;background:conic-gradient(from 0deg,transparent,#b14fff,#4cf5ff,transparent);animation:spin 1s linear infinite;display:flex;align-items:center;justify-content:center"><div style="width:44px;height:44px;border-radius:50%;background:var(--surface)"></div></div>
+          <div style="font-size:15px;color:var(--fg-2)">{{ authBusyMsg }}</div>
+        </div>
+        </sc-if>
+      </sc-if>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- ===================== PUBLISHED ===================== -->
+  <sc-if value="{{ isPublished }}" hint-placeholder-val="{{ false }}">
+  <div style="min-height:100vh;padding:48px clamp(20px,5vw,40px) 90px">
+    <div style="max-width:880px;margin:0 auto;animation:fadeUp .7s both">
+      <div style="text-align:center;margin-bottom:40px">
+        <div style="width:72px;height:72px;margin:0 auto 22px;border-radius:50%;background:radial-gradient(circle at 38% 32%,#5cf08a,#1f8a5b);display:flex;align-items:center;justify-content:center;box-shadow:0 0 50px rgba(46,204,113,.5);animation:pop .6s both"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></div>
+        <h1 style="font-size:clamp(30px,4.4vw,46px);font-weight:200;letter-spacing:-.03em;margin:0 0 10px">¡Tu perfil está publicado!</h1>
+        <p style="font-size:16px;color:var(--fg-muted);font-weight:300;margin:0">Ya puedes compartirlo con clientes y empezar a recibir oportunidades.</p>
+      </div>
+
+      <!-- url card -->
+      <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:18px 22px;border-radius:18px;background:linear-gradient(135deg,#7b3fd6,#542aad);border:1px solid rgba(177,79,255,.4);margin-bottom:18px">
+        <div style="flex:1;min-width:220px">
+          <div style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.7);margin-bottom:5px">Tu URL personalizada</div>
+          <div style="font-size:clamp(16px,2.4vw,22px);font-weight:500;color:#fff;font-family:'JetBrains Mono',monospace;word-break:break-all">{{ profile.url }}</div>
+        </div>
+        <button onClick="{{ copyUrl }}" style="display:flex;align-items:center;gap:8px;padding:11px 20px;border-radius:999px;border:none;cursor:pointer;background:#fff;color:#542aad;font-size:14px;font-weight:600;flex:none">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#542aad" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg>
+          {{ copyLabel }}
+        </button>
+      </div>
+
+      <!-- share grid + qr -->
+      <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:18px;margin-bottom:18px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div onClick="{{ noop }}" style="padding:20px;border-radius:16px;background:linear-gradient(135deg,#22c55e,#16955b);border:1px solid rgba(37,211,102,.5);cursor:pointer"><svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><path d="M12 2a10 10 0 0 0-8.7 15l-1.3 5 5.1-1.3A10 10 0 1 0 12 2z"></path></svg><div style="font-size:14px;font-weight:600;margin-top:10px;color:#fff">Compartir por WhatsApp</div><div style="font-size:12px;color:rgba(255,255,255,.85);margin-top:3px;font-weight:300">Mensaje listo para enviar</div></div>
+          <div style="padding:20px;border-radius:16px;background:var(--surf-04);border:1px solid var(--bd-10);cursor:pointer"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#c878ff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"></path></svg><div style="font-size:14px;font-weight:600;margin-top:10px">Compartir enlace</div><div style="font-size:12px;color:var(--fg-faint);margin-top:3px;font-weight:300">Redes y mensajería</div></div>
+          <div style="padding:20px;border-radius:16px;background:var(--surf-04);border:1px solid var(--bd-10);cursor:pointer"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4cf5ff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="14" rx="2"></rect><path d="M3 9h18M8 21h8"></path></svg><div style="font-size:14px;font-weight:600;margin-top:10px">Tarjeta profesional</div><div style="font-size:12px;color:var(--fg-faint);margin-top:3px;font-weight:300">Descargar imagen</div></div>
+          <div onClick="{{ viewPublic }}" style="padding:20px;border-radius:16px;background:var(--surf-04);border:1px solid var(--bd-10);cursor:pointer"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"></path><circle cx="12" cy="12" r="3"></circle></svg><div style="font-size:14px;font-weight:600;margin-top:10px">Ver mi página</div><div style="font-size:12px;color:var(--fg-faint);margin-top:3px;font-weight:300">Como la ven tus clientes</div></div>
+        </div>
+        <div style="padding:20px;border-radius:16px;background:var(--surface);border:1px solid var(--bd-08);display:flex;flex-direction:column;align-items:center;justify-content:center">
+          <div style="width:150px;height:150px;background:#fff;border-radius:12px;padding:12px">{{ qrSvg }}</div>
+          <div style="font-size:12px;color:var(--fg-faint);margin-top:12px;text-align:center;font-weight:300">Escanea para abrir tu perfil</div>
+        </div>
+      </div>
+
+      <!-- mobile preview -->
+      <div style="display:grid;grid-template-columns:auto 1fr;gap:32px;align-items:center;padding:32px;border-radius:24px;background:var(--surf-03);border:1px solid var(--bd-08);flex-wrap:wrap">
+        <div style="width:220px;height:440px;border-radius:36px;background:var(--surface);border:8px solid var(--bd-14);box-shadow:0 24px 60px rgba(0,0,0,.6);overflow:hidden;position:relative;margin:0 auto">
+          <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:90px;height:22px;background:var(--bd-14);border-radius:0 0 14px 14px;z-index:2"></div>
+          <div style="padding:40px 16px 16px;text-align:center">
+            <div style="width:64px;height:64px;margin:0 auto 12px;border-radius:50%;background:conic-gradient(from 140deg,#c878ff,#2e2eff,#4cf5ff,#c878ff);padding:2px"><div style="width:100%;height:100%;border-radius:50%;background:linear-gradient(135deg,#1a1230,#2a1560);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:300;color:#fff">{{ profile.initials }}</div></div>
+            <div style="font-size:16px;font-weight:500">{{ profile.name }}</div>
+            <div style="font-size:11px;color:#c878ff;margin-top:3px">{{ profile.title }}</div>
+            <div style="font-size:10.5px;color:var(--fg-faint);margin-top:8px;line-height:1.5;font-weight:300">{{ profile.valueProp }}</div>
+            <div style="display:flex;gap:6px;justify-content:center;margin-top:14px"><div style="flex:1;padding:9px;border-radius:999px;background:linear-gradient(135deg,#b14fff,#542aad);font-size:11px;font-weight:600;color:#fff">Contactar</div><div style="padding:9px 12px;border-radius:999px;background:rgba(37,211,102,.16);font-size:11px;color:#5cf08a">WA</div></div>
+          </div>
+        </div>
+        <div style="min-width:200px">
+          <div style="font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--fg-dim);font-weight:600;margin-bottom:12px">Optimizado para todo</div>
+          <h3 style="font-size:24px;font-weight:300;letter-spacing:-.02em;margin:0 0 14px;line-height:1.2">Se ve perfecto en cualquier pantalla</h3>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <sc-for list="{{ finalPerks }}" as="fp" hint-placeholder-count="4">
+              <div style="display:flex;align-items:center;gap:10px;font-size:14px;color:var(--fg-2);font-weight:300"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#4cf5ff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="flex:none"><path d="M20 6 9 17l-5-5"></path></svg>{{ fp }}</div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+
+      <div style="text-align:center;margin-top:40px">
+        <button onClick="{{ restart }}" style="background:none;border:1px solid var(--bd-14);color:var(--fg-muted);font-size:14px;cursor:pointer;padding:12px 26px;border-radius:999px">Crear otro perfil</button>
+      </div>
+    </div>
+  </div>
+  </sc-if>
+
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:&quot;100%&quot;,&quot;height&quot;:&quot;100%&quot;}}">
+const EO = 'cubic-bezier(.22,1,.36,1)';
+const VIOLET='#b14fff', VBRIGHT='#c878ff', CYAN='#4cf5ff';
+
+const ROLE_TITLE = {
+  'Diseño de marca':'Diseñadora de marca',
+  'Diseño UX/UI':'Diseñadora UX/UI',
+  'Diseño web':'Diseñadora web',
+  'Ilustración':'Ilustradora',
+  'Dirección de arte':'Directora de arte',
+};
+const PROBLEM_OUT = {
+  'Marcas sin identidad clara':'construir marcas memorables que generan confianza',
+  'Productos difíciles de usar':'crear productos digitales claros y fáciles de usar',
+  'Webs que no convierten':'diseñar webs que convierten visitantes en clientes',
+  'Lanzamientos sin dirección visual':'lanzar con una dirección visual sólida',
+};
+const SERVICE_INFO = {
+  'Identidad de marca':{desc:'Logo, sistema visual y guía de marca lista para usar.',price:'Desde $1.800.000',time:'2–3 semanas'},
+  'Diseño UX/UI':{desc:'Interfaces claras y atractivas, de wireframe a alta fidelidad.',price:'Desde $2.500.000',time:'3–5 semanas'},
+  'Landing pages':{desc:'Páginas que convierten, diseñadas para tu objetivo.',price:'Desde $1.200.000',time:'1–2 semanas'},
+  'Sistema de diseño':{desc:'Componentes y tokens escalables para tu producto.',price:'A convenir',time:'4–6 semanas'},
+  'Rediseño de producto':{desc:'Auditoría y rediseño de tu app o web actual.',price:'Desde $3.000.000',time:'4–8 semanas'},
+  'Consultoría de diseño':{desc:'Sesiones 1:1 de dirección visual y estrategia.',price:'$180.000 / hora',time:'Flexible'},
+};
+const YEARS_NUM = {'Menos de 1':'<1','1-2':'2','3-5':'5','6-10':'8','Más de 10':'10+'};
+const PROBLEM_SHORT = {
+  'Marcas sin identidad clara':'construir marcas memorables',
+  'Productos difíciles de usar':'crear productos fáciles de usar',
+  'Webs que no convierten':'diseñar webs que convierten',
+  'Lanzamientos sin dirección visual':'lanzar con dirección visual sólida',
+};
+function ensure30(str){ const w=String(str).trim().split(/\s+/); return w.length<=30? String(str).trim() : w.slice(0,30).join(' ')+'…'; }
+
+class Component extends DCLogic {
+  constructor(props){
+    super(props);
+    this.glowRef = React.createRef();
+    this.fileRef = React.createRef();
+    this._genTimers = [];
+  }
+  state = {
+    stage:'landing', variant:'A', landingInput:'', theme:'dark',
+    step:0, answers:{}, chatInput:'', multiSel:[], listening:false,
+    anim:'idle', progress:0, gamShown:'',
+    genLine:'', convertStep:'pitch', authState:'idle', authMsg:'',
+    copyLabel:'Copiar', profile:null,
+    // preview interactions
+    expand:'', galleryOpen:false, photos:[null,null,null], pickSlot:null, lightbox:null,
+    bioShort:'', bioBusy:false,
+    reviewOpen:false, reviewStep:'form', reviewStars:5, reviewText:'',
+    ratingCount:24, ratingSum:115, // avg 4.79
+    payOpen:false, payService:null,
+  };
+
+  componentDidMount(){
+    this._onMove = (e)=>{ if(this.glowRef.current){ this.glowRef.current.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`; } };
+    window.addEventListener('pointermove', this._onMove);
+    let _t='dark'; try{ _t=localStorage.getItem('biolink-theme')||'dark'; }catch(e){}
+    document.documentElement.setAttribute('data-theme', _t);
+    if(_t!==this.state.theme) this.setState({theme:_t});
+  }
+  componentWillUnmount(){ window.removeEventListener('pointermove', this._onMove); this._genTimers.forEach(clearTimeout); }
+
+  getQuestions(){
+    const a=this.state.answers;
+    const n=((a.name||'').trim().split(/\s+/)[0])||'';
+    return [
+      {key:'name',phase:0,pct:8,kind:'text',prompt:'Para empezar, ¿cómo te llamas?',sub:'Tu nombre será el corazón de tu perfil.',placeholder:'Escribe tu nombre…',voice:'Diana Restrepo'},
+      {key:'role',phase:0,pct:18,kind:'chips',prompt:(n?`${n}, ¿a qué te dedicas?`:'¿A qué te dedicas?'),sub:'Elige lo que mejor te describe — lo ajustamos después.',voice:'Diseño de marca',placeholder:'O escríbelo a tu manera…',chips:['Diseño de marca','Diseño UX/UI','Diseño web','Ilustración','Dirección de arte']},
+      {key:'independent',phase:0,pct:24,kind:'chips',prompt:'¿Cómo trabajas hoy?',voice:'Independiente / Freelance',placeholder:'Cuéntame…',chips:['Independiente / Freelance','En una empresa','Ambas']},
+      {key:'city',phase:0,pct:30,kind:'chips',prompt:'¿Desde dónde ofreces tus servicios?',sub:'Ayuda a que te encuentren clientes cercanos.',voice:'Medellín',placeholder:'Tu ciudad…',chips:['Medellín','Bogotá','Ciudad de México','Remoto · LATAM']},
+      {key:'modality',phase:0,pct:34,kind:'chips',prompt:'¿En qué modalidad atiendes?',voice:'Remoto',placeholder:'…',chips:['Remoto','Presencial','Ambas']},
+      {key:'age',phase:0,pct:38,kind:'text',skippable:true,prompt:'¿Qué edad tienes?',sub:'Es opcional — y tú decides si mostrarla en tu perfil.',placeholder:'Tu edad…',voice:'32'},
+      {key:'problem',phase:1,pct:44,kind:'chips',prompt:'¿Qué problema ayudas a resolver?',sub:'Tu propuesta de valor nace de aquí.',voice:'Marcas sin identidad clara',placeholder:'Descríbelo con tus palabras…',chips:['Marcas sin identidad clara','Productos difíciles de usar','Webs que no convierten','Lanzamientos sin dirección visual']},
+      {key:'client',phase:1,pct:52,kind:'chips',prompt:'¿Quién es tu cliente ideal?',voice:'Startups',placeholder:'A quién quieres atraer…',chips:['Startups','PyMEs','Emprendedores','Agencias','Empresas tech']},
+      {key:'diff',phase:1,pct:58,kind:'text',prompt:'En una frase, ¿qué te hace diferente?',sub:'No te preocupes por que quede perfecto — yo lo pulo.',placeholder:'Lo que solo tú ofreces…',voice:'Diseño con estrategia: cada decisión visual responde a un objetivo de negocio'},
+      {key:'years',phase:2,pct:66,kind:'chips',prompt:'¿Cuántos años llevas en esto?',voice:'6-10',placeholder:'…',chips:['Menos de 1','1-2','3-5','6-10','Más de 10']},
+      {key:'win',phase:2,pct:72,kind:'text',prompt:'Cuéntame un logro del que estés orgullosa.',sub:'Un proyecto, un cliente, un número…',placeholder:'Tu mejor momento profesional…',voice:'Rediseñé la marca de una fintech y triplicaron sus registros en 3 meses'},
+      {key:'skills',phase:3,pct:82,kind:'multi',prompt:'Estas son las habilidades que detecté. ¿Cuáles te representan?',sub:'Toca para añadir o quitar — sugeridas por IA según tu perfil.',preset:['Figma','Branding','Design Systems'],chips:['Figma','Branding','UX Research','Design Systems','Illustrator','Prototipado','Dirección de arte','Diseño UI']},
+      {key:'services',phase:4,pct:92,kind:'multi',prompt:'¿Qué servicios quieres ofrecer?',sub:'Elegí algunos comunes para tu perfil — ajústalos cuando quieras.',preset:['Identidad de marca','Diseño UX/UI','Landing pages'],chips:['Identidad de marca','Diseño UX/UI','Landing pages','Sistema de diseño','Rediseño de producto','Consultoría de diseño']},
+      {key:'links',phase:5,pct:100,kind:'multi',prompt:'¿Dónde pueden ver tu trabajo?',sub:'Opcional — puedes omitirlo y agregarlo luego.',preset:[],skippable:true,chips:['Behance','Dribbble','LinkedIn','Sitio web','Instagram']},
+    ];
+  }
+
+  cur(){ return this.getQuestions()[this.state.step]; }
+
+  // ---- navigation
+  start=()=>{ this.setState({stage:'chat', step:0, anim:'idle', chatInput:'', multiSel:[]}); }
+  startFromInput=()=>{ const v=this.state.landingInput.trim(); this.start(); }
+  setVariantA=()=>this.setState({variant:'A'});
+  setVariantB=()=>this.setState({variant:'B'});
+  onLandingInput=(e)=>this.setState({landingInput:e.target.value});
+  onLandingKey=(e)=>{ if(e.key==='Enter') this.startFromInput(); };
+
+  // ---- chat input
+  onChatInput=(e)=>this.setState({chatInput:e.target.value});
+  onChatKey=(e)=>{ if(e.key==='Enter'){ e.preventDefault(); this.sendChat(); } };
+  sendChat=()=>{
+    const q=this.cur(); const v=this.state.chatInput.trim();
+    if(!v) return;
+    this.submit(q.key, v);
+  };
+
+  toggleMic=()=>{
+    if(this.state.listening) return;
+    const q=this.cur();
+    this.setState({listening:true});
+    const t=setTimeout(()=>{
+      this.setState({listening:false});
+      if(q.kind==='multi'){ /* selecting via voice: add presets */ this.setState({multiSel:(q.preset&&q.preset.length?q.preset:[q.chips[0]])}); }
+      else if(q.voice){ this.setState({chatInput:q.voice}); const t2=setTimeout(()=>this.submit(q.key,q.voice),550); this._genTimers.push(t2); }
+    },1500);
+    this._genTimers.push(t);
+  };
+
+  chipClick(label){
+    const q=this.cur();
+    if(q.kind==='multi'){
+      const sel=this.state.multiSel.slice();
+      const i=sel.indexOf(label);
+      if(i>=0) sel.splice(i,1); else sel.push(label);
+      this.setState({multiSel:sel});
+    } else {
+      this.submit(q.key, label);
+    }
+  }
+  continueMulti=()=>{ const q=this.cur(); if(this.state.multiSel.length) this.submit(q.key, this.state.multiSel.slice()); };
+  skipStep=()=>{ const q=this.cur(); this.submit(q.key, q.kind==='multi'?[]:''); };
+  exitToLanding=()=>{ this.setState({stage:'landing'}); window.scrollTo(0,0); };
+
+  submit(key, value){
+    const q=this.cur();
+    const answers={...this.state.answers, [key]:value};
+    const qs=this.getQuestions();
+    const last = this.state.step >= qs.length-1;
+    // slide out
+    this.setState({anim:'leaving', answers, progress:q.pct});
+    const t1=setTimeout(()=>{
+      if(last){ this.generate(answers); return; }
+      const nextStep=this.state.step+1;
+      const nq=qs[nextStep];
+      this.setState({step:nextStep, chatInput:'', multiSel:(nq.preset?nq.preset.slice():[]), anim:'pre', listening:false});
+      const t2=setTimeout(()=>this.setState({anim:'idle'}),30);
+      this._genTimers.push(t2);
+    },280);
+    this._genTimers.push(t1);
+  }
+
+  generate(answers){
+    this.setState({stage:'generating', genLine:'Analizando tus respuestas…'});
+    const lines=['Generando tu título profesional…','Redactando tu biografía…','Seleccionando tus servicios…','Optimizando palabras clave…','Diseñando tu página…'];
+    lines.forEach((ln,i)=>{ const t=setTimeout(()=>this.setState({genLine:ln}), 500+i*420); this._genTimers.push(t); });
+    const tf=setTimeout(()=>{ const p=this.buildProfile(answers); this.setState({stage:'preview', profile:p, bioShort:p.bioShort, expand:'', galleryOpen:false}); window.scrollTo(0,0); }, 500+lines.length*420+300);
+    this._genTimers.push(tf);
+  }
+
+  buildProfile(a){
+    const name=(a.name||'Diana Restrepo').trim();
+    const parts=name.split(/\s+/);
+    const first=parts[0];
+    const initials=((parts[0]||'D')[0]+((parts[1]||parts[0]||'R')[0]||'')).toUpperCase();
+    const city=a.city||'Medellín';
+    const modality=a.modality||'Remoto';
+    const yearsLabel=a.years||'6-10';
+    const yearsNum=YEARS_NUM[yearsLabel]||'8';
+    const client=a.client||'Startups';
+    const role=a.role||'Diseño de marca';
+    const indep=a.independent||'Independiente / Freelance';
+    const isFree=/independ|ambas/i.test(indep);
+    const problem=a.problem||'Marcas sin identidad clara';
+    const diff=(a.diff||'Diseño con estrategia: cada decisión visual responde a un objetivo de negocio').trim().replace(/\.$/,'');
+    const win=(a.win||'Rediseñé la marca de una fintech y triplicaron sus registros en 3 meses').trim();
+    const skills=(Array.isArray(a.skills)&&a.skills.length)?a.skills:['Figma','Branding','Design Systems','UX Research'];
+    const servSel=(Array.isArray(a.services)&&a.services.length)?a.services:['Identidad de marca','Diseño UX/UI','Landing pages'];
+    const links=Array.isArray(a.links)?a.links:[];
+
+    const baseTitle=ROLE_TITLE[role]||role;
+    const title=baseTitle+(isFree?' · Freelance':'');
+    const out=PROBLEM_OUT[problem]||'destacar con una identidad visual sólida';
+    const valueProp=`Ayudo a ${client.toLowerCase()} a ${out}.`;
+    const ageRaw=(a.age==null?'':String(a.age)).replace(/\D/g,'');
+    const agePart=ageRaw?` · ${ageRaw} años`:'';
+    const metaLine=`${city} · ${modality}${agePart}`;
+    const expChip=`${yearsLabel.replace('-',' a ')} años de exp.`;
+    const lowDiff=diff.charAt(0).toLowerCase()+diff.slice(1);
+    const bioLong=`${first} es ${title.replace(' · Freelance','').toLowerCase()} con base en ${city}. ${valueProp} A lo largo de su carrera ha trabajado de la mano de ${client.toLowerCase()}, con un principio claro: ${lowDiff}. ${win}.`;
+    // short bio (simple capture from survey, <=30 words)
+    const bioShort=ensure30(`${baseTitle} en ${city}. ${valueProp} ${client} confían en mi trabajo.`);
+
+    const services=servSel.map(s=>({name:s, ...(SERVICE_INFO[s]||{desc:'Servicio profesional a la medida de tu proyecto.',price:'A convenir',time:'Flexible'})}));
+    const slug=name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+    const url='biolink.me/'+slug;
+    // contacts: web + email + up to 3 socials
+    const SOC={'Behance':{label:'Behance',href:'https://behance.net',icon:'<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8.2 7.5c.8 0 1.5.1 2 .3.6.2 1 .4 1.3.8.3.3.6.7.7 1.2.1.4.2.9.2 1.5 0 .6-.1 1.1-.4 1.5-.3.4-.7.8-1.2 1 .8.2 1.3.6 1.7 1.1.4.5.6 1.2.6 1.9 0 .6-.1 1.2-.4 1.6-.2.5-.6.8-1 1.1-.4.3-.9.5-1.5.6-.5.1-1.1.2-1.6.2H2V7.5h6.2zM7.8 11.8c.4 0 .8-.1 1.1-.3.3-.2.4-.6.4-1 0-.3 0-.5-.1-.7-.1-.2-.3-.3-.4-.4-.2-.1-.4-.2-.6-.2-.2 0-.5-.05-.7-.05H4.7v2.7h3.1zm.2 4.6c.3 0 .5 0 .8-.1.2 0 .4-.1.6-.3.2-.1.3-.3.4-.5.1-.2.1-.4.1-.7 0-.6-.2-1-.5-1.3-.3-.2-.8-.4-1.3-.4H4.7v3.3h3.3zM16.5 16.4c.4.4 1 .6 1.7.6.5 0 1-.1 1.4-.4.4-.3.6-.5.7-.8h2.1c-.3 1-.9 1.8-1.6 2.2-.7.5-1.6.7-2.6.7-.7 0-1.3-.1-1.9-.3-.6-.2-1-.5-1.4-1-.4-.4-.7-.9-.9-1.5-.2-.6-.3-1.2-.3-1.9 0-.7.1-1.3.3-1.8.2-.6.5-1.1.9-1.5.4-.4.9-.8 1.4-1 .6-.2 1.2-.4 1.9-.4.8 0 1.4.1 2 .4.6.3 1 .7 1.4 1.2.4.5.6 1 .8 1.7.1.6.2 1.3.1 2h-6.9c0 .7.2 1.3.6 1.6zm3-4.3c-.3-.3-.8-.5-1.4-.5-.4 0-.7.1-1 .2-.3.1-.5.3-.6.5-.2.2-.3.4-.3.6-.1.2-.1.4-.1.6h4.2c-.1-.7-.3-1.1-.7-1.4zM15 8.2h5v1.2h-5z"></path></svg>'},'Dribbble':{label:'Dribbble',href:'https://dribbble.com',icon:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"></circle><path d="M5 7c4 4 9 5 14 4M3 13c5-1 10 1 13 6M9 3c3 5 4 12 2 18"></path></svg>'},'LinkedIn':{label:'LinkedIn',href:'https://linkedin.com',icon:'<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM3 9h4v12H3zM9 9h3.8v1.7h.1c.5-1 1.8-2 3.7-2 4 0 4.7 2.6 4.7 6V21h-4v-5.3c0-1.3 0-2.9-1.8-2.9s-2 1.4-2 2.8V21H9z"></path></svg>'},'Instagram':{label:'Instagram',href:'https://instagram.com',icon:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="3" width="18" height="18" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.5" cy="6.5" r="1" fill="currentColor"></circle></svg>'},'Sitio web':{label:'Sitio web',href:'#',icon:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3c2.5 2.5 2.5 15 0 18M12 3c-2.5 2.5-2.5 15 0 18"></path></svg>'}};
+    const webIcon='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4cf5ff" stroke-width="1.7"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3c2.5 2.5 2.5 15 0 18M12 3c-2.5 2.5-2.5 15 0 18"></path></svg>';
+    const mailIcon='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#c878ff" stroke-width="1.7"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="m3 7 9 6 9-6"></path></svg>';
+    const contacts=[
+      {label:'Sitio web', href:'https://'+slug+'.com', icon:webIcon},
+      {label:'Correo', href:'mailto:hola@'+slug+'.com', icon:mailIcon},
+    ];
+    links.filter(l=>SOC[l]).slice(0,3).forEach(l=>contacts.push(SOC[l]));
+
+    return {name, first, initials, title, valueProp, metaLine, expChip, bioLong, bioShort, services, highlight:win+'.', links, contacts, url, qrSvg:this.buildQR(url)};
+  }
+
+  buildQR(seed){
+    const N=25, cell=6;
+    let h=2166136261>>>0; for(const ch of seed){ h^=ch.charCodeAt(0); h=Math.imul(h,16777619)>>>0; }
+    const rng=()=>{ h^=h<<13; h>>>=0; h^=h>>17; h^=h<<5; h>>>=0; return h/4294967296; };
+    const inBox=(r,c,br,bc)=> r>=br&&r<br+7&&c>=bc&&c<bc+7;
+    const isFinderArea=(r,c)=> inBox(r,c,0,0)||inBox(r,c,0,N-7)||inBox(r,c,N-7,0);
+    const finderOn=(r,c)=>{
+      const f=(br,bc)=>{ const rr=r-br,cc=c-bc; if(rr<0||cc<0||rr>6||cc>6) return null; const ring=(rr===0||rr===6||cc===0||cc===6); const core=(rr>=2&&rr<=4&&cc>=2&&cc<=4); return ring||core; };
+      let v=f(0,0); if(v!==null)return v; v=f(0,N-7); if(v!==null)return v; v=f(N-7,0); if(v!==null)return v; return false;
+    };
+    const rects=[];
+    for(let r=0;r<N;r++)for(let c=0;c<N;c++){
+      let on; if(isFinderArea(r,c)) on=finderOn(r,c); else on=rng()>0.52;
+      if(on) rects.push(React.createElement('rect',{key:r+'_'+c,x:c*cell,y:r*cell,width:cell,height:cell,rx:1,fill:'#0c0c16'}));
+    }
+    return React.createElement('svg',{viewBox:`0 0 ${N*cell} ${N*cell}`,width:'100%',height:'100%',style:{display:'block'}},rects);
+  }
+
+  // ---- preview/convert/auth/published
+  editProfile=()=>{ this.setState({stage:'chat'}); window.scrollTo(0,0); };
+  goConvert=()=>{ this.setState({stage:'convert', convertStep:'pitch'}); window.scrollTo(0,0); };
+  goAuth=()=>this.setState({convertStep:'auth', authState:'idle'});
+  doAuth(method, msg){ this.setState({authState:'busy', authMsg:msg}); const t=setTimeout(()=>{ this.setState({stage:'published'}); window.scrollTo(0,0); },1400); this._genTimers.push(t); }
+  authGoogle=()=>this.doAuth('google','Conectando con Google…');
+  authWhatsApp=()=>this.doAuth('whatsapp','Enviando código por WhatsApp…');
+  authMagic=()=>this.doAuth('magic','Enviando enlace mágico…');
+  copyUrl=()=>{ try{ navigator.clipboard&&navigator.clipboard.writeText('https://'+this.state.profile.url); }catch(e){} this.setState({copyLabel:'¡Copiado!'}); const t=setTimeout(()=>this.setState({copyLabel:'Copiar'}),1800); this._genTimers.push(t); };
+  viewPublic=()=>{ this.setState({stage:'preview'}); window.scrollTo(0,0); };
+  goPublishedDemo=()=>{ const p=this.buildProfile({links:['Behance','Dribbble','LinkedIn']}); this.setState({stage:'preview', profile:p, bioShort:p.bioShort, expand:'', galleryOpen:false}); window.scrollTo(0,0); };
+  restart=()=>{ this.setState({stage:'landing', step:0, answers:{}, chatInput:'', multiSel:[], progress:0, profile:null}); window.scrollTo(0,0); };
+  noop=()=>{};
+  stop=(e)=>{ if(e&&e.stopPropagation) e.stopPropagation(); };
+  toggleTheme=()=>{ const t=this.state.theme==='dark'?'light':'dark'; try{localStorage.setItem('biolink-theme',t);}catch(e){} document.documentElement.setAttribute('data-theme',t); this.setState({theme:t}); };
+
+  // ---- preview: expand exp/win
+  toggleExp=()=>this.setState(s=>({expand:s.expand==='exp'?'':'exp'}));
+  toggleWin=()=>this.setState(s=>({expand:s.expand==='win'?'':'win'}));
+
+  // ---- about: AI suggest (<=30 words)
+  suggestBio=()=>{
+    if(this.state.bioBusy) return;
+    this.setState({bioBusy:true});
+    const a=this.state.answers||{};
+    const p=this.state.profile||{};
+    const variants=[
+      `${p.title? p.title.replace(' · Freelance',''):'Diseñadora'} que transforma ideas en marcas memorables. ${p.valueProp||''} Cada proyecto, una historia con propósito.`,
+      `Convierto retos visuales en resultados. ${p.valueProp||''} Diseño con estrategia, entrego con detalle y construyo confianza en cada entrega.`,
+      `${p.valueProp||''} Más de una década creando identidad, claridad y carácter para quienes se atreven a destacar.`,
+    ];
+    const pick=ensure30(variants[Math.floor(Math.random()*variants.length)].replace(/\s+/g,' ').trim());
+    const t=setTimeout(()=>this.setState({bioShort:pick, bioBusy:false}), 1100);
+    this._genTimers.push(t);
+  };
+
+  // ---- gallery
+  toggleGallery=()=>this.setState(s=>({galleryOpen:!s.galleryOpen}));
+  openSlot(i){ const ph=this.state.photos; if(ph[i]){ this.setState({lightbox:i}); } else { this.setState({pickSlot:i}); const f=this.fileRef&&this.fileRef.current; if(f){ f.value=''; f.click(); } } }
+  onPickPhoto=(e)=>{
+    const file=e.target.files&&e.target.files[0]; if(!file) return;
+    const i=this.state.pickSlot; const rd=new FileReader();
+    rd.onload=()=>{ const ph=this.state.photos.slice(); ph[i]=rd.result; this.setState({photos:ph, pickSlot:null}); };
+    rd.readAsDataURL(file);
+  };
+  closeLightbox=()=>this.setState({lightbox:null});
+
+  // ---- reviews
+  openReview=()=>this.setState({reviewOpen:true, reviewStep:'form', reviewStars:5, reviewText:''});
+  closeReview=()=>this.setState({reviewOpen:false});
+  setReviewStars(n){ this.setState({reviewStars:n}); }
+  onReviewText=(e)=>this.setState({reviewText:e.target.value});
+  submitReview=()=>{ this.setState(s=>({ratingCount:s.ratingCount+1, ratingSum:s.ratingSum+s.reviewStars, reviewStep:'done'})); };
+
+  // ---- payment
+  openPay(svc){ this.setState({payOpen:true, payService:svc}); }
+  closePay=()=>this.setState({payOpen:false});
+
+  gamMessage(p){
+    if(p>=100) return 'Perfil completo — estás en el top 10%.';
+    if(p>=92) return 'Casi listo — un portafolio puede multiplicar tus clientes.';
+    if(p>=82) return 'Tus servicios aumentan tus oportunidades de venta.';
+    if(p>=66) return 'Los perfiles con logros concretos reciben más contactos.';
+    if(p>=44) return 'Tu perfil ya supera al 60% de los perfiles nuevos.';
+    if(p>=18) return 'Buen comienzo — ya tienes lo esencial.';
+    return '';
+  }
+
+  renderVals(){
+    const s=this.state;
+    const stage=s.stage;
+    const q = (stage==='chat') ? this.cur() : null;
+    const phases=['Identidad','Especialización','Experiencia','Habilidades','Servicios','Evidencia'];
+
+    // card anim
+    const cardMap={
+      leaving:{transform:'translateX(-70px)',opacity:0,transition:`transform .28s ${EO}, opacity .28s ${EO}`},
+      pre:{transform:'translateX(70px)',opacity:0,transition:'none'},
+      idle:{transform:'translateX(0)',opacity:1,transition:`transform .42s ${EO}, opacity .42s ${EO}`},
+    };
+
+    // chips
+    let chipItems=[]; const isMulti = q && q.kind==='multi';
+    if(q && q.chips){
+      chipItems = q.chips.map((label)=>{
+        const sel = isMulti && s.multiSel.indexOf(label)>=0;
+        const style = {
+          display:'inline-flex',alignItems:'center',cursor:'pointer',
+          padding:'12px 18px',borderRadius:'999px',fontSize:'14.5px',fontWeight:400,
+          background: sel?'rgba(177,79,255,.18)':'var(--surf-04)',
+          border: sel?'1px solid rgba(177,79,255,.55)':'1px solid var(--bd-12)',
+          color: sel?'#fff':'var(--fg-2)',
+          boxShadow: sel?'0 0 20px rgba(177,79,255,.25)':'none',
+          transition:`all .18s ${EO}`, animation:`floatIn .45s both`,
+        };
+        return {label, sel, style, onClick:()=>this.chipClick(label)};
+      });
+    }
+
+    // phase rail
+    const phaseItems = phases.map((label,i)=>{
+      const active = q && q.phase===i;
+      const done = q && q.phase>i;
+      return {
+        label,
+        style:{ height:'3px',borderRadius:'999px', background: done?VIOLET:(active?VBRIGHT:'var(--bd-12)'), boxShadow: active?'0 0 12px rgba(177,79,255,.6)':'none', transition:'all .4s' },
+        labelStyle:{ fontSize:'10px',marginTop:'5px',letterSpacing:'.02em', color: (active||done)?'var(--fg-2)':'var(--fg-dimm)', fontWeight: active?600:400 },
+      };
+    });
+
+    const gam=this.gamMessage(s.progress);
+    const tabSel = (on)=>on?'linear-gradient(135deg,#b14fff,#542aad)':'transparent';
+
+    const prof=s.profile||{};
+
+    // ---- preview computed
+    const ratingAvg = (s.ratingSum/Math.max(1,s.ratingCount)).toFixed(1);
+    const avgRound = Math.round(s.ratingSum/Math.max(1,s.ratingCount));
+    const starItems = [1,2,3,4,5].map(i=>({ style:{ fill: i<=avgRound?'#c878ff':'none', stroke: i<=avgRound?'#c878ff':'#5a4a6e', strokeWidth: i<=avgRound?0:1.6, filter: i<=avgRound?'drop-shadow(0 0 4px rgba(177,79,255,.5))':'none' } }));
+    const pickStars = [1,2,3,4,5].map(i=>({ onClick:()=>this.setReviewStars(i), style:{ fill: i<=s.reviewStars?'#c878ff':'none', stroke: i<=s.reviewStars?'#c878ff':'#5a4a6e', strokeWidth: i<=s.reviewStars?0:1.6, cursor:'pointer', filter: i<=s.reviewStars?'drop-shadow(0 0 6px rgba(177,79,255,.55))':'none', transition:'all .15s' } }));
+
+    const chipBtn=(on)=>({ flex:1, display:'inline-flex', alignItems:'center', justifyContent:'center', gap:'7px', padding:'11px 10px', borderRadius:'13px', fontSize:'13px', fontWeight:500, cursor:'pointer', color: on?'#fff':'var(--fg-2)', background: on?'rgba(177,79,255,.16)':'var(--surf-04)', border:'1px solid '+(on?'rgba(177,79,255,.5)':'var(--bd-10)'), transition:'all .18s' });
+    const expandText = s.expand==='exp' ? `${prof.expChip||''} · ${prof.valueProp||''}` : (s.expand==='win'? (prof.highlight||'') : '');
+
+    const gallerySlots = [0,1,2].map(i=>{ const src=s.photos[i]; const filled=!!src; return { filled, empty:!filled, imgEl: filled?React.createElement('img',{src, alt:'trabajo', style:{width:'100%',height:'100%',objectFit:'cover',display:'block'}}):null, onClick:()=>this.openSlot(i), style:{ aspectRatio:'1/1', borderRadius:'12px', overflow:'hidden', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', background: filled?'#0c0c16':'var(--surf-04)', border:'1px '+(filled?'solid var(--bd-12)':'dashed var(--bd-16)') } }; });
+    const lightboxImgEl = s.lightbox!=null ? React.createElement('img',{src:s.photos[s.lightbox], alt:'trabajo ampliado', style:{maxWidth:'100%',maxHeight:'100%',borderRadius:'16px',boxShadow:'0 24px 80px rgba(0,0,0,.7)'}}) : null;
+
+    const serviceItems = (prof.services||[]).map(sv=>({ name:sv.name, price:sv.price, time:sv.time, onClick:()=>this.openPay(sv), style:{ display:'flex', alignItems:'center', gap:'10px', padding:'13px 15px', borderRadius:'14px', background:'var(--surface)', border:'1px solid var(--bd-08)', cursor:'pointer', transition:'all .18s' } }));
+
+    const badgeBase={width:'34px',height:'34px',borderRadius:'10px',display:'flex',alignItems:'center',justifyContent:'center',fontWeight:700,flex:'none'};
+    const payMethods = [
+      {name:'Bre-B (llaves)', desc:'Pago inmediato con tu llave', tag:'B', badge:{...badgeBase,fontSize:'14px',background:'linear-gradient(135deg,#b14fff,#542aad)',color:'#fff'}},
+      {name:'PSE', desc:'Débito desde tu banco', tag:'PSE', badge:{...badgeBase,fontSize:'10px',background:'#0a3d91',color:'#fff'}},
+      {name:'Nequi', desc:'Pago desde la app Nequi', tag:'N', badge:{...badgeBase,fontSize:'14px',background:'#210049',color:'#ff2e9a'}},
+      {name:'Bancolombia', desc:'Transferencia o botón', tag:'BC', badge:{...badgeBase,fontSize:'11px',background:'#fdda24',color:'#1a1a1a'}},
+      {name:'Tarjeta de crédito', desc:'Visa · Mastercard · Amex', tag:'CC', badge:{...badgeBase,fontSize:'11px',background:'var(--bd-10)',color:'var(--fg-2)'}},
+      {name:'PayPal', desc:'Pago internacional', tag:'PP', badge:{...badgeBase,fontSize:'11px',background:'#003087',color:'#fff'}},
+    ];
+    const contactItems = (prof.contacts||[]).map(c=>({ href:c.href, label:c.label, iconEl: React.createElement('span',{dangerouslySetInnerHTML:{__html:c.icon},style:{display:'inline-flex',alignItems:'center',justifyContent:'center'}}) }));
+    const wc = String(s.bioShort||'').trim().split(/\s+/).filter(Boolean).length;
+
+    const _ic=(children)=>React.createElement('svg',{width:18,height:18,viewBox:'0 0 24 24',fill:'none',stroke:'currentColor',strokeWidth:1.7,strokeLinecap:'round',strokeLinejoin:'round'},children);
+    const themeIcon = s.theme==='light'
+      ? _ic(React.createElement('path',{key:'m',d:'M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z'}))
+      : _ic([React.createElement('circle',{key:'c',cx:12,cy:12,r:4}),React.createElement('path',{key:'r',d:'M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M19.1 4.9l-1.4 1.4M6.3 17.7l-1.4 1.4'})]);
+
+    return {
+      // stage flags
+      isLanding: stage==='landing',
+      isChat: stage==='chat',
+      isGenerating: stage==='generating',
+      isPreview: stage==='preview',
+      isConvert: stage==='convert',
+      isPublished: stage==='published',
+      isVariantA: stage==='landing'&&s.variant==='A',
+      isVariantB: stage==='landing'&&s.variant==='B',
+
+      // landing
+      benefits:['Sin diseño','Sin conocimientos técnicos','Sin crear contraseña','Perfil generado por IA','Página lista para compartir','Optimizada para conseguir clientes'],
+      waveBars:[{height:'28px',animationDelay:'0s'},{height:'52px',animationDelay:'.1s'},{height:'72px',animationDelay:'.2s'},{height:'44px',animationDelay:'.3s'},{height:'64px',animationDelay:'.15s'},{height:'38px',animationDelay:'.25s'},{height:'24px',animationDelay:'.05s'}].map(w=>({width:'6px',height:w.height,borderRadius:'999px',background:'rgba(255,255,255,.85)',transformOrigin:'center',animation:'wave 1.1s ease-in-out infinite',animationDelay:w.animationDelay})),
+      landingInput:s.landingInput, onLandingInput:this.onLandingInput, onLandingKey:this.onLandingKey,
+      start:this.start, startFromInput:this.startFromInput, goPublishedDemo:this.goPublishedDemo,
+      setVariantA:this.setVariantA, setVariantB:this.setVariantB,
+      tabAbg:tabSel(s.variant==='A'), tabAfg:s.variant==='A'?'#fff':'var(--fg-muted)',
+      tabBbg:tabSel(s.variant==='B'), tabBfg:s.variant==='B'?'#fff':'var(--fg-muted)',
+      glowRef:this.glowRef,
+      toggleTheme:this.toggleTheme, themeIcon,
+
+      // chat
+      progress:s.progress,
+      barStyle:{width:s.progress+'%',height:'100%',borderRadius:'999px',background:'linear-gradient(90deg,#542aad,#b14fff,#4cf5ff)',transition:`width .6s ${EO}`},
+      phaseItems,
+      gamMsg:gam, gamStyle:{display:'inline-flex',alignItems:'center',gap:'8px',fontSize:'13px',color:'#c878ff',background:'rgba(177,79,255,.1)',border:'1px solid rgba(177,79,255,.22)',padding:'6px 14px',borderRadius:'999px',opacity:gam?1:0,transition:'opacity .4s'},
+      qPhaseLabel: q?`Fase ${q.phase+1} · ${phases[q.phase]}`:'',
+      qPrompt: q?q.prompt:'',
+      qSub: q?(q.sub||''):'', hasSub: !!(q&&q.sub),
+      qPlaceholder: q?(q.placeholder||'Escribe tu respuesta…'):'',
+      hasChips: !!(q&&q.chips&&q.chips.length),
+      chipItems, isMulti, skippable: !!(q&&q.skippable),
+      showSkip: !!(q&&q.skippable&&q.kind!=='multi'), exitToLanding:this.exitToLanding,
+      cardStyle: {width:'100%',maxWidth:'680px',...cardMap[s.anim]},
+      chatInput:s.chatInput, onChatInput:this.onChatInput, onChatKey:this.onChatKey, sendChat:this.sendChat,
+      listening:s.listening, notListening:!s.listening, toggleMic:this.toggleMic,
+      micStyle:{width:'46px',height:'46px',borderRadius:'13px',border:'1px solid '+(s.listening?'rgba(177,79,255,.6)':'var(--bd-14)'),cursor:'pointer',background:s.listening?'linear-gradient(135deg,#b14fff,#542aad)':'var(--surf-05)',color:s.listening?'#fff':'var(--fg-muted)',display:'flex',alignItems:'center',justifyContent:'center',flex:'none',transition:'all .2s'},
+      continueMulti:this.continueMulti, skipStep:this.skipStep,
+      continueStyle:{padding:'13px 28px',borderRadius:'999px',border:'none',cursor:s.multiSel.length?'pointer':'not-allowed',background:s.multiSel.length?'linear-gradient(135deg,#b14fff,#542aad)':'var(--surf-06)',color:s.multiSel.length?'#fff':'var(--fg-dim)',fontSize:'15px',fontWeight:600,boxShadow:s.multiSel.length?'0 0 24px rgba(177,79,255,.35)':'none',transition:'all .2s'},
+      inputBarStyle:{},
+
+      // generating
+      genLine:s.genLine,
+
+      // preview
+      profile:prof, qrSvg:prof.qrSvg,
+      editProfile:this.editProfile, goConvert:this.goConvert,
+      // stars / reviews
+      starItems, ratingAvg, ratingCount:s.ratingCount, openReview:this.openReview,
+      reviewOpen:s.reviewOpen, closeReview:this.closeReview, reviewForm:s.reviewStep==='form', reviewDone:s.reviewStep==='done',
+      pickStars, reviewText:s.reviewText, onReviewText:this.onReviewText, submitReview:this.submitReview, stop:this.stop,
+      submitReviewStyle:{width:'100%',marginTop:'14px',padding:'14px',borderRadius:'13px',border:'none',cursor:'pointer',background:'linear-gradient(135deg,#b14fff,#542aad)',color:'#fff',fontSize:'15px',fontWeight:600,boxShadow:'0 0 24px rgba(177,79,255,.35)'},
+      // exp/win chips
+      toggleExp:this.toggleExp, toggleWin:this.toggleWin,
+      expBtnStyle:chipBtn(s.expand==='exp'), winBtnStyle:chipBtn(s.expand==='win'),
+      expandOpen: s.expand!=='', expandText,
+      // about
+      bioShort:s.bioShort, bioWordCount:wc, bioBusy:s.bioBusy, bioIdle:!s.bioBusy,
+      bioBtnLabel: s.bioBusy?'Generando…':'Sugerir con IA', suggestBio:this.suggestBio,
+      // gallery
+      toggleGallery:this.toggleGallery, galleryOpen:s.galleryOpen,
+      galleryChevron:{transform:s.galleryOpen?'rotate(180deg)':'rotate(0)',transition:'transform .3s'},
+      gallerySlots, fileRef:this.fileRef, onPickPhoto:this.onPickPhoto,
+      lightboxOpen: s.lightbox!=null, lightboxImgEl, closeLightbox:this.closeLightbox,
+      // services / payment
+      serviceItems, contactItems,
+      payOpen:s.payOpen, closePay:this.closePay, payMethods,
+      payName: s.payService?s.payService.name:'', payPrice: s.payService?s.payService.price:'',
+
+      // convert/auth
+      convertPitch:s.convertStep==='pitch', convertAuth:s.convertStep==='auth',
+      convertBenefits:['URL personalizada','Actualización futura','Estadísticas de visitas','Gestión de contactos','Mayor visibilidad profesional'],
+      goAuth:this.goAuth, authGoogle:this.authGoogle, authWhatsApp:this.authWhatsApp, authMagic:this.authMagic,
+      authIdle:s.authState==='idle', authBusy:s.authState==='busy', authBusyMsg:s.authMsg,
+
+      // published
+      copyUrl:this.copyUrl, copyLabel:s.copyLabel, viewPublic:this.viewPublic, restart:this.restart, noop:this.noop,
+      finalPerks:['Versión móvil automática','Listo para WhatsApp','Código QR para imprimir','Carga en menos de 1 segundo'],
+    };
+  }
+}
+</script>
+</body>
+</html>

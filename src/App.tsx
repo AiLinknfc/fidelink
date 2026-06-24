@@ -21,6 +21,7 @@ import ModuleGuard from './platform/auth/ModuleGuard';
 import AdminGuard from './platform/auth/AdminGuard';
 import { ModuleBrandProvider } from './platform/theme/ModuleBrand';
 import BiographyDashboard from './modules/biografias/pages/BiographyDashboard';
+import EcosistemaBios from './modules/biografias/pages/EcosistemaBios';
 import VentasPage from './modules/ventas/pages/VentasPage';
 import VentasAnalyticsPage from './modules/ventas/pages/VentasAnalyticsPage';
 import VentasCampaignsPage from './modules/ventas/pages/VentasCampaignsPage';
@@ -62,6 +63,7 @@ export default function App() {
                 {/* Módulo Biografías */}
                 <Route element={<ModuleGuard module="biografias" />}>
                   <Route path="/biography" element={<BiographyDashboard />} />
+                  <Route path="/biography/bios" element={<EcosistemaBios />} />
                 </Route>
 
                 {/* Módulo Ventas */}

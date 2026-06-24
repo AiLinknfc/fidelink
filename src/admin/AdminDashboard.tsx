@@ -26,7 +26,7 @@ export default function AdminDashboard() {
     <div className="h-full flex flex-col overflow-hidden">
 
       {/* ── Barra secundaria ── */}
-      <div className="bg-[#f8fafc] border-b border-slate-200 px-4 sm:px-6 h-10
+      <div className="bg-white border-b border-slate-200 px-4 sm:px-6 h-12
                       flex flex-row items-center justify-between gap-2 select-none overflow-hidden flex-shrink-0">
 
         {/* LEFT — chip expandible */}
@@ -56,13 +56,12 @@ export default function AdminDashboard() {
           />
           <span className="text-[12px] font-bold font-sans whitespace-nowrap flex-shrink-0">Panel de Administración</span>
           <span
-            className="text-[12px] font-sans whitespace-nowrap overflow-hidden transition-all duration-500 ease-in-out"
+            className="text-[12px] font-light font-sans whitespace-nowrap overflow-hidden transition-all duration-500 ease-in-out"
             style={{
               maxWidth: chipHovered ? '600px' : '0px',
               opacity: chipHovered ? 1 : 0,
               paddingLeft: chipHovered ? '6px' : '0px',
               color: `${brand.colorHex}99`,
-              fontWeight: 500,
             }}
           >
             · Métricas consolidadas de todos los módulos
@@ -78,7 +77,7 @@ export default function AdminDashboard() {
 
       <main className="flex-1 overflow-y-auto px-4 md:px-6 pt-3 pb-6 space-y-4">
 
-        {/* Stats KPI — hover variante A */}
+        {/* Stats KPI */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           {statCards.map((s) => {
             const Icon = s.icon;
@@ -86,37 +85,37 @@ export default function AdminDashboard() {
             return (
               <div
                 key={s.id}
-                className="relative bg-white rounded-2xl border transition-all duration-300 ease-in-out p-4 space-y-2 overflow-hidden cursor-default"
+                className="bg-white border border-slate-200 rounded-2xl p-4 relative overflow-hidden shadow-sm cursor-default transition-all duration-300 ease-in-out"
                 style={{
-                  borderColor: isHovered ? `${brand.colorHex}88` : 'rgb(226 232 240)',
+                  borderColor: isHovered ? brand.colorHex : 'rgb(226 232 240)',
                   boxShadow: isHovered
                     ? `0 0 0 3px ${brand.colorHex}22, 0 6px 20px ${brand.colorHex}28`
-                    : '0 0 0 0px transparent',
+                    : undefined,
                 }}
                 onMouseEnter={() => setHoveredStat(s.id)}
                 onMouseLeave={() => setHoveredStat(null)}
               >
-                <div
-                  className="absolute inset-0 pointer-events-none rounded-2xl transition-opacity duration-500"
-                  style={{
-                    opacity: isHovered ? 1 : 0,
-                    background: `linear-gradient(135deg, ${brand.colorHex}08 0%, ${brand.colorHex}18 50%, ${brand.colorHex}08 100%)`,
-                  }}
-                />
-                {/* Label técnico */}
-                <div className="relative flex items-center gap-2 text-slate-400">
-                  <Icon className="w-3.5 h-3.5" />
-                  <span className="text-[10px] font-bold font-jakarta uppercase tracking-wider">{s.label}</span>
+                <div className="relative flex items-start justify-between gap-2">
+                  <div className="min-w-0">
+                    <span className="text-kpi-label text-slate-400 block mb-1.5">{s.label}</span>
+                    <span
+                      className="text-data-number transition-colors duration-300"
+                      style={{ color: isHovered ? brand.colorHex : '#0f172a' }}
+                    >
+                      {s.value}
+                    </span>
+                    <p className={`text-kpi-sub mt-1 ${s.subColor}`}>{s.sub}</p>
+                  </div>
+                  <div
+                    className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-300"
+                    style={{
+                      backgroundColor: isHovered ? `${brand.colorHex}18` : `${brand.colorHex}0d`,
+                      color: brand.colorHex,
+                    }}
+                  >
+                    <Icon className="w-4 h-4" />
+                  </div>
                 </div>
-                {/* Valor KPI */}
-                <p
-                  className="relative text-3xl font-bold font-headline transition-colors duration-300"
-                  style={{ color: isHovered ? brand.colorHex : '#0f172a' }}
-                >
-                  {s.value}
-                </p>
-                {/* Sub-dato */}
-                <p className={`relative text-[11px] font-medium font-sans ${s.subColor}`}>{s.sub}</p>
               </div>
             );
           })}
@@ -130,7 +129,7 @@ export default function AdminDashboard() {
             return (
               <div
                 key={mod.id}
-                className="relative bg-white rounded-2xl border transition-all duration-300 ease-in-out p-4 space-y-3 overflow-hidden cursor-default"
+                className="relative bg-white rounded-2xl border transition-all duration-300 ease-in-out p-4 space-y-3 overflow-hidden shadow-sm cursor-default"
                 style={{
                   borderColor: isHovered ? `${brand.colorHex}88` : 'rgb(226 232 240)',
                   boxShadow: isHovered
@@ -188,20 +187,20 @@ export default function AdminDashboard() {
                 {/* KPIs de módulo */}
                 <div className="relative grid grid-cols-3 gap-0 pt-3 border-t border-slate-100">
                   <div className="pr-2 border-r border-slate-100">
-                    <span className="text-[10px] font-bold font-jakarta uppercase tracking-wider text-slate-400 block mb-0.5">Usuarios</span>
+                    <span className="text-kpi-label text-slate-400 block mb-0.5">Usuarios</span>
                     <span
-                      className="text-xl font-bold font-headline transition-colors duration-300"
+                      className="text-data-number transition-colors duration-300"
                       style={{ color: isHovered ? brand.colorHex : '#1e293b' }}
                     >
                       {mod.users}
                     </span>
                   </div>
                   <div className="px-2 border-r border-slate-100">
-                    <span className="text-[10px] font-bold font-jakarta uppercase tracking-wider text-slate-400 block mb-0.5">Uptime</span>
-                    <span className="text-xl font-bold font-headline text-slate-800">{mod.uptime}</span>
+                    <span className="text-kpi-label text-slate-400 block mb-0.5">Uptime</span>
+                    <span className="text-data-number text-slate-800">{mod.uptime}</span>
                   </div>
                   <div className="pl-2">
-                    <span className="text-[10px] font-bold font-jakarta uppercase tracking-wider text-slate-400 block mb-0.5">Deploy</span>
+                    <span className="text-kpi-label text-slate-400 block mb-0.5">Deploy</span>
                     <span className="text-[11px] font-semibold font-sans text-slate-600 leading-tight">{mod.lastDeploy}</span>
                   </div>
                 </div>

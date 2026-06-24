@@ -1,6 +1,6 @@
 # Design Guidelines — Fidelicard Platform
 
-> Versión: 1.7 | Actualizado: 2026-06-16
+> Versión: 1.9 | Actualizado: 2026-06-23
 
 ---
 
@@ -114,7 +114,7 @@ El sistema usa **exactamente 4 familias**. No agregar más sin decisión explíc
 
 #### Reglas de tipografía base
 
-- **Chip de barra secundaria** (título + descripción): `font-sans` (Inter) a **12px**. Inter a este tamaño es más neutral y no compite con las cabeceras de tabla.
+- **Chip de barra secundaria** (título + descripción): `font-sans` (Inter) a **12px font-light**. Inter a este tamaño es más neutral y no compite con las cabeceras de tabla. El peso `font-light` reemplazó a `font-bold` en v1.8 para alinear con el tono general de la interfaz.
 - **Cabeceras de tabla**: `font-jakarta` a **12px bold uppercase + tracking-wider**. Su forma geométrica diferencia el header del dato.
 - **Subtítulos de panel** (`h3` dentro de cards, encabezados de formulario): `.text-section-heading` — Outfit 14px. El único tamaño que supera 12px en la zona autenticada.
 - **Labels técnicos** (`SI OCURRE:`, `ACCIÓN:`, KPIs de tarjetas de segmento): `.text-tech-label` — Jakarta 10px.
@@ -150,38 +150,52 @@ Esta es la escala activa en toda la interfaz autenticada. Todos los tamaños viv
 | Token | Tamaño | Peso | Rol | Ejemplo de uso |
 |-------|--------|------|-----|----------------|
 | `.text-data-primary` | 12px | 600 | Dato principal de una fila o card | Nombre del cliente |
-| `.text-data-number` | 12px | 700 | Valor numérico destacado (`tabular-nums`) | Contadores, totales, puntos |
+| `.text-data-number` | 12px | 700 | Valor numérico destacado (`tabular-nums`) | Contadores en tablas, totales, puntos |
 | `.text-data-secondary` | 11px | 400 | Dato secundario o metadato | Email, fecha, módulo |
-| `.text-chip` | 11px | 700 | Etiqueta de chip (barra secundaria, filtros activos) | "Tarjetahabientes activos", "Todos" |
-| `.text-chip-sub` | 11px | 500 | Texto revelado en hover del chip expandible | `· Descripción de la vista` |
+| `.text-chip` | 11px | 700 | Etiqueta de chip compacto (barra secundaria, filtros) | "Tarjetahabientes activos", "Todos" |
 | `.text-status` | 11px | 600 | Indicador de estado RIGHT de barra secundaria | "42 clientes", "3 módulos activos" |
 | `.text-avatar` | 11px | 700 | Iniciales en avatar circular | "CM", "LG" |
 | `.text-col-header` | 10px | 700 | Cabecera de columna de tabla (`uppercase tracking-wider`) | "CLIENTE", "MÓDULO", "INGRESO" |
+| `.text-kpi-label` | 10px | 700 | Label de card KPI (`uppercase tracking-wider`) | "VENTAS CONVERTIDAS", "INVERSIÓN" |
+| `.text-kpi-unit` | 10px | 700 | Unidad del valor KPI (`uppercase`) | "COP", "USD", "%" |
+| `.text-kpi-sub` | 11px | 400–500 | Sub-dato del card KPI | "ROI Global: 42%", "$45.00 descontados" |
+
+> **Nota:** El chip expandible de la barra secundaria (nombre + descripción hover) NO usa `text-chip`. Usa `text-[12px] font-light font-sans` para el título y `text-[12px] font-sans` con `fontWeight: 500` para la descripción. Ver sección [Chip de título expandible](#chip-de-título-expandible-hover-reveal).
 
 > **Escala**: 10px → 11px → 12px. No usar tamaños intermedios ni mayores en esta zona de la UI.
 
-#### Uso en código
+#### Cards KPI — tipografía estándar
+
+Los cards de indicadores (KPIs) tienen tres niveles tipográficos fijos. El valor numérico usa `text-data-number` — el mismo token que los totales y contadores en tablas. Esto garantiza que todos los números destacados tengan el mismo peso visual en cualquier módulo.
+
+| Elemento | Clases | Tamaño | Referencia |
+|----------|--------|--------|------------|
+| Label del KPI | `text-kpi-label text-slate-400` | 10px bold uppercase | `BusinessDashboard.tsx`, `KPICards.tsx` |
+| Valor del KPI | `text-data-number` | 12px bold `tabular-nums` | `BusinessDashboard.tsx`, `KPICards.tsx` |
+| Unidad del KPI | `text-kpi-unit text-slate-400` | 10px bold uppercase | `KPICards.tsx` |
+| Sub-dato del KPI | `text-kpi-sub` | 11px regular | `BusinessDashboard.tsx`, `KPICards.tsx` |
+
+> **Regla:** El valor del KPI usa `text-data-number` (12px) — mismo peso visual en todos los módulos. El card mantiene altura con icono `w-9 h-9` en flex-row.
 
 ```tsx
-// Fila de tabla
-<p className="text-data-primary text-slate-800">{client.name}</p>
-<p className="text-data-secondary text-slate-400">{client.email}</p>
-
-// Chip de barra secundaria
-<span className="text-chip">Tarjetahabientes activos</span>
-<span className="text-chip-sub" style={{ color: `${brand.colorHex}99` }}>
-  · Descripción de la vista
-</span>
-
-// Cabecera de tabla
-<span className="text-col-header text-slate-500 font-mono">Cliente</span>
-
-// Valor numérico
-<span className="text-data-number" style={{ color: brand.colorHex }}>42</span>
-
-// Estado RIGHT
-<span className="text-status text-slate-600">42 clientes</span>
+<div className="bg-white border border-slate-200 rounded-2xl p-4">
+  <div className="relative flex items-start justify-between gap-2">
+    <div className="min-w-0">
+      <span className="text-kpi-label text-slate-400">VENTAS CONVERTIDAS</span>
+      <div className="flex items-baseline gap-1 mt-1">
+        <span className="text-data-number text-slate-900">$35.00</span>
+        <span className="text-kpi-unit text-slate-400">COP</span>
+      </div>
+      <p className="text-kpi-sub text-slate-500 mt-1">ROI Global: 42%</p>
+    </div>
+    <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 bg-emerald-100 text-emerald-600">
+      <DollarSign className="w-4 h-4" />
+    </div>
+  </div>
+</div>
 ```
+
+#### Uso en código
 
 #### Reglas
 
@@ -334,9 +348,44 @@ Toda vista autenticada tiene exactamente dos barras apiladas con altura fija:
 | Barra | Componente | Altura | Clase |
 |-------|-----------|--------|-------|
 | TopBar global | `TopBar.tsx` | 56px | `h-14` |
-| Barra secundaria | cada vista | 40px | `h-10` |
+| Barra secundaria | cada vista | 48px | `h-12` |
 
-La barra secundaria **siempre** usa `h-10` — nunca `py-2` ni `py-3` libres. La altura fija garantiza que el espaciado superior del contenido sea idéntico en todas las vistas.
+> **Referencia:** El sizing de la barra secundaria está tomado de `AudienciaCRM.tsx` (`src/modules/fidelizacion/pages/AudienciaCRM.tsx:228`). Toda barra secundaria debe replicar exactamente sus clases de contenedor. No usar `h-10`, `py-2` ni `py-2.5`.
+
+### TopBar — estilo de marca
+
+```tsx
+<h1 className="text-lg sm:text-xl font-light font-headline cursor-pointer tracking-wide truncate">
+  {brand.name}
+</h1>
+```
+
+- `font-bold` (reemplazó a `font-light` en v1.9 para alinear con el nombre de marca en la TopBar)
+- `tracking-wide` (reemplazó a `tracking-[-0.03em]`)
+
+### TopBar — role chip
+
+```tsx
+<div
+  className="flex items-center gap-1.5 w-8 h-8 sm:w-auto sm:px-3 sm:h-8 rounded-full justify-center transition-all ring-1 ring-black/[0.04]"
+  style={{ backgroundColor: `${brand.colorHex}14`, color: brand.colorHex }}
+>
+  <RoleIcon className="w-4 h-4 flex-shrink-0" strokeWidth={1.5} />
+  <span className="hidden sm:inline text-[10px] font-light tracking-widest uppercase">{roleLabel}</span>
+</div>
+```
+
+- `ring-1 ring-black/[0.04]` añadido en v1.8
+- `font-light tracking-widest uppercase` (reemplazó a `font-bold`)
+- Iconos con `strokeWidth={1.5}` en toda la interfaz (reemplazó a `strokeWidth={2.25}`)
+
+La barra secundaria **siempre** usa `h-12` (48px) — nunca `py-2` ni `py-3` libres. La altura fija garantiza que el espaciado superior del contenido sea idéntico en todas las vistas.
+
+> **Decisión (v1.9):** Se tomó como referencia la barra secundaria de `AudienciaCRM.tsx` para uniformar todas las vistas. Las clases exactas del contenedor son:
+> ```tsx
+> <div className="bg-white border-b border-slate-200 px-4 sm:px-6 h-12 flex flex-row items-center justify-between gap-2 select-none overflow-hidden flex-shrink-0">
+> ```
+> Esto reemplazó al mix inconsistente de `h-10` (ventas, admin), `py-2` (biografías) y `py-2.5` (napilink) que existía antes de v2.0. El `<main>` de cada vista usa `px-4 md:px-6` para alinear horizontalmente con la barra secundaria en todos los breakpoints.
 
 ### Layout de página — estructura obligatoria
 
@@ -344,7 +393,7 @@ La barra secundaria **siempre** usa `h-10` — nunca `py-2` ni `py-3` libres. La
 // ✅ Correcto
 <div className="h-full flex flex-col overflow-hidden">
 
-  <div className="bg-[#f8fafc] border-b border-slate-200 px-4 sm:px-6 h-10
+  <div className="bg-white border-b border-slate-200 px-4 sm:px-6 h-12
                   flex flex-row items-center justify-between gap-2
                   select-none overflow-hidden flex-shrink-0">
     {/* chip izquierdo + acciones derecha */}
@@ -358,14 +407,14 @@ La barra secundaria **siempre** usa `h-10` — nunca `py-2` ni `py-3` libres. La
 
 // ❌ Incorrecto
 <div className="min-h-screen pb-32">
-  <div className="bg-[#f8fafc] ... py-2">barra</div>   {/* altura variable */}
+  <div className="bg-white ... py-2">barra</div>   {/* altura variable */}
   <main className="w-full px-4 pt-4 ...">              {/* pt-4 excesivo */}
 ```
 
 **Reglas fijas — no variar:**
 - Div raíz: `h-full flex flex-col overflow-hidden` — nunca `min-h-screen`
-- Barra secundaria: `h-10 flex-shrink-0` — nunca `py-2` libre
-- `<main>`: `flex-1 overflow-y-auto` + `pt-3` (no `pt-4`) — el `pt-3` junto con `h-10` da el mismo espacio visual que `/admin`
+- Barra secundaria: `h-12 flex-shrink-0` — nunca `py-2` libre
+- `<main>`: `flex-1 overflow-y-auto` + `pt-3` (no `pt-4`) — el `pt-3` junto con `h-12` da el mismo espacio visual que `/admin`
 - Separación entre secciones: `space-y-4` en el `<main>` — nunca `space-y-6` entre bloques de primer nivel
 
 ### Espaciado entre cards
@@ -478,37 +527,9 @@ Cada vista autenticada tiene dos niveles de cabecera:
 ### Estructura
 
 ```tsx
-<div className="bg-[#f8fafc] border-b border-slate-200 px-4 sm:px-6 py-2
-                flex flex-col sm:flex-row sm:items-center sm:justify-between
-                gap-2 select-none">
-
-  {/* IZQUIERDA — contexto/título de la vista */}
-  <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full
-                  border border-slate-200/60 bg-white"
-       style={{ color: brand.colorHex }}>
-    <IconoDeLaVista className="w-3.5 h-3.5" />
-    <span className="text-[11px] font-bold">Nombre de la vista</span>
-  </div>
-
-  {/* DERECHA — estado del sistema + acciones */}
-  <div className="flex items-center gap-2">
-    {/* Indicador de estado */}
-    <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200/60
-                    px-3 py-1.5 rounded-full">
-      <div className="w-2 h-2 rounded-full animate-pulse"
-           style={{ backgroundColor: brand.colorHex }} />
-      <span className="text-[11px] font-semibold text-slate-600">X elementos</span>
-    </div>
-    {/* Acciones opcionales: búsqueda, filtros, modos de pantalla */}
-    <div className="relative w-full sm:w-56">
-      <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5
-                         text-slate-400 pointer-events-none" />
-      <input className="w-full pl-9 pr-3 py-1.5 bg-white border border-slate-200
-                        rounded-lg text-[12px] focus:outline-none focus:border-slate-400
-                        text-slate-800 placeholder:text-slate-400" />
-    </div>
-  </div>
-</div>
+<div className="bg-white border-b border-slate-200 px-4 sm:px-6 h-12
+                flex flex-row items-center justify-between gap-2
+                select-none overflow-hidden flex-shrink-0">
 ```
 
 ### Regla de posicionamiento
@@ -539,10 +560,10 @@ export default function VentasAnalyticsPage() {
   const [chipHovered, setChipHovered] = useState(false);
   return (
     <div className="h-full flex flex-col overflow-hidden">
-      {/* Barra secundaria */}
-      <div className="bg-[#f8fafc] border-b border-slate-200 px-4 sm:px-6 py-2
-                      flex flex-row items-center justify-between
-                      gap-2 select-none overflow-hidden flex-shrink-0">
+      {/* Barra secundaria — ref: AudienciaCRM.tsx */}
+      <div className="bg-white border-b border-slate-200 px-4 sm:px-6 h-12
+                       flex flex-row items-center justify-between
+                       gap-2 select-none overflow-hidden flex-shrink-0">
         {/* chip izquierdo + contador derecho */}
       </div>
       {/* Contenido scrollable */}
@@ -558,7 +579,9 @@ El título del chip es el nombre descriptivo de la vista (`"Inteligencia de Vent
 
 ### Implementado en
 
-`/business/card-editor`, `/business/crm`, `/business/clients`, `/business/automatizaciones`, `/business/audiencia-crm`, `/business/payment`, `/admin`, `/sales/analytics`
+`/business/card-editor`, `/business/crm`, `/business/clients`, `/business/automatizaciones`, `/business/audiencia-crm` (referencia), `/business/payment`, `/admin`, `/sales/analytics`
+
+**Migrado en v2.0:** todas las vistas ahora usan `h-12` (AudienciaCRM como referencia). El fondo se unificó a `bg-white` en v2.0 para alinear con el TopBar principal.
 
 ---
 
@@ -601,17 +624,16 @@ const [chipHovered, setChipHovered] = useState(false);
     className="w-3.5 h-3.5 flex-shrink-0 transition-transform duration-300"
     style={{ transform: chipHovered ? 'rotate(-15deg) scale(1.2)' : 'none' }}
   />
-  <span className="text-[11px] font-bold whitespace-nowrap flex-shrink-0">Nombre de la vista</span>
+  <span className="text-[12px] font-light font-sans whitespace-nowrap flex-shrink-0 tracking-wide">Nombre de la vista</span>
 
   {/* Descripción revelada */}
   <span
-    className="text-[11px] whitespace-nowrap overflow-hidden transition-all duration-500 ease-in-out"
+    className="text-[12px] font-light font-sans whitespace-nowrap overflow-hidden transition-all duration-500 ease-in-out"
     style={{
       maxWidth: chipHovered ? '600px' : '0px',
       opacity: chipHovered ? 1 : 0,
       paddingLeft: chipHovered ? '6px' : '0px',
       color: `${brand.colorHex}99`,
-      fontWeight: 500,
     }}
   >
     · Descripción breve de la vista
@@ -635,7 +657,8 @@ const [chipHovered, setChipHovered] = useState(false);
 
 - La transición usa siempre `duration-500 ease-in-out` para que la expansión se sienta orgánica.
 - `maxWidth: '600px'` en hover garantiza que descripciones de hasta ~80 chars entren sin corte; aumentar si el texto es más largo.
-- El separador es `·` (punto mediano), no guion — visualmente más limpio en tamaño 11px.
+- El separador es `·` (punto mediano), no guion — visualmente más limpio en tamaño 12px.
+- El chip izquierdo usa `font-light` (v1.8) — no `font-bold`. El tono general de la interfaz es ligero.
 - El chip derecho (estado del sistema) **no crece** — el espacio lo absorbe el chip izquierdo.
 - En mobile no hay hover; el chip permanece en su estado colapsado (comportamiento correcto por defecto).
 
@@ -809,26 +832,88 @@ Los textos y elementos hijos relevantes adoptan `brand.colorHex` en hover con `t
 
 ## Formularios e inputs
 
+### Estándar de texto interior de input
+
+El texto dentro de un input debe usar `text-xs` (12px) con `text-slate-800` y `font-sans` (Inter). El placeholder debe ir siempre en `placeholder:text-slate-400`. Referencia: `EcosistemaProfileForm.tsx:675`.
+
 ```tsx
-// Input estándar
+// ✅ Correcto — text-xs, text-slate-800, placeholder:text-slate-400
 <input className="
-  w-full px-4 py-2.5
-  bg-surface-variant/50
-  border border-outline/20
-  rounded-lg
-  text-body-md text-on-surface
-  placeholder:text-on-surface/40
-  focus:outline-none focus:border-primary/60
-  transition-colors
+  w-full bg-slate-50 border border-slate-200
+  focus:border-slate-400 focus:ring-1 focus:ring-slate-400
+  rounded-lg px-3 py-2
+  text-xs text-slate-800 placeholder:text-slate-400
+  outline-none transition-all font-sans
 " />
 
-// Label
-<label className="text-label-md text-on-surface/70 mb-1.5 block">
+// ❌ Incorrecto — text-[11px], text-[10px], o falta placeholder:text-slate-400
+<input className="w-full ... text-[11px] text-slate-600 ..." />  {/* tamaño no estándar */}
+<input className="w-full ... text-xs" />                          {/* falta placeholder:text-slate-400 */}
+```
+
+- Tamaño: `text-xs` (12px) — único tamaño estándar para texto de input. No usar `text-[11px]`, `text-[10px]`, `text-sm`, ni `text-[9px]`.
+- Color de texto: `text-slate-800` — único color estándar para el valor dentro del input.
+- Color de placeholder: `placeholder:text-slate-400` — siempre presente.
+- Fuente: `font-sans` (Inter) — nunca `font-mono` en inputs de formulario.
+- Background: `bg-slate-50` con `focus:bg-white` opcional.
+- Border radius: `rounded-lg` (8px) para inputs estándar, `rounded-xl` (12px) para inputs dentro de formularios o cards de editor.
+
+### Label de formulario
+
+```tsx
+<label className="text-xs font-semibold text-slate-600 block mb-1">
+  Nombre del campo
+</label>
 ```
 
 ---
 
 ## Sidebar — estructura de navegación
+
+### Logo de marca
+
+```tsx
+<div
+  className="w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-light tracking-wider shrink-0 ring-1 ring-white/20 shadow-md"
+  style={{
+    backgroundColor: brandColor,
+    boxShadow: `0 4px 16px ${brandColor}40, inset 0 1px 0 rgba(255,255,255,0.25)`,
+  }}
+>
+  {brand.logo}
+</div>
+```
+
+- Logo circular (`rounded-full` con `ring-1 ring-white/20` + glow shadow) — reemplazó al logo `rounded-xl` en v1.8.
+- Marca (nombre): `font-light font-headline tracking-wide` — nunca `font-bold`.
+
+### Role pill
+
+Debajo del nombre de marca, un pill muestra el rol del usuario:
+
+```tsx
+<div
+  className="inline-flex items-center gap-1.5 h-7 px-2.5 rounded-full transition-all"
+  style={{ backgroundColor: `${brandColor}14`, color: brandColor }}
+>
+  <RoleIcon className="w-3.5 h-3.5 flex-shrink-0" strokeWidth={1.5} />
+  <span className="text-[10px] font-light tracking-widest uppercase">{roleLabel}</span>
+</div>
+```
+
+Reemplazó al texto "Consola v1.0 PRO" en v1.8. Usa `font-light tracking-widest uppercase`.
+
+### Section labels
+
+```tsx
+<p className="text-[10px] font-light text-slate-400 uppercase tracking-[0.14em] px-4 mb-2">Fidelización</p>
+```
+
+- `font-light` (no `font-bold`)
+- `tracking-[0.14em]` (no `tracking-widest`)
+- Sin `font-mono`
+
+### SidebarItem
 
 Cada ítem de Sidebar usa `SidebarItem`:
 
@@ -841,7 +926,38 @@ Cada ítem de Sidebar usa `SidebarItem`:
 />
 ```
 
-Estado activo: fondo `${brand.colorHex}15`, texto `brand.colorHex`.
+```tsx
+function SidebarItem({ icon: Icon, label, isActive, onClick, badge }: { icon: LucideIcon; label: string; isActive: boolean; onClick: () => void; badge?: string }) {
+  const { brand } = useModuleBrand();
+  return (
+    <button
+      onClick={onClick}
+      className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-full transition-all text-[13px] tracking-wide ${
+        isActive
+          ? 'font-normal'
+          : 'font-light text-slate-600 hover:bg-slate-50 hover:text-slate-800'
+      }`}
+      style={isActive ? { backgroundColor: `${brand.colorHex}12`, color: brand.colorHex } : undefined}
+    >
+      <Icon className="w-[18px] h-[18px] shrink-0" strokeWidth={1.5} />
+      <span className="flex-1 text-left">{label}</span>
+      {badge && (
+        <span className="text-[9px] font-light text-white bg-red-500 px-1.5 py-0.5 rounded-full min-w-[18px] text-center leading-tight shadow-sm">
+          {badge}
+        </span>
+      )}
+    </button>
+  );
+}
+```
+
+Cambios en v1.8:
+- `rounded-xl` → `rounded-full` (pill-style)
+- `font-semibold` (activo) → `font-normal`
+- `font-medium` (inactivo) → `font-light`
+- Iconos `w-5 h-5` → `w-[18px] h-[18px]` con `strokeWidth={1.5}`
+- Badge: `font-bold` → `font-light`
+- Fondo activo: `${brand.colorHex}15` → `${brand.colorHex}12` (más sutil)
 
 ---
 
@@ -855,6 +971,40 @@ Estado activo: fondo `${brand.colorHex}15`, texto `brand.colorHex`.
 | Contextos | `{Name}Context.tsx` + hook `use{Name}` | `AuthContext.tsx` / `useAuth()` |
 | Servicios | `{domain}Service.ts` | `loyaltyService.ts` |
 | Tipos de módulo | `modules/{id}/types/index.ts` | |
+
+---
+
+---
+
+## Módulo Biografías — patrones de tipografía de perfil y ecosistema
+
+Estos patrones aplican a las vistas del módulo `biografías` (`/biography/bios`, `EcosistemaProfileCard`, `EcosistemaBios`). Se registran aquí por haber sido validados explícitamente como el estilo deseado.
+
+### Aprobados — estilos que al usuario le gustan
+
+| Elemento | Ubicación | Clases / estilo | Referencia |
+|----------|-----------|-----------------|------------|
+| Banner título (vista principal) | `EcosistemaBios.tsx` header | `text-xl sm:text-2xl font-light tracking-tight text-slate-900 leading-tight` — palabras clave usan `font-semibold text-slate-800` | Línea 159–160 |
+| Banner descripción | `EcosistemaBios.tsx` header | `text-xs sm:text-sm text-slate-550 max-w-2xl font-light leading-relaxed` | Línea 162–163 |
+| Nombre de perfil | `EcosistemaProfileCard.tsx` | `text-xl font-medium tracking-tight text-slate-900 font-sans` | Línea 305 |
+| Ubicación del perfil | `EcosistemaProfileCard.tsx` | `text-xs text-slate-500 font-normal` (con `MapPin` icon `h-3.5 w-3.5`) | Línea 313–317 |
+| Tagline del perfil | `EcosistemaProfileCard.tsx` | `text-sm font-semibold tracking-wide` + color del preset activo | Línea 320–322 |
+| Bio / descripción del perfil | `EcosistemaProfileCard.tsx` | `text-xs text-slate-500 max-w-3xl leading-relaxed font-sans` | Línea 324–326 |
+| Card informativo / alerta | `EcosistemaProfileForm.tsx` | `text-[11px] leading-relaxed` con título `font-extrabold` (o `font-bold`) dentro de un contenedor `bg-{color}-50 border border-{color}-250 p-3.5 rounded-xl` | Líneas 851–864 |
+
+### Rechazados — estilos que NO se deben usar
+
+| Elemento | Estilo actual (rechazado) | Razón |
+|----------|--------------------------|-------|
+| "Calificación general" | `text-[9px] font-mono tracking-wider text-slate-400 uppercase block` | `font-mono` no debe usarse en labels de UI; `text-[9px]` es demasiado pequeño |
+| "Preset: {key}" | `text-[9px] font-mono text-slate-400 uppercase tracking-widest` | `font-mono` y `tracking-widest` están fuera de estándar |
+
+### Reglas para la vista `/biography/bios`
+
+- Los labels de metadatos (rating, preset, tipo) **nunca** deben usar `font-mono` — usar `font-sans` (Inter).
+- El tamaño mínimo para etiquetas informativas es `text-[10px]`, no `text-[9px]`.
+- `tracking-wider` es el tracking estándar para uppercase; no usar `tracking-widest`.
+- **Conservar los colores originales** de los presets (royal-blue, modern-coral, neon-emerald, warm-amber, minimal-slate) — no reemplazar por `brand.colorHex` en esta vista. Los colores de preset son parte del branding del perfil individual.
 
 ---
 

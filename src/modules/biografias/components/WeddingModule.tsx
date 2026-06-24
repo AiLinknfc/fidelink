@@ -225,7 +225,7 @@ export function WeddingModule({ currentBio, role, onUpdateBio }: WeddingModulePr
  placeholder="Ej. Paula Restrepo"
  value={rsvpName}
  onChange={(e) => setRsvpName(e.target.value)}
- className="w-full text-xs p-2 border border-slate-200 rounded-lg text-slate-700 bg-slate-50/50 focus:bg-white focus:outline"
+ className="w-full text-xs p-2 border border-slate-200 rounded-lg text-slate-800 placeholder:text-slate-400 bg-slate-50/50 focus:bg-white focus:outline"
  required
  />
  </div>
@@ -237,7 +237,7 @@ export function WeddingModule({ currentBio, role, onUpdateBio }: WeddingModulePr
  placeholder="paula@gmail.com"
  value={rsvpEmail}
  onChange={(e) => setRsvpEmail(e.target.value)}
- className="w-full text-xs p-2 border border-slate-200 rounded-lg text-slate-700 bg-slate-50/50 focus:bg-white focus:outline"
+ className="w-full text-xs p-2 border border-slate-200 rounded-lg text-slate-800 placeholder:text-slate-400 bg-slate-50/50 focus:bg-white focus:outline"
  required
  />
  </div>
@@ -264,7 +264,7 @@ export function WeddingModule({ currentBio, role, onUpdateBio }: WeddingModulePr
  max={5}
  value={rsvpCompanions}
  onChange={(e) => setRsvpCompanions(parseInt(e.target.value) || 0)}
- className="w-full text-xs p-2 border border-slate-200 rounded-lg text-slate-700 bg-slate-50/50 focus:bg-white"
+ className="w-full text-xs p-2 border border-slate-200 rounded-lg text-slate-800 placeholder:text-slate-400 bg-slate-50/50 focus:bg-white"
  disabled={rsvpStatus ==='rechazado'}
  />
  </div>
@@ -277,7 +277,7 @@ export function WeddingModule({ currentBio, role, onUpdateBio }: WeddingModulePr
  placeholder="Ej. Sin mariscos, vegetariano, celíaco..."
  value={rsvpDietary}
  onChange={(e) => setRsvpDietary(e.target.value)}
- className="w-full text-xs p-2 border border-slate-200 rounded-lg text-slate-700 bg-slate-50/50 focus:bg-white"
+ className="w-full text-xs p-2 border border-slate-200 rounded-lg text-slate-800 placeholder:text-slate-400 bg-slate-50/50 focus:bg-white"
  />
  </div>
 
@@ -375,7 +375,7 @@ export function WeddingModule({ currentBio, role, onUpdateBio }: WeddingModulePr
  placeholder="Ej. Paula Restrepo"
  value={photoUploader}
  onChange={(e) => setPhotoUploader(e.target.value)}
- className="w-full text-xs p-2 border border-slate-200 bg-white rounded-lg text-slate-700"
+ className="w-full text-xs p-2 border border-slate-200 bg-white rounded-lg text-slate-800 placeholder:text-slate-400"
  required
  />
  </div>
@@ -386,7 +386,7 @@ export function WeddingModule({ currentBio, role, onUpdateBio }: WeddingModulePr
  placeholder="Ej. ¡Qué noche tan hermosa!"
  value={photoCaption}
  onChange={(e) => setPhotoCaption(e.target.value)}
- className="w-full text-xs p-2 border border-slate-200 bg-white rounded-lg text-slate-700"
+ className="w-full text-xs p-2 border border-slate-200 bg-white rounded-lg text-slate-800 placeholder:text-slate-400"
  required
  />
  </div>

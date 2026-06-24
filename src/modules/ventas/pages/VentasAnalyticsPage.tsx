@@ -40,7 +40,7 @@ export default function VentasAnalyticsPage() {
     <div className="h-full flex flex-col overflow-hidden">
 
       {/* ── Barra secundaria ── */}
-      <div className="bg-[#f8fafc] border-b border-slate-200 px-4 sm:px-6 h-10
+      <div className="bg-white border-b border-slate-200 px-4 sm:px-6 h-12
                       flex flex-row items-center justify-between
                       gap-2 select-none overflow-hidden flex-shrink-0">
 
@@ -71,13 +71,12 @@ export default function VentasAnalyticsPage() {
           />
           <span className="text-[12px] font-bold font-sans whitespace-nowrap flex-shrink-0">Inteligencia de Ventas</span>
           <span
-            className="text-[12px] font-sans whitespace-nowrap overflow-hidden transition-all duration-500 ease-in-out"
+            className="text-[12px] font-light font-sans whitespace-nowrap overflow-hidden transition-all duration-500 ease-in-out"
             style={{
               maxWidth: chipHovered ? '600px' : '0px',
               opacity: chipHovered ? 1 : 0,
               paddingLeft: chipHovered ? '6px' : '0px',
               color: `${brand.colorHex}99`,
-              fontWeight: 500,
             }}
           >
             · ROI, embudos, canales y transacciones en tiempo real

@@ -19,10 +19,16 @@ const MODULE_FILTERS = [
 
 type Filter = typeof MODULE_FILTERS[number]['value'];
 
-function ModuleIcon({ module }: { module: string }) {
-  if (module === 'fidelizacion') return <CreditCard className="w-3.5 h-3.5 text-violet-500" />;
-  if (module === 'ventas')       return <ShoppingBag className="w-3.5 h-3.5 text-emerald-500" />;
-  return <Book className="w-3.5 h-3.5 text-indigo-500" />;
+const MODULE_COLORS: Record<string, string> = {
+  fidelizacion: '#7c3aed',
+  ventas: '#10b981',
+  biografias: '#6366f1',
+};
+
+function ModuleIcon({ module, isHovered, brandColor }: { module: string; isHovered: boolean; brandColor: string }) {
+  const color = isHovered ? brandColor : (MODULE_COLORS[module] ?? '#6366f1');
+  const Icon = module === 'fidelizacion' ? CreditCard : module === 'ventas' ? ShoppingBag : Book;
+  return <Icon className="w-3.5 h-3.5 transition-colors duration-300" style={{ color }} />;
 }
 
 export default function AdminClients() {
@@ -45,9 +51,9 @@ export default function AdminClients() {
     <div className="h-full flex flex-col overflow-hidden">
 
       {/* ── Barra secundaria ── */}
-      <div className="bg-[#f8fafc] border-b border-slate-200 px-4 sm:px-6 h-10
+      <div className="bg-white border-b border-slate-200 px-4 sm:px-6 h-12
                       flex flex-row items-center justify-between
-                      gap-2 select-none overflow-hidden">
+                      gap-2 select-none overflow-hidden flex-shrink-0">
 
         {/* LEFT — chip expandible */}
         <div
@@ -76,13 +82,12 @@ export default function AdminClients() {
           />
           <span className="text-[12px] font-bold font-sans whitespace-nowrap flex-shrink-0">Clientes Cross-Module</span>
           <span
-            className="text-[12px] font-sans whitespace-nowrap overflow-hidden transition-all duration-500 ease-in-out"
+            className="text-[12px] font-light font-sans whitespace-nowrap overflow-hidden transition-all duration-500 ease-in-out"
             style={{
               maxWidth: chipHovered ? '600px' : '0px',
               opacity: chipHovered ? 1 : 0,
               paddingLeft: chipHovered ? '6px' : '0px',
               color: `${brand.colorHex}99`,
-              fontWeight: 500,
             }}
           >
             · Todos los clientes registrados en la plataforma
@@ -93,7 +98,7 @@ export default function AdminClients() {
         <div className="flex items-center gap-2 flex-shrink-0">
           <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200/60 px-3 py-1.5 rounded-full flex-shrink-0">
             <div className="w-2 h-2 rounded-full animate-pulse flex-shrink-0" style={{ backgroundColor: brand.colorHex }} />
-            <span className="text-[11px] font-semibold text-slate-600 whitespace-nowrap">
+            <span className="text-status text-slate-600 whitespace-nowrap">
               {filtered.length} {filtered.length === 1 ? 'cliente' : 'clientes'}
             </span>
           </div>
@@ -104,7 +109,7 @@ export default function AdminClients() {
               value={query}
               onChange={e => setQuery(e.target.value)}
               placeholder="Buscar…"
-              className="w-full pl-9 pr-3 py-1.5 bg-white border border-slate-200 rounded-lg text-[12px] focus:outline-none focus:border-slate-400 text-slate-800 placeholder:text-slate-400"
+              className="w-full pl-9 pr-3 py-1.5 bg-white border border-slate-200 rounded-lg text-xs focus:outline-none focus:border-slate-400 text-slate-800 placeholder:text-slate-400"
             />
           </div>
         </div>
@@ -120,7 +125,7 @@ export default function AdminClients() {
               <button
                 key={value}
                 onClick={() => setFilter(value)}
-                className="relative px-3 py-1.5 rounded-full text-[11px] font-bold border transition-all duration-300 ease-in-out overflow-hidden"
+                className="relative px-3 py-1.5 rounded-full text-chip border transition-all duration-300 ease-in-out overflow-hidden"
                 style={{
                   borderColor:     isActive ? brand.colorHex       : 'rgb(226 232 240)',
                   backgroundColor: isActive ? `${brand.colorHex}10` : '#ffffff',
@@ -187,7 +192,7 @@ export default function AdminClients() {
                   {/* Cliente */}
                   <div className="relative col-span-4 flex items-center justify-start gap-3">
                     <div
-                      className="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center text-[11px] font-bold transition-colors duration-300"
+                      className="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center text-avatar transition-colors duration-300"
                       style={isHovered ? {
                         backgroundColor: `${brand.colorHex}18`,
                         color: brand.colorHex,
@@ -199,7 +204,7 @@ export default function AdminClients() {
                       {client.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()}
                     </div>
                     <p
-                      className="text-[12px] font-semibold transition-colors duration-300"
+                      className="text-data-primary transition-colors duration-300"
                       style={{ color: isHovered ? brand.colorHex : '#1e293b' }}
                     >
                       {client.name}
@@ -208,19 +213,21 @@ export default function AdminClients() {
 
                   {/* Correo */}
                   <div className="relative col-span-3">
-                    <span className="text-[11px] font-sans text-slate-400 truncate block">{client.email}</span>
+                    <span className="text-data-secondary text-slate-400 truncate block">{client.email}</span>
                   </div>
 
                   {/* Módulo */}
                   <div className="relative col-span-2 flex items-center gap-1.5">
-                    <ModuleIcon module={client.module} />
-                    <span className="text-[11px] font-sans font-medium text-slate-600 capitalize truncate">{client.module}</span>
+                    <ModuleIcon module={client.module} isHovered={isHovered} brandColor={brand.colorHex} />
+                    <span className="text-chip-sub text-slate-600 capitalize truncate transition-colors duration-300"
+                      style={{ color: isHovered ? brand.colorHex : '#475569' }}
+                    >{client.module}</span>
                   </div>
 
                   {/* Tarjetas */}
                   <div className="relative col-span-1 flex justify-center">
                     <span
-                      className="text-[12px] font-bold font-sans tabular-nums transition-colors duration-300"
+                      className="text-data-number transition-colors duration-300"
                       style={{ color: isHovered ? brand.colorHex : '#334155' }}
                     >
                       {client.cards}

@@ -4,6 +4,7 @@ import {
  Wrench, Gauge, Calendar, ShieldAlert, FileText, Check, 
  DollarSign, MapPin, Camera, Trash, Plus, Car, HelpCircle, AlertTriangle 
 } from'lucide-react';
+import { useModuleBrand } from '@/platform/theme/ModuleBrand';
 
 interface VehicleModuleProps {
  currentBio: Biography;
@@ -15,6 +16,7 @@ const PRESET_WORKSHOP_PHOTOS = ['https://images.unsplash.com/photo-1486006920555
 ];
 
 export function VehicleModule({ currentBio, role, onUpdateBio }: VehicleModuleProps) {
+ const { brand } = useModuleBrand();
  const vehicle = currentBio.vehicle;
 
  // Form states
@@ -124,7 +126,7 @@ export function VehicleModule({ currentBio, role, onUpdateBio }: VehicleModulePr
  <span className="px-2.5 py-0.5 font-mono text-[10px] font-extrabold bg-slate-100 text-slate-700 border border-slate-200 rounded">
  AÑO: {vehicle.year}
  </span>
- <span className={`px-2 py-0.5 rounded text-[9px] uppercase tracking-wider font-extrabold bg-indigo-50 border border-indigo-100 text-indigo-700`}>
+ <span className={`px-2 py-0.5 rounded text-[9px] uppercase tracking-wider font-extrabold`} style={{ backgroundColor: `${brand.colorHex}12`, borderColor: `${brand.colorHex}25`, color: brand.colorHex }}>
  {vehicle.color}
  </span>
  </div>
@@ -167,9 +169,9 @@ export function VehicleModule({ currentBio, role, onUpdateBio }: VehicleModulePr
  e.preventDefault();
  alert(`Descargando SOAT digital de placa ${vehicle.plate}. Código AXA: ${vehicle.soatPolicyNumber}`);
  }}
- className="text-[10px] text-indigo-600 hover:underline font-bold flex items-center gap-1"
- >
- Descargar SOAT
+ className="text-[10px] font-bold flex items-center gap-1 hover:underline" style={{ color: brand.colorHex }}
+  >
+  Descargar SOAT
  </a>
  </div>
  </div>
@@ -190,9 +192,9 @@ export function VehicleModule({ currentBio, role, onUpdateBio }: VehicleModulePr
  e.preventDefault();
  alert(`Descargando Certificado Técnico-Mecánico de gases del CDA para placa ${vehicle.plate}`);
  }}
- className="text-[10px] text-indigo-600 hover:underline font-bold flex items-center gap-1"
- >
- Descargar Certificado
+ className="text-[10px] font-bold flex items-center gap-1 hover:underline" style={{ color: brand.colorHex }}
+  >
+  Descargar Certificado
  </a>
  </div>
  </div>
@@ -204,7 +206,7 @@ export function VehicleModule({ currentBio, role, onUpdateBio }: VehicleModulePr
  <div className="flex items-center justify-between">
  <div>
  <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
- <Wrench className="w-3.5 h-3.5 text-indigo-500" /> Historial Completo de Mantenimiento y Mejoras
+ <Wrench className="w-3.5 h-3.5" style={{ color: brand.colorHex }} /> Historial Completo de Mantenimiento y Mejoras
  </h3>
  <p className="text-[10px] text-slate-400 font-mono">Controle el kilometraje, precios de talleres y facturas asociadas.</p>
  </div>
@@ -230,7 +232,7 @@ export function VehicleModule({ currentBio, role, onUpdateBio }: VehicleModulePr
  type="number"
  value={maintMileage}
  onChange={(e) => setMaintMileage(parseInt(e.target.value) || 0)}
- className="w-full text-xs p-2 border border-slate-200 bg-white rounded-lg text-slate-700 font-mono"
+ className="w-full text-xs p-2 border border-slate-200 bg-white rounded-lg text-slate-800 placeholder:text-slate-400 font-sans"
  required
  />
  </div>
@@ -242,7 +244,7 @@ export function VehicleModule({ currentBio, role, onUpdateBio }: VehicleModulePr
  placeholder="Ej. Cambio de bujías e inyectores"
  value={maintType}
  onChange={(e) => setMaintType(e.target.value)}
- className="w-full text-xs p-2 border border-slate-200 bg-white rounded-lg text-slate-700"
+ className="w-full text-xs p-2 border border-slate-200 bg-white rounded-lg text-slate-800 placeholder:text-slate-400"
  required
  />
  </div>
@@ -254,7 +256,7 @@ export function VehicleModule({ currentBio, role, onUpdateBio }: VehicleModulePr
  placeholder="Ej. Taller Autorizado Toyota"
  value={maintWorkshop}
  onChange={(e) => setMaintWorkshop(e.target.value)}
- className="w-full text-xs p-2 border border-slate-200 bg-white rounded-lg text-slate-700"
+ className="w-full text-xs p-2 border border-slate-200 bg-white rounded-lg text-slate-800 placeholder:text-slate-400"
  required
  />
  </div>
@@ -267,7 +269,7 @@ export function VehicleModule({ currentBio, role, onUpdateBio }: VehicleModulePr
  type="number"
  value={maintPrice}
  onChange={(e) => setMaintPrice(parseInt(e.target.value) || 0)}
- className="w-full text-xs p-2 border border-slate-200 bg-white rounded-lg text-slate-700 font-mono"
+ className="w-full text-xs p-2 border border-slate-200 bg-white rounded-lg text-slate-800 placeholder:text-slate-400 font-sans"
  required
  />
  </div>
@@ -278,7 +280,7 @@ export function VehicleModule({ currentBio, role, onUpdateBio }: VehicleModulePr
  type="date"
  value={maintDate}
  onChange={(e) => setMaintDate(e.target.value)}
- className="w-full text-xs p-2 border border-slate-200 bg-white rounded-lg text-slate-700"
+ className="w-full text-xs p-2 border border-slate-200 bg-white rounded-lg text-slate-800 placeholder:text-slate-400"
  required
  />
  </div>
@@ -306,7 +308,7 @@ export function VehicleModule({ currentBio, role, onUpdateBio }: VehicleModulePr
  placeholder="Indique si hay ruidos pendientes, vida de llantas, marca de lubricantes utilizados..."
  value={maintNotes}
  onChange={(e) => setMaintNotes(e.target.value)}
- className="w-full text-xs p-2 border border-slate-200 bg-white rounded-lg text-slate-700"
+ className="w-full text-xs p-2 border border-slate-200 bg-white rounded-lg text-slate-800 placeholder:text-slate-400"
  rows={2}
  />
  </div>
@@ -338,7 +340,7 @@ export function VehicleModule({ currentBio, role, onUpdateBio }: VehicleModulePr
  >
  <div className="flex gap-3">
  <div className="p-2.5 bg-slate-50 rounded-xl text-slate-600 flex-shrink-0 flex flex-col items-center justify-center font-mono">
- <Gauge className="w-4 h-4 mb-0.5 text-indigo-500" />
+ <Gauge className="w-4 h-4 mb-0.5" style={{ color: brand.colorHex }} />
  <span className="text-[9px] font-bold">{rec.mileage} km</span>
  </div>
 

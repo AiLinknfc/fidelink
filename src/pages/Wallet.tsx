@@ -281,7 +281,7 @@ export default function Wallet() {
                   <form onSubmit={handleReferralSubmit} className="mt-3 flex gap-2">
                     <input type="text" value={referralCodeInput} onChange={e => setReferralCodeInput(e.target.value)}
                       placeholder="Ej. nombre-amigo"
-                      className="flex-1 px-2.5 py-1 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500 font-mono text-slate-800 placeholder-slate-400" />
+                      className="flex-1 px-2.5 py-1 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500 font-mono text-slate-800 placeholder:text-slate-400" />
                     <button type="submit" className="bg-blue-600 text-white px-3 py-1 text-xs font-bold rounded-lg hover:bg-blue-700 transition-colors cursor-pointer shadow-sm">
                       Sumar
                     </button>

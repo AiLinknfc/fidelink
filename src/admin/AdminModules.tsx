@@ -17,7 +17,7 @@ export default function AdminModules() {
     <div className="h-full flex flex-col overflow-hidden">
 
       {/* ── Barra secundaria ── */}
-      <div className="bg-[#f8fafc] border-b border-slate-200 px-4 sm:px-6 h-10
+      <div className="bg-white border-b border-slate-200 px-4 sm:px-6 h-12
                       flex flex-row items-center justify-between gap-2 select-none overflow-hidden flex-shrink-0">
 
         {/* LEFT — chip expandible */}
@@ -47,13 +47,12 @@ export default function AdminModules() {
           />
           <span className="text-[12px] font-bold font-sans whitespace-nowrap flex-shrink-0">Estado de Módulos</span>
           <span
-            className="text-[12px] font-sans whitespace-nowrap overflow-hidden transition-all duration-500 ease-in-out"
+            className="text-[12px] font-light font-sans whitespace-nowrap overflow-hidden transition-all duration-500 ease-in-out"
             style={{
               maxWidth: chipHovered ? '600px' : '0px',
               opacity: chipHovered ? 1 : 0,
               paddingLeft: chipHovered ? '6px' : '0px',
               color: `${brand.colorHex}99`,
-              fontWeight: 500,
             }}
           >
             · Monitoreo y salud de cada módulo de la plataforma
@@ -75,7 +74,7 @@ export default function AdminModules() {
             return (
               <div
                 key={mod.id}
-                className="relative bg-white rounded-2xl border transition-all duration-300 ease-in-out p-4 space-y-3 overflow-hidden cursor-default"
+                className="relative bg-white rounded-2xl border transition-all duration-300 ease-in-out p-4 space-y-3 overflow-hidden shadow-sm cursor-default"
                 style={{
                   borderColor: isHovered ? `${brand.colorHex}88` : 'rgb(226 232 240)',
                   boxShadow: isHovered
@@ -134,20 +133,20 @@ export default function AdminModules() {
                 {/* KPIs */}
                 <div className="relative grid grid-cols-3 gap-0 pt-3 border-t border-slate-100">
                   <div className="pr-2 border-r border-slate-100">
-                    <span className="text-[10px] font-bold font-jakarta uppercase tracking-wider text-slate-400 block mb-0.5">Usuarios</span>
+                    <span className="text-kpi-label text-slate-400 block mb-0.5">Usuarios</span>
                     <span
-                      className="text-xl font-bold font-headline transition-colors duration-300"
+                      className="text-data-number transition-colors duration-300"
                       style={{ color: isHovered ? brand.colorHex : '#1e293b' }}
                     >
                       {mod.users}
                     </span>
                   </div>
                   <div className="px-2 border-r border-slate-100">
-                    <span className="text-[10px] font-bold font-jakarta uppercase tracking-wider text-slate-400 block mb-0.5">Uptime</span>
-                    <span className="text-xl font-bold font-headline text-slate-800">{mod.uptime}</span>
+                    <span className="text-kpi-label text-slate-400 block mb-0.5">Uptime</span>
+                    <span className="text-data-number text-slate-800">{mod.uptime}</span>
                   </div>
                   <div className="pl-2">
-                    <span className="text-[10px] font-bold font-jakarta uppercase tracking-wider text-slate-400 block mb-0.5">Deploy</span>
+                    <span className="text-kpi-label text-slate-400 block mb-0.5">Deploy</span>
                     <span className="text-[11px] font-semibold font-sans text-slate-600 leading-tight">{mod.lastDeploy}</span>
                   </div>
                 </div>

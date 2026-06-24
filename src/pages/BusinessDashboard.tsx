@@ -1,22 +1,21 @@
-import { Users, CreditCard, Gift, Plus, Loader2, BarChart3, TrendingUp, ShoppingBag, HeartHandshake, MapPin, Sparkles, Activity } from 'lucide-react';
+import { Gift, Plus, Loader2, BarChart3, TrendingUp, ShoppingBag, HeartHandshake, Activity } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { useEffect, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import CreateProgramWizard from '@/modules/fidelizacion/components/CreateProgramWizard';
 import { useAuth } from '@/context/AuthContext';
 import {
   getBusinessKpis, getPurchasesByDay, getRecentPurchases, timeAgo,
   type BusinessKpis, type DailyPoint, type RecentPurchase,
 } from '@/services/statsService';
-import { getCardConfig, getBusinessClients } from '@/services/loyaltyService';
-import SectionRibbon from '@/platform/ui/SectionRibbon';
+import { getBusinessClients } from '@/services/loyaltyService';
+import { useModuleBrand } from '@/platform/theme/ModuleBrand';
 
 export default function BusinessDashboard() {
   const { user } = useAuth();
+  const { brand } = useModuleBrand();
   const businessId = user?.id ?? '';
-  const businessName = (user?.user_metadata?.name as string | undefined) ?? user?.email ?? '';
   const [wizardOpen, setWizardOpen] = useState(false);
-  const navigate = useNavigate();
+  const [chipHovered, setChipHovered] = useState(false);
 
   const [kpis, setKpis] = useState<BusinessKpis | null>(null);
   const [chart, setChart] = useState<DailyPoint[] | null>(null);
@@ -37,8 +36,7 @@ export default function BusinessDashboard() {
       getPurchasesByDay(businessId, 7),
       getRecentPurchases(businessId, 5),
       getBusinessClients(businessId),
-      getCardConfig(businessId),
-    ]).then(([k, c, r, clientRes, cfgRes]) => {
+    ]).then(([k, c, r, clientRes]) => {
       if (cancelled) return;
       if (k.error || c.error || r.error) {
         setStatsError('No se pudieron cargar las métricas. Reintenta.');
@@ -50,8 +48,10 @@ export default function BusinessDashboard() {
       if (!clientRes.error && clientRes.data) {
         setTotalCards(clientRes.data.length);
         const counts: Record<string, number> = {};
-        clientRes.data.forEach((card: any) => {
-          const tag = card.card_tag || card.cardTag || 'Loyalty';
+        clientRes.data.forEach((card) => {
+          const tag = (card as { card_tag?: string; cardTag?: string }).card_tag
+            || (card as { cardTag?: string }).cardTag
+            || 'Loyalty';
           counts[tag] = (counts[tag] || 0) + 1;
         });
         setCardTypeCounts(counts);
@@ -72,24 +72,75 @@ export default function BusinessDashboard() {
     return Math.round((kpis.completedCards / kpis.totalCustomers) * 100);
   }, [kpis]);
 
-  return (
-    <div className="min-h-screen bg-slate-50 pb-32">
-      <main className="max-w-7xl mx-auto px-4 md:px-8 py-6 space-y-6">
+  const accent = brand.colorHex;
 
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-          <SectionRibbon
-            icon={Activity}
-            title="Monitor de Analítica"
-            description="Toma decisiones con lo que está pasando con tu programa de fidelización"
+  return (
+    <div className="h-full flex flex-col overflow-hidden">
+
+      {/* Barra secundaria — Fidelización / Analítica */}
+      <div className="bg-white border-b border-slate-200 px-4 sm:px-6 h-12
+                      flex flex-row items-center justify-between
+                      gap-2 select-none overflow-hidden flex-shrink-0">
+
+        <div
+          className="relative flex items-center gap-1.5 px-3 py-1.5 rounded-full border bg-white cursor-default transition-all duration-500 ease-in-out min-w-0"
+          style={{
+            color: accent,
+            borderColor: chipHovered ? `${accent}55` : 'rgb(226 232 240 / 0.6)',
+            boxShadow: chipHovered
+              ? `0 0 0 3px ${accent}18, 0 2px 12px ${accent}22`
+              : '0 0 0 0px transparent',
+            flex: chipHovered ? '1 1 0%' : '0 0 auto',
+          }}
+          onMouseEnter={() => setChipHovered(true)}
+          onMouseLeave={() => setChipHovered(false)}
+        >
+          <div
+            className="absolute inset-0 pointer-events-none rounded-full transition-opacity duration-500"
+            style={{
+              opacity: chipHovered ? 1 : 0,
+              background: `linear-gradient(90deg, ${accent}06 0%, ${accent}14 50%, ${accent}06 100%)`,
+            }}
           />
+          <Activity
+            className="w-3.5 h-3.5 flex-shrink-0 transition-transform duration-300"
+            style={{ transform: chipHovered ? 'rotate(-15deg) scale(1.2)' : 'none' }}
+          />
+          <span className="text-[12px] font-bold font-sans whitespace-nowrap flex-shrink-0 tracking-wide">
+            Monitor de Analítica
+          </span>
+          <span
+            className="text-[12px] font-light font-sans whitespace-nowrap overflow-hidden transition-all duration-500 ease-in-out tracking-wide"
+            style={{
+              maxWidth: chipHovered ? '600px' : '0px',
+              opacity: chipHovered ? 1 : 0,
+              paddingLeft: chipHovered ? '6px' : '0px',
+              color: `${accent}99`,
+            }}
+          >
+            · Toma decisiones con lo que está pasando en tu programa de fidelización
+          </span>
+        </div>
+
+        <div className="flex items-center gap-2 flex-shrink-0">
+          <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200/60 px-3 py-1.5 rounded-full flex-shrink-0">
+            <div className="w-2 h-2 rounded-full animate-pulse flex-shrink-0" style={{ backgroundColor: accent }} />
+            <span className="text-status text-slate-600 whitespace-nowrap">
+              {statsLoading ? 'Sincronizando…' : `${kpis?.totalCustomers ?? 0} clientes activos`}
+            </span>
+          </div>
           <button
             onClick={() => setWizardOpen(true)}
-            className="bg-blue-600 text-white px-5 py-2.5 rounded-xl font-bold flex items-center gap-2 shadow-md hover:bg-blue-700 transition-all text-xs shrink-0"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full font-light text-[11px] transition-all active:scale-[0.97] shadow-sm text-white tracking-wide"
+            style={{ backgroundColor: accent }}
           >
-            <Plus className="w-4 h-4" />
-            Crear nuevo programa
+            <Plus className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">Nuevo programa</span>
           </button>
         </div>
+      </div>
+
+      <main className="flex-1 overflow-y-auto px-4 md:px-6 pt-3 pb-6 space-y-4">
 
         {statsError && (
           <div className="p-4 bg-red-50 border border-red-200 rounded-xl text-sm text-red-700">
@@ -97,243 +148,226 @@ export default function BusinessDashboard() {
           </div>
         )}
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="bg-white border border-slate-200 rounded-2xl p-5 relative overflow-hidden shadow-sm">
-            <div className="absolute top-0 right-0 w-20 h-20 bg-blue-500/5 rounded-full filter blur-lg pointer-events-none" />
-            <div className="flex justify-between items-start">
-              <span className="text-hero-label text-slate-400">PROGRAMA DE SELLOS</span>
-              <span className="p-1.5 bg-blue-50 text-blue-600 border border-blue-100 rounded-lg">
-                <TrendingUp className="w-4 h-4" />
-              </span>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          {[
+            {
+              label: 'PROGRAMA DE SELLOS',
+              icon: TrendingUp,
+              value: statsLoading ? '—' : String(kpis?.totalCustomers ?? 0),
+              sub: `${kpis?.completedCards ?? 0} tarjetas completas`,
+            },
+            {
+              label: 'CASHBACK DIGITAL',
+              icon: ShoppingBag,
+              value: statsLoading ? '—' : '$ 325.00 COP',
+              sub: '$ 45.00 COP descontados por usuarios',
+            },
+            {
+              label: 'TARJETAS ACTIVAS',
+              icon: Gift,
+              value: statsLoading ? '—' : String(totalCards),
+              sub: 'Fidelidad, Cashback, Multipase',
+            },
+            {
+              label: 'RETORNO INVITACIÓN',
+              icon: HeartHandshake,
+              value: completionRate !== null ? `+${completionRate}%` : '+42%',
+              sub: 'Del flujo proviene del boca a boca',
+            },
+          ].map((card) => (
+            <div key={card.label} className="bg-white border border-slate-200 rounded-2xl p-4 relative overflow-hidden shadow-sm">
+              <div
+                className="absolute top-0 right-0 w-20 h-20 rounded-full filter blur-lg pointer-events-none"
+                style={{ backgroundColor: `${accent}0d` }}
+              />
+              <div className="relative flex items-start justify-between gap-2">
+                <div className="min-w-0">
+                  <span className="text-tech-label text-slate-400 block mb-1.5">{card.label}</span>
+                  <h4 className={`text-data-number text-slate-700 ${statsLoading ? 'opacity-30' : ''}`}>
+                    {card.value}
+                  </h4>
+                  <p className="text-data-secondary text-slate-500 mt-1">{card.sub}</p>
+                </div>
+                <div
+                  className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
+                  style={{ backgroundColor: `${accent}12`, color: accent }}
+                >
+                  <card.icon className="w-4 h-4" />
+                </div>
+              </div>
             </div>
-            <div className="mt-4">
-              <h4 className="text-hero text-slate-700">
-                {statsLoading ? <span className="opacity-30">—</span> : kpis?.totalCustomers ?? 0}
-              </h4>
-              <p className="text-caption text-slate-500 mt-1">
-                {kpis?.completedCards ?? 0} tarjetas completas
-              </p>
-            </div>
-          </div>
-
-          <div className="bg-white border border-slate-200 rounded-2xl p-5 relative overflow-hidden shadow-sm">
-            <div className="absolute top-0 right-0 w-20 h-20 bg-blue-600/5 rounded-full filter blur-lg pointer-events-none" />
-            <div className="flex justify-between items-start">
-              <span className="text-hero-label text-slate-400">CASHBACK DIGITAL</span>
-              <span className="p-1.5 bg-blue-100 text-blue-700 border border-blue-200 rounded-lg">
-                <ShoppingBag className="w-4 h-4" />
-              </span>
-            </div>
-            <div className="mt-4">
-              <h4 className="text-hero text-slate-700">
-                {statsLoading ? <span className="opacity-30">—</span> : '$ 325.00'} COP
-              </h4>
-              <p className="text-caption text-slate-500 mt-1">
-                $ 45.00 COP descontados por usuarios
-              </p>
-            </div>
-          </div>
-
-          <div className="bg-white border border-slate-200 rounded-2xl p-5 relative overflow-hidden shadow-sm">
-            <div className="absolute top-0 right-0 w-20 h-20 bg-blue-500/5 rounded-full filter blur-lg pointer-events-none" />
-            <div className="flex justify-between items-start">
-              <span className="text-hero-label text-slate-400">TARJETAS ACTIVAS</span>
-              <span className="p-1.5 bg-indigo-50 text-indigo-600 border border-indigo-100 rounded-lg">
-                <Gift className="w-4 h-4" />
-              </span>
-            </div>
-            <div className="mt-4">
-              <h4 className="text-hero text-slate-700">
-                {statsLoading ? <span className="opacity-30">—</span> : totalCards}
-              </h4>
-              <p className="text-caption text-slate-500 mt-1">
-                Fidelidad, Cashback, Multipase
-              </p>
-            </div>
-          </div>
-
-          <div className="bg-white border border-slate-200 rounded-2xl p-5 relative overflow-hidden shadow-sm">
-            <div className="absolute top-0 right-0 w-20 h-20 bg-blue-500/5 rounded-full filter blur-lg pointer-events-none" />
-            <div className="flex justify-between items-start">
-              <span className="text-hero-label text-slate-400">RETORNO INVITACIÓN</span>
-              <span className="p-1.5 bg-slate-50 text-slate-600 border border-slate-200 rounded-lg">
-                <HeartHandshake className="w-4 h-4 text-blue-600" />
-              </span>
-            </div>
-            <div className="mt-4">
-              <h4 className="text-hero text-slate-700">
-                {completionRate !== null ? `+${completionRate}%` : '+42%'}
-              </h4>
-              <p className="text-caption text-slate-500 mt-1">
-                Del flujo proviene del boca a boca
-              </p>
-            </div>
-          </div>
+          ))}
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          <div className="lg:col-span-8 bg-white border border-slate-200 rounded-2xl p-6 relative overflow-hidden shadow-sm">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/2 rounded-full filter blur-2xl pointer-events-none" />
-            <div className="flex justify-between items-center mb-6">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-3">
+          <div className="lg:col-span-8 bg-white border border-slate-200 rounded-2xl p-5 relative overflow-hidden shadow-sm">
+            <div
+              className="absolute top-0 right-0 w-32 h-32 rounded-full filter blur-2xl pointer-events-none"
+              style={{ backgroundColor: `${accent}08` }}
+            />
+            <div className="flex justify-between items-center mb-4">
               <div className="flex items-center gap-2">
-                <BarChart3 className="w-4 h-4 text-blue-600" />
-                <h3 className="text-section-title text-slate-800">
+                <BarChart3 className="w-4 h-4" style={{ color: accent }} />
+                <h3 className="text-section-heading text-slate-800">
                   Flujo Semanal de Canjes Presenciales
                 </h3>
               </div>
-              <span className="text-[10px] font-mono font-bold uppercase bg-blue-50 border border-blue-200 px-2.5 py-0.5 rounded text-blue-600">
-                {statsLoading ? 'CARGANDO…' : 'METRICA LIVE COLOMBIA'}
+              <span
+                className="text-tech-label px-2.5 py-0.5 rounded border"
+                style={{ backgroundColor: `${accent}10`, color: accent, borderColor: `${accent}30` }}
+              >
+                {statsLoading ? 'CARGANDO…' : 'MÉTRICA LIVE COLOMBIA'}
               </span>
             </div>
 
-            <div className="h-64 w-full">
+            <div className="h-56 w-full">
               {chartData.length === 0 && !statsLoading ? (
-                <div className="h-full flex items-center justify-center text-slate-500 text-sm">
+                <div className="h-full flex items-center justify-center text-slate-500 text-sm font-light">
                   Aún no hay actividad en los últimos 7 días.
                 </div>
               ) : (
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={chartData}>
                     <defs>
-                      <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#2563EB" stopOpacity={0.2}/>
-                        <stop offset="95%" stopColor="#2563EB" stopOpacity={0}/>
+                      <linearGradient id="analyticsGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor={accent} stopOpacity={0.2} />
+                        <stop offset="95%" stopColor={accent} stopOpacity={0} />
                       </linearGradient>
                     </defs>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#c7c4d8" opacity={0.3} />
-                    <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 12, fontWeight: 600 }} />
+                    <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 11, fontWeight: 400 }} />
                     <YAxis hide allowDecimals={false} />
                     <Tooltip
                       contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 8px 24px rgba(0,0,0,0.12)' }}
-                      itemStyle={{ fontWeight: 700, color: '#2563EB' }}
+                      itemStyle={{ fontWeight: 600, color: accent }}
                       formatter={(v: number) => [`${v} sellos`, 'Actividad']}
                     />
-                    <Area type="monotone" dataKey="value" stroke="#2563EB" strokeWidth={2.5} fillOpacity={1} fill="url(#colorValue)" />
+                    <Area type="monotone" dataKey="value" stroke={accent} strokeWidth={2.5} fillOpacity={1} fill="url(#analyticsGradient)" />
                   </AreaChart>
                 </ResponsiveContainer>
               )}
             </div>
 
-            <div className="mt-4 pt-3 border-t border-slate-100 flex justify-between items-center">
-              <p className="text-caption text-slate-500 leading-normal">
-                La línea representa la suma de lecturas de códigos QR / NFC en locales físicos por franja diaria.
+            <div className="mt-3 pt-3 border-t border-slate-100 flex justify-between items-center gap-3">
+              <p className="text-data-secondary text-slate-500 leading-normal">
+                La línea representa lecturas de códigos QR / NFC en locales físicos por franja diaria.
               </p>
-              <div className="flex gap-2 items-center text-[10px] font-mono text-slate-500 font-bold">
-                <span className="w-2.5 h-2.5 rounded-full bg-blue-600 inline-block animate-pulse" />
-                <span>Visitas / Día (Live)</span>
+              <div className="flex gap-2 items-center text-data-secondary text-slate-500 flex-shrink-0">
+                <span className="w-2 h-2 rounded-full animate-pulse inline-block" style={{ backgroundColor: accent }} />
+                <span className="whitespace-nowrap">Visitas / Día</span>
               </div>
             </div>
           </div>
 
-          <div className="lg:col-span-4 bg-white border border-slate-200 rounded-2xl p-6 relative overflow-hidden shadow-sm">
-            <h3 className="text-section-title text-slate-800 mb-4">
+          <div className="lg:col-span-4 bg-white border border-slate-200 rounded-2xl p-5 relative overflow-hidden shadow-sm">
+            <h3 className="text-section-heading text-slate-800 mb-4">
               Frecuencia por Tipo de Tarjeta
             </h3>
-            <div className="space-y-4">
+            <div className="space-y-3">
               {[
-                { type: 'Tarjetas de Fidelidad', key: 'Loyalty', color: 'bg-blue-600' },
-                { type: 'Multipases de Acceso', key: 'Multipass', color: 'bg-blue-400' },
-                { type: 'Cashback Digital', key: 'Cashback', color: 'bg-indigo-500' },
-                { type: 'Membresías VIP', key: 'Membership', color: 'bg-blue-700' },
-                { type: 'Pases de Cumpleaños', key: 'Birthday', color: 'bg-indigo-400' },
-              ].map((stat) => {
+                { type: 'Tarjetas de Fidelidad', key: 'Loyalty' },
+                { type: 'Multipases de Acceso', key: 'Multipass' },
+                { type: 'Cashback Digital', key: 'Cashback' },
+                { type: 'Membresías VIP', key: 'Membership' },
+                { type: 'Pases de Cumpleaños', key: 'Birthday' },
+              ].map((stat, i) => {
                 const count = cardTypeCounts[stat.key] || 0;
                 const percent = totalCards > 0 ? Math.round((count / totalCards) * 100) : 0;
+                const barOpacity = 1 - i * 0.15;
                 return (
                   <div key={stat.key} className="space-y-1">
-                    <div className="flex justify-between items-center text-xs">
-                      <span className="font-bold text-slate-700">{stat.type}</span>
-                      <span className="font-mono text-slate-400 text-[10px] font-semibold">{percent}% ({count})</span>
+                    <div className="flex justify-between items-center">
+                      <span className="text-data-primary text-slate-700">{stat.type}</span>
+                      <span className="text-data-secondary text-slate-400">{percent}% ({count})</span>
                     </div>
-                    <div className="w-full bg-slate-50 border border-slate-100 h-2 rounded-full overflow-hidden">
-                      <div className={`h-full ${stat.color} rounded-full`} style={{ width: `${percent}%` }} />
+                    <div className="w-full bg-slate-50 border border-slate-100 h-1.5 rounded-full overflow-hidden">
+                      <div
+                        className="h-full rounded-full transition-all duration-500"
+                        style={{ width: `${percent}%`, backgroundColor: accent, opacity: barOpacity }}
+                      />
                     </div>
                   </div>
                 );
               })}
             </div>
-            <div className="bg-blue-50/50 border border-blue-100 p-3 rounded-xl mt-6">
-              <span className="text-[10px] font-mono uppercase tracking-wider text-blue-600 font-bold block">Insight de Conversión</span>
-              <p className="text-caption text-slate-600 mt-1 leading-normal">
-                Las promociones de fidelidad basadas en repeticiones de sellos tienen un ticket de retorno 3.2x más rápido que las ofertas genéricas en Colombia.
+            <div className="border p-3 rounded-xl mt-4" style={{ backgroundColor: `${accent}08`, borderColor: `${accent}20` }}>
+              <span className="text-tech-label block" style={{ color: accent }}>Insight de Conversión</span>
+              <p className="text-data-secondary text-slate-600 mt-1 leading-normal">
+                Las promociones basadas en repeticiones de sellos tienen un ticket de retorno 3.2× más rápido que ofertas genéricas.
               </p>
             </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          <div className="lg:col-span-4 bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-3">
+          <div className="lg:col-span-4 bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
             <div className="flex items-center gap-2 mb-4">
-              <TrendingUp className="w-4 h-4 text-blue-600" />
-              <h3 className="text-section-title text-slate-800">
-                Resumen Rápido
-              </h3>
+              <TrendingUp className="w-4 h-4" style={{ color: accent }} />
+              <h3 className="text-section-heading text-slate-800">Resumen Rápido</h3>
             </div>
-            <div className="space-y-3">
-              <div className="flex justify-between items-center p-3 bg-blue-50/50 rounded-xl">
-                <span className="text-xs text-slate-600">Total tarjetas emitidas</span>
-                <span className="text-hero text-slate-700">{totalCards}</span>
-              </div>
-              <div className="flex justify-between items-center p-3 bg-indigo-50/50 rounded-xl">
-                <span className="text-xs text-slate-600">Tarjetas completas</span>
-                <span className="text-hero text-slate-700">{kpis?.completedCards ?? 0}</span>
-              </div>
-              <div className="flex justify-between items-center p-3 bg-amber-50/50 rounded-xl">
-                <span className="text-xs text-slate-600">Clientes registrados</span>
-                <span className="text-hero text-slate-700">{kpis?.totalCustomers ?? 0}</span>
-              </div>
-              <div className="flex justify-between items-center p-3 bg-emerald-50/50 rounded-xl">
-                <span className="text-xs text-slate-600">Tasa de retención</span>
-                <span className="text-hero text-slate-700">{completionRate !== null ? `${completionRate}%` : '—'}</span>
-              </div>
+            <div className="space-y-2">
+              {[
+                { label: 'Total tarjetas emitidas', value: totalCards },
+                { label: 'Tarjetas completas', value: kpis?.completedCards ?? 0 },
+                { label: 'Clientes registrados', value: kpis?.totalCustomers ?? 0 },
+                { label: 'Tasa de retención', value: completionRate !== null ? `${completionRate}%` : '—' },
+              ].map((row) => (
+                <div
+                  key={row.label}
+                  className="flex justify-between items-center p-3 rounded-xl"
+                  style={{ backgroundColor: `${accent}08` }}
+                >
+                  <span className="text-data-secondary text-slate-600">{row.label}</span>
+                  <span className="text-data-number text-slate-700">{row.value}</span>
+                </div>
+              ))}
             </div>
           </div>
 
-          <div className="lg:col-span-8 bg-white border border-slate-200 rounded-2xl p-6 relative overflow-hidden shadow-sm">
-            <h3 className="text-section-title text-slate-800 mb-4">
-              Bitácora en Tiempo Real (Canjes y Puntos en Tiendas)
+          <div className="lg:col-span-8 bg-white border border-slate-200 rounded-2xl p-5 relative overflow-hidden shadow-sm">
+            <h3 className="text-section-heading text-slate-800 mb-4">
+              Bitácora en Tiempo Real
             </h3>
             <div className="overflow-x-auto no-scrollbar">
               {statsLoading ? (
                 <div className="py-12 flex justify-center">
-                  <Loader2 className="w-6 h-6 animate-spin text-blue-600" />
+                  <Loader2 className="w-6 h-6 animate-spin" style={{ color: accent }} />
                 </div>
               ) : (recent?.length ?? 0) === 0 ? (
-                <div className="py-12 text-center text-slate-500 text-sm">
+                <div className="py-12 text-center text-slate-500 text-sm font-light">
                   Aún no hay compras registradas. Cuando registres una compra aparecerá aquí.
                 </div>
               ) : (
-                <table className="w-full text-left text-xs border-collapse">
+                <table className="w-full text-left border-collapse">
                   <thead>
-                    <tr className="border-b border-slate-100 text-[10px] uppercase font-mono tracking-wider text-slate-400 font-bold">
-                      <th className="pb-2.5 font-bold">Cliente</th>
-                      <th className="pb-2.5 font-bold">Tarjeta Afectada</th>
-                      <th className="pb-2.5 font-bold">Tipo de Tránsito</th>
-                      <th className="pb-2.5 font-bold text-right">Monto</th>
-                      <th className="pb-2.5 font-bold text-right">Fecha</th>
+                    <tr className="border-b border-slate-100">
+                      {['Cliente', 'Tarjeta Afectada', 'Tipo de Tránsito', 'Monto', 'Fecha'].map((col, i) => (
+                        <th
+                          key={col}
+                          className={`pb-2.5 text-col-header text-slate-400 font-jakarta ${i >= 3 ? 'text-right' : ''}`}
+                        >
+                          {col}
+                        </th>
+                      ))}
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100/60">
                     {recent!.map((row) => (
                       <tr key={row.id} className="hover:bg-slate-50/50 transition-colors">
-                        <td className="py-3 font-bold text-slate-800">{row.customerName}</td>
-                        <td className="py-3 text-slate-600">
+                        <td className="py-3 text-data-primary text-slate-800">{row.customerName}</td>
+                        <td className="py-3 text-data-secondary text-slate-600">
                           <span className="inline-flex items-center gap-1.5">
-                            <span className="w-1.5 h-1.5 rounded-full bg-blue-600 animate-pulse" />
+                            <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: accent }} />
                             Tarjeta de Fidelidad
                           </span>
                         </td>
                         <td className="py-3">
-                          <span className="inline-block px-2 py-0.5 rounded text-[10px] font-bold font-mono bg-emerald-50 text-emerald-700 border border-emerald-200">
+                          <span className="inline-block px-2 py-0.5 rounded text-tech-label bg-emerald-50 text-emerald-700 border border-emerald-200">
                             ACUMULADO
                           </span>
                         </td>
-                        <td className="py-3 text-right font-bold font-mono text-emerald-700">
-                          +1 sello
-                        </td>
-                        <td className="py-3 text-right font-mono text-slate-400">
-                          {timeAgo(row.createdAt)}
-                        </td>
+                        <td className="py-3 text-right text-data-number text-emerald-700">+1 sello</td>
+                        <td className="py-3 text-right text-data-secondary text-slate-400">{timeAgo(row.createdAt)}</td>
                       </tr>
                     ))}
                   </tbody>

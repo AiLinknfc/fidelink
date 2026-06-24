@@ -199,7 +199,7 @@ export default function BrandLoginGate() {
                 <div>
                   <label className="block text-[10.5px] font-bold text-slate-500 mb-1 font-sans">NOMBRE COMPLETO</label>
                   <input type="text" value={name} onChange={(e) => setName(e.target.value)}
-                    className="w-full px-3.5 py-2 text-xs bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 text-slate-800 font-medium"
+                    className="w-full px-3.5 py-2 text-xs bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 text-slate-800 placeholder:text-slate-400 font-medium"
                     placeholder="Tu nombre" required />
                 </div>
               )}
@@ -207,7 +207,7 @@ export default function BrandLoginGate() {
               <div>
                 <label className="block text-[10.5px] font-bold text-slate-500 mb-1 font-sans">CORREO ELECTRÓNICO</label>
                 <input type="email" value={email} onChange={(e) => setEmail(e.target.value)}
-                  className="w-full px-3.5 py-2 text-xs bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 text-slate-800 font-medium"
+                  className="w-full px-3.5 py-2 text-xs bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 text-slate-800 placeholder:text-slate-400 font-medium"
                   placeholder="correo@ejemplo.com" required />
               </div>
 
@@ -216,7 +216,7 @@ export default function BrandLoginGate() {
                   <label className="block text-[10.5px] font-bold text-slate-500 font-sans">CONTRASEÑA</label>
                 </div>
                 <input type="password" value={password} onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-3.5 py-2 text-xs bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 text-slate-800 font-medium font-mono"
+                  className="w-full px-3.5 py-2 text-xs bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 text-slate-800 placeholder:text-slate-400 font-medium font-sans"
                   required />
               </div>
 

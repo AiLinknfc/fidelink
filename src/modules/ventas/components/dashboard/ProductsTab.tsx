@@ -123,14 +123,14 @@ export default function ProductsTab({
                 <label className="block text-xs font-semibold text-slate-500 mb-1 uppercase">Nombre del Producto</label>
                 <input type="text" required placeholder="Ej: Café Bourbon Rosado Especial" value={newProductName}
                   onChange={(e) => setNewProductName(e.target.value)}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-indigo-600" />
+                  className="w-full px-3 py-2 border border-slate-200 rounded-xl text-xs focus:outline-indigo-600 text-slate-800 placeholder:text-slate-400" />
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs font-semibold text-slate-500 mb-1 uppercase">Precio ($ COP)</label>
                   <input type="number" required min={1} value={newProductPrice}
                     onChange={(e) => setNewProductPrice(Number(e.target.value))}
-                    className="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-indigo-600" />
+                    className="w-full px-3 py-2 border border-slate-200 rounded-xl text-xs focus:outline-indigo-600 text-slate-800 placeholder:text-slate-400" />
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-slate-500 mb-1 uppercase">Categoría</label>
@@ -147,12 +147,12 @@ export default function ProductsTab({
                 <label className="block text-xs font-semibold text-slate-500 mb-1 uppercase">Descripción Comercial para la IA</label>
                 <textarea rows={2} required placeholder="La IA usará este texto para vender y responder preguntas frecuentes..."
                   value={newProductDesc} onChange={(e) => setNewProductDesc(e.target.value)}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-indigo-600" />
+                  className="w-full px-3 py-2 border border-slate-200 rounded-xl text-xs focus:outline-indigo-600 text-slate-800 placeholder:text-slate-400" />
               </div>
               <div>
                 <label className="block text-xs font-semibold text-slate-500 mb-1 uppercase">URL Imagen (Unsplash)</label>
                 <input type="text" required value={newProductImg} onChange={(e) => setNewProductImg(e.target.value)}
-                  className="w-full px-3 py-1.5 border border-slate-200 rounded-xl text-xs font-mono focus:outline-indigo-600" />
+                  className="w-full px-3 py-1.5 border border-slate-200 rounded-xl text-xs focus:outline-indigo-600 text-slate-800 placeholder:text-slate-400 font-sans" />
               </div>
               <div>
                 <label className="block text-xs font-semibold text-slate-500 mb-1 uppercase">Tipo de Entrega Automática</label>
@@ -168,7 +168,7 @@ export default function ProductsTab({
                 <label className="block text-xs font-semibold text-slate-500 mb-1 uppercase">Contenido del Entregable</label>
                 <textarea rows={2} required placeholder="Escribe el enlace directo o el mensaje que la pasarela entregará al cliente justo después de pagar."
                   value={newProductDelCont} onChange={(e) => setNewProductDelCont(e.target.value)}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-indigo-600 text-xs font-mono" />
+                  className="w-full px-3 py-2 border border-slate-200 rounded-xl text-xs focus:outline-indigo-600 text-slate-800 placeholder:text-slate-400 font-sans" />
               </div>
               <div className="flex gap-2">
                 <button type="button" onClick={() => setShowForm(false)} className="flex-1 px-4 py-2.5 border border-slate-200 text-slate-600 rounded-xl font-medium text-sm hover:bg-slate-50 transition-all cursor-pointer">

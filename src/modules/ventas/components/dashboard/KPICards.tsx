@@ -70,48 +70,40 @@ export default function KPICards({ totalSpent, totalRevenue, roi, cpl, cac, ltv 
         return (
           <div
             key={c.id}
-            className="relative bg-white border rounded-2xl p-4 overflow-hidden cursor-default transition-all duration-300 ease-in-out"
+            className="bg-white border border-slate-200 rounded-2xl p-4 relative overflow-hidden shadow-sm cursor-default transition-all duration-300 ease-in-out"
             style={{
-              borderColor: isHovered ? `${brand.colorHex}88` : 'rgb(226 232 240)',
               boxShadow: isHovered
                 ? `0 0 0 3px ${brand.colorHex}22, 0 6px 20px ${brand.colorHex}28`
-                : '0 0 0 0px transparent',
+                : undefined,
+              borderColor: isHovered ? brand.colorHex : undefined,
             }}
             onMouseEnter={() => setHovered(c.id)}
             onMouseLeave={() => setHovered(null)}
           >
-            {/* Glow sweep */}
-            <div
-              className="absolute inset-0 pointer-events-none rounded-2xl transition-opacity duration-500"
-              style={{
-                opacity: isHovered ? 1 : 0,
-                background: `linear-gradient(135deg, ${brand.colorHex}08 0%, ${brand.colorHex}18 50%, ${brand.colorHex}08 100%)`,
-              }}
-            />
             <div className="relative flex items-start justify-between gap-2">
               <div className="min-w-0">
-                <span className="text-[10px] font-bold font-jakarta uppercase tracking-wider text-slate-400 block mb-1.5">
+                <span className="text-kpi-label text-slate-400 block mb-1.5">
                   {c.label}
                 </span>
                 <div className="flex items-baseline gap-1">
                   <span
-                    className="text-2xl font-bold font-headline tabular-nums transition-colors duration-300"
+                    className="text-data-number transition-colors duration-300"
                     style={{ color: isHovered ? brand.colorHex : '#0f172a' }}
                   >
                     {c.value}
                   </span>
-                  <span className="text-[10px] font-jakarta font-bold text-slate-400 uppercase">{c.unit}</span>
+                  <span className="text-kpi-unit text-slate-400">{c.unit}</span>
                 </div>
-                <p className={`text-[11px] font-sans mt-1 ${c.subColor}`}>{c.sub}</p>
+                <p className={`text-kpi-sub mt-1 ${c.subColor}`}>{c.sub}</p>
               </div>
               <div
                 className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-300"
-                style={{ backgroundColor: isHovered ? `${brand.colorHex}18` : c.iconBg }}
+                style={{
+                  backgroundColor: isHovered ? `${brand.colorHex}18` : c.iconBg,
+                  color: isHovered ? brand.colorHex : c.iconColor,
+                }}
               >
-                <Icon
-                  className="w-4 h-4 transition-colors duration-300"
-                  style={{ color: isHovered ? brand.colorHex : c.iconColor }}
-                />
+                <Icon className="w-4 h-4" />
               </div>
             </div>
           </div>

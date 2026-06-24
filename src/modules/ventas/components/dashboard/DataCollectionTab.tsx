@@ -181,7 +181,7 @@ export default function DataCollectionTab({
           <div className="flex gap-2">
             <input type="text" value={inputText} onChange={e => setInputText(e.target.value)} onKeyDown={handleKeyDown}
               placeholder="Escribe como si fueras el cliente..."
-              className="flex-1 bg-slate-50 border border-slate-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 rounded-xl px-3 py-2 text-xs outline-none transition-all" />
+              className="flex-1 bg-slate-50 border border-slate-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 rounded-xl px-3 py-2 text-xs outline-none transition-all text-slate-800 placeholder:text-slate-400" />
             <button type="button" onClick={handleSendMessage} disabled={!inputText.trim()}
               className="px-3 py-2 bg-blue-600 text-white rounded-xl disabled:opacity-40 hover:bg-blue-700 transition-all">
               <Send className="w-3.5 h-3.5" />
@@ -278,21 +278,21 @@ export default function DataCollectionTab({
                 <input type="password" value={localConfig.telegramToken}
                   onChange={e => setLocalConfig(prev => ({ ...prev, telegramToken: e.target.value }))}
                   placeholder="123456:ABC-DEF..."
-                  className="w-full bg-slate-50 border border-slate-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 rounded-lg px-2.5 py-1.5 text-[11px] font-mono outline-none transition-all" />
+                  className="w-full bg-slate-50 border border-slate-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 rounded-lg px-2.5 py-1.5 text-xs font-sans outline-none transition-all text-slate-800 placeholder:text-slate-400" />
               </div>
               <div>
                 <label className="text-[10px] font-semibold text-slate-600 block mb-0.5">API Key de OpenAI</label>
                 <input type="password" value={localConfig.openAiApiKey}
                   onChange={e => setLocalConfig(prev => ({ ...prev, openAiApiKey: e.target.value }))}
                   placeholder="sk-..."
-                  className="w-full bg-slate-50 border border-slate-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 rounded-lg px-2.5 py-1.5 text-[11px] font-mono outline-none transition-all" />
+                  className="w-full bg-slate-50 border border-slate-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 rounded-lg px-2.5 py-1.5 text-xs font-sans outline-none transition-all text-slate-800 placeholder:text-slate-400" />
               </div>
               <div>
                 <label className="text-[10px] font-semibold text-slate-600 block mb-0.5">Pixel ID (Meta)</label>
                 <input type="text" value={localConfig.pixelId}
                   onChange={e => setLocalConfig(prev => ({ ...prev, pixelId: e.target.value }))}
                   placeholder="px-meta-..."
-                  className="w-full bg-slate-50 border border-slate-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 rounded-lg px-2.5 py-1.5 text-[11px] font-mono outline-none transition-all" />
+                  className="w-full bg-slate-50 border border-slate-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 rounded-lg px-2.5 py-1.5 text-xs font-sans outline-none transition-all text-slate-800 placeholder:text-slate-400" />
               </div>
               <button type="submit"
                 className="w-full py-2 bg-blue-600 text-white rounded-lg text-xs font-bold hover:bg-blue-700 transition-all">

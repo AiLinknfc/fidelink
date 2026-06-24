@@ -75,15 +75,6 @@
   100% { background-position: 200% 0; }
 }
 
-@keyframes radar-pulse {
-  0% { transform: scale(0.9); opacity: 0.8; }
-  50% { opacity: 0.3; }
-  100% { transform: scale(2.2); opacity: 0; }
-}
-.animate-radar-pulse {
-  animation: radar-pulse 3s infinite cubic-bezier(0.16, 1, 0.3, 1);
-}
-
 @keyframes fade-in {
   from { opacity: 0; transform: translateY(4px); }
   to { opacity: 1; transform: translateY(0); }
@@ -336,6 +327,11 @@
 
   /* label técnico: "SI OCURRE:", "ACCIÓN:", contadores en panel de logs */
   .text-tech-label         { @apply text-[10px] font-bold font-jakarta uppercase tracking-wider leading-none; }
+
+  /* ── Cards KPI ──────────────────────────────────────────────── */
+  .text-kpi-label  { @apply text-[10px] font-bold font-jakarta uppercase tracking-wider leading-none; }
+  .text-kpi-unit   { @apply text-[10px] font-bold font-jakarta uppercase leading-none; }
+  .text-kpi-sub    { @apply text-[11px] font-normal leading-[1.4]; }
 
   /* ── Labels heredados (mantener compatibilidad) ─────────────── */
   .text-label-md  { @apply text-[12px] font-semibold leading-[1] tracking-[0.05em]; }

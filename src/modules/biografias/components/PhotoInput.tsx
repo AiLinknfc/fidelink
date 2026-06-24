@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { Camera, Link as LinkIcon, X } from 'lucide-react';
+import { useModuleBrand } from '@/platform/theme/ModuleBrand';
 
 interface PhotoInputProps {
   value: string;
@@ -22,6 +23,7 @@ export function PhotoInput({
   size = 96,
   editable = true,
 }: PhotoInputProps) {
+  const { brand } = useModuleBrand();
   const fileRef = useRef<HTMLInputElement | null>(null);
   const [showPicker, setShowPicker] = useState(false);
   const [urlValue, setUrlValue] = useState(value);
@@ -62,7 +64,7 @@ export function PhotoInput({
         <button
           type="button"
           onClick={() => { setUrlValue(value); setShowPicker(true); }}
-          className="absolute -bottom-1 -right-1 bg-indigo-600 hover:bg-indigo-700 text-white rounded-full p-1.5 shadow-md transition-colors"
+          className="absolute -bottom-1 -right-1 text-white rounded-full p-1.5 shadow-md transition-colors hover:opacity-90" style={{ backgroundColor: brand.colorHex }}
           title="Cambiar foto"
         >
           <Camera className="w-3.5 h-3.5" />
@@ -72,7 +74,7 @@ export function PhotoInput({
       {showPicker && (
         <div className="fixed inset-0 z-[60] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4" onClick={() => setShowPicker(false)}>
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-sm border border-slate-200 overflow-hidden" onClick={(e) => e.stopPropagation()}>
-            <div className="p-4 bg-indigo-600 text-white flex items-center justify-between">
+            <div className="p-4 text-white flex items-center justify-between" style={{ backgroundColor: brand.colorHex }}>
               <h3 className="text-xs font-bold uppercase tracking-wider flex items-center gap-1.5">
                 <Camera className="w-4 h-4" /> Editar foto
               </h3>
@@ -100,7 +102,7 @@ export function PhotoInput({
               />
               <button
                 onClick={() => fileRef.current?.click()}
-                className="w-full px-4 py-2.5 text-xs font-bold bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg flex items-center justify-center gap-2"
+                className="w-full px-4 py-2.5 text-xs font-bold text-white rounded-lg flex items-center justify-center gap-2 hover:opacity-90" style={{ backgroundColor: brand.colorHex }}
               >
                 <Camera className="w-4 h-4" /> Subir imagen desde mi dispositivo
               </button>
@@ -121,7 +123,7 @@ export function PhotoInput({
                     value={urlValue}
                     onChange={(e) => setUrlValue(e.target.value)}
                     placeholder="https://..."
-                    className="flex-1 text-xs p-2 border border-slate-200 rounded-md text-slate-700"
+                    className="flex-1 text-xs p-2 border border-slate-200 rounded-md text-slate-800 placeholder:text-slate-400"
                   />
                   <button
                     onClick={() => {

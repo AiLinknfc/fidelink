@@ -26,13 +26,13 @@ export default function AIConfigTab({ tempConfig, setTempConfig, handleSaveAICon
           <label className="block text-xs font-semibold text-slate-500 mb-1.5 uppercase">Nombre Comercial del Comercio</label>
           <input type="text" required value={tempConfig.merchantName}
             onChange={(e) => setTempConfig({ ...tempConfig, merchantName: e.target.value })}
-            className="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-sm focus:outline-indigo-600" />
+            className="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-xs focus:outline-indigo-600 text-slate-800 placeholder:text-slate-400" />
         </div>
         <div>
           <label className="block text-xs font-semibold text-slate-500 mb-1.5 uppercase">Tono Conversacional</label>
           <select value={tempConfig.agentTone}
             onChange={(e) => setTempConfig({ ...tempConfig, agentTone: e.target.value as any })}
-            className="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-sm focus:outline-indigo-600">
+            className="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-xs focus:outline-indigo-600 text-slate-800 placeholder:text-slate-400">
             <option value="friendly">Amigable y Cooperador • Ideal Pymes de Hospitalidad</option>
             <option value="persuasive">Persuasivo de Cierre Rápido • Ideal para ventas directas</option>
             <option value="professional">Profesional y Técnico • Ideal Consultorías</option>
@@ -43,13 +43,13 @@ export default function AIConfigTab({ tempConfig, setTempConfig, handleSaveAICon
           <label className="block text-xs font-semibold text-slate-500 mb-1.5 uppercase">Mensaje Inicial Automático de WhatsApp (Bienvenida)</label>
           <input type="text" required value={tempConfig.welcomeMessage}
             onChange={(e) => setTempConfig({ ...tempConfig, welcomeMessage: e.target.value })}
-            className="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-sm focus:outline-indigo-600" />
+            className="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-xs focus:outline-indigo-600 text-slate-800 placeholder:text-slate-400" />
         </div>
         <div>
           <label className="block text-xs font-semibold text-slate-500 mb-1.5 uppercase">Instrucciones del Sistema para la IA (System Prompt)</label>
           <textarea rows={5} required value={tempConfig.systemInstructions}
             onChange={(e) => setTempConfig({ ...tempConfig, systemInstructions: e.target.value })}
-            className="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-sm focus:outline-indigo-600" />
+            className="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-xs focus:outline-indigo-600 text-slate-800 placeholder:text-slate-400" />
         </div>
         <div>
           <div className="flex justify-between text-xs font-semibold text-slate-500 mb-1.5">

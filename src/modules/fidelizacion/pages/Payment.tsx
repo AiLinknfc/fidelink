@@ -114,12 +114,12 @@ export default function Payment() {
   }
 
   if (authLoading || dataLoading) {
-    return <div className="min-h-screen flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-blue-600" /></div>;
+    return <div className="min-h-screen flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin" style={{ color: brand.colorHex }} /></div>;
   }
 
   return (
     <div className="h-full flex flex-col overflow-hidden">
-      <div className="bg-[#f8fafc] border-b border-slate-200 px-4 sm:px-6 h-10 flex flex-row items-center justify-between gap-2 select-none overflow-hidden flex-shrink-0">
+      <div className="bg-white border-b border-slate-200 px-4 sm:px-6 h-12 flex flex-row items-center justify-between gap-2 select-none overflow-hidden flex-shrink-0">
 
         {/* LEFT — chip expandible */}
         <div
@@ -148,13 +148,12 @@ export default function Payment() {
           />
           <span className="text-[12px] font-bold font-sans whitespace-nowrap flex-shrink-0">Cobros & Recargas</span>
           <span
-            className="text-[12px] font-sans whitespace-nowrap overflow-hidden transition-all duration-500 ease-in-out"
+            className="text-[12px] font-light font-sans whitespace-nowrap overflow-hidden transition-all duration-500 ease-in-out"
             style={{
               maxWidth: chipHovered ? '600px' : '0px',
               opacity: chipHovered ? 1 : 0,
               paddingLeft: chipHovered ? '6px' : '0px',
               color: `${brand.colorHex}99`,
-              fontWeight: 500,
             }}
           >
             · Procesa pagos y recargas para tus clientes
@@ -170,9 +169,9 @@ export default function Payment() {
       <main className="flex-1 overflow-y-auto px-4 md:px-6 pt-3 pb-6 space-y-4">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           <div className="lg:col-span-8 bg-white border border-slate-200 rounded-2xl p-6 relative overflow-hidden shadow-sm">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-blue-600/5 rounded-full filter blur-xl pointer-events-none" />
+            <div className="absolute top-0 right-0 w-32 h-32 rounded-full filter blur-xl pointer-events-none" style={{ backgroundColor: `${brand.colorHex}0c` }} />
             <div className="flex items-center gap-2.5 mb-5 border-b border-slate-100 pb-3">
-              <CreditCard className="w-5 h-5 text-blue-600" />
+              <CreditCard className="w-5 h-5" style={{ color: brand.colorHex }} />
               <h2 className="text-section-heading text-slate-800">Módulo Seguro de Cobros & Recargas</h2>
             </div>
 
@@ -181,7 +180,7 @@ export default function Payment() {
                 <div>
                   <label className="block text-xs font-bold text-slate-600 mb-1">Cliente</label>
                   <select value={selectedClientId} onChange={e => setSelectedClientId(e.target.value)}
-                    className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500 bg-white text-slate-800 cursor-pointer">
+                    className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500 text-slate-800 placeholder:text-slate-400 bg-white text-slate-800 cursor-pointer">
                     {clients.map(c => (
                       <option key={c.id} value={c.id}>{c.client?.name || c.clientEmail} - {c.clientEmail}</option>
                     ))}
@@ -192,7 +191,7 @@ export default function Payment() {
                   <div className="relative">
                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-slate-400">$</span>
                     <input type="number" value={paymentAmount} onChange={e => setPaymentAmount(Number(e.target.value) || 0)}
-                      className="w-full pl-7 pr-3 py-2 text-xs border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500 font-mono" />
+                      className="w-full pl-7 pr-3 py-2 text-xs border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500 text-slate-800 placeholder:text-slate-400 font-sans text-slate-800 placeholder:text-slate-400" />
                   </div>
                 </div>
               </div>
@@ -235,23 +234,23 @@ export default function Payment() {
                   <div className="col-span-2">
                     <label className="text-[10px] font-bold text-slate-500 mb-1 block">Número de Tarjeta</label>
                     <input type="text" value={cardNumber} onChange={e => setCardNumber(e.target.value)}
-                      className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500 font-mono" />
+                      className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500 text-slate-800 placeholder:text-slate-400 font-sans text-slate-800 placeholder:text-slate-400" />
                   </div>
                   <div>
                     <label className="text-[10px] font-bold text-slate-500 mb-1 block">Titular</label>
                     <input type="text" value={cardName} onChange={e => setCardName(e.target.value)}
-                      className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500 uppercase" />
+                      className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500 text-slate-800 placeholder:text-slate-400 uppercase" />
                   </div>
                   <div className="flex gap-2">
                     <div className="flex-1">
                       <label className="text-[10px] font-bold text-slate-500 mb-1 block">Vencimiento</label>
                       <input type="text" value={cardExpiry} onChange={e => setCardExpiry(e.target.value)}
-                        className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500 font-mono" />
+                        className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500 text-slate-800 placeholder:text-slate-400 font-sans text-slate-800 placeholder:text-slate-400" />
                     </div>
                     <div className="flex-1">
                       <label className="text-[10px] font-bold text-slate-500 mb-1 block">CVV</label>
                       <input type="text" value={cardCvv} onChange={e => setCardCvv(e.target.value)}
-                        className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500 font-mono" />
+                        className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500 text-slate-800 placeholder:text-slate-400 font-sans text-slate-800 placeholder:text-slate-400" />
                     </div>
                   </div>
                 </div>
@@ -261,7 +260,7 @@ export default function Payment() {
                 <div>
                   <label className="text-[10px] font-bold text-slate-500 mb-1 block">Celular Nequi</label>
                   <input type="text" value={nequiPhone} onChange={e => setNequiPhone(e.target.value)}
-                    className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500 font-mono" />
+                    className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500 text-slate-800 placeholder:text-slate-400 font-sans text-slate-800 placeholder:text-slate-400" />
                 </div>
               )}
 
@@ -269,7 +268,7 @@ export default function Payment() {
                 <div>
                   <label className="text-[10px] font-bold text-slate-500 mb-1 block">Usuario Bancolombia</label>
                   <input type="text" value={bancolombiaUser} onChange={e => setBancolombiaUser(e.target.value)}
-                    className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500" />
+                    className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500 text-slate-800 placeholder:text-slate-400" />
                 </div>
               )}
 
@@ -278,27 +277,27 @@ export default function Payment() {
                   <div>
                     <label className="text-[10px] font-bold text-slate-500 mb-1 block">Banco</label>
                     <select value={selectedBankId} onChange={e => setSelectedBankId(e.target.value)}
-                      className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500 cursor-pointer">
+                      className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500 text-slate-800 placeholder:text-slate-400 cursor-pointer">
                       {COLOMBIAN_BANKS.map(b => <option key={b.id} value={b.id}>{b.name}</option>)}
                     </select>
                   </div>
                   <div>
                     <label className="text-[10px] font-bold text-slate-500 mb-1 block">Email</label>
                     <input type="email" value={pseUserEmail} onChange={e => setPseUserEmail(e.target.value)}
-                      className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500" />
+                      className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500 text-slate-800 placeholder:text-slate-400" />
                   </div>
                 </div>
               )}
 
               {isProcessing && (
-                <div className="p-3 bg-blue-50 border border-blue-200 rounded-xl flex items-center gap-2.5 text-xs text-blue-700">
+                <div className="p-3 rounded-xl flex items-center gap-2.5 text-xs" style={{ backgroundColor: `${brand.colorHex}0a`, borderColor: `${brand.colorHex}24`, color: brand.colorHex }}>
                   <Loader2 className="w-4 h-4 animate-spin shrink-0" />
                   <span className="font-semibold">{statusMessage}</span>
                 </div>
               )}
 
               <button type="submit" disabled={isProcessing || paymentAmount <= 0}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-4 text-xs rounded-xl transition-all shadow-md shadow-blue-500/10 flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50">
+                className="w-full text-white font-bold py-2.5 px-4 text-xs rounded-xl transition-all shadow-md flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50" style={{ backgroundColor: brand.colorHex, boxShadow: `0 4px 6px -1px ${brand.colorHex}1a` }}>
                 {isProcessing ? (
                   <Loader2 className="w-4 h-4 animate-spin" />
                 ) : (
@@ -311,7 +310,7 @@ export default function Payment() {
           <div className="lg:col-span-4 space-y-6">
             <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
               <div className="flex items-center gap-2 mb-4">
-                <ShieldCheck className="w-4 h-4 text-blue-600" />
+                <ShieldCheck className="w-4 h-4" style={{ color: brand.colorHex }} />
                 <h3 className="text-xs font-bold uppercase tracking-wider font-mono text-slate-800">Pasarela Segura</h3>
               </div>
               <div className="space-y-2 text-[11px] text-slate-500">

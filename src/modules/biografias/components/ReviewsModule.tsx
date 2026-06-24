@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Biography, Review, DemoUserRole } from '../types/biography';
 import { Star, MessageSquare, CornerDownRight, Plus, Send, AlertCircle, X, Globe, Check, ChevronDown } from 'lucide-react';
+import { useModuleBrand } from '@/platform/theme/ModuleBrand';
 
 interface ReviewsModuleProps {
   currentBio: Biography;
@@ -9,6 +10,7 @@ interface ReviewsModuleProps {
 }
 
 export function ReviewsModule({ currentBio, role, onUpdateBio }: ReviewsModuleProps) {
+  const { brand } = useModuleBrand();
   const [collapsed, setCollapsed] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [syncToGoogle, setSyncToGoogle] = useState(true);
@@ -111,7 +113,7 @@ export function ReviewsModule({ currentBio, role, onUpdateBio }: ReviewsModulePr
           )}
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-[10px] text-slate-400 group-hover:text-indigo-600 transition-colors font-medium">
+          <span className="text-[10px] text-slate-400 transition-colors font-medium group-hover" style={{ color: `var(--hover-color, ${brand.colorHex})` }}>
             {collapsed ? 'Ver calificaciones' : 'Ocultar'}
           </span>
           <ChevronDown className={`w-4 h-4 text-slate-400 transition-transform ${collapsed ? '' : 'rotate-180'}`} />
@@ -129,18 +131,18 @@ export function ReviewsModule({ currentBio, role, onUpdateBio }: ReviewsModulePr
             <p className="text-xs text-slate-400 mt-1">Conecta con clientes y amigos compartiendo experiencias.</p>
           </div>
           <div className="flex items-center gap-2">
-            <div className="flex items-center gap-3 bg-indigo-50/50 px-3 py-1.5 rounded-xl border border-indigo-100">
+            <div className="flex items-center gap-3 px-3 py-1.5 rounded-xl border" style={{ backgroundColor: `${brand.colorHex}0D`, borderColor: `${brand.colorHex}25` }}>
               <div className="flex items-center gap-1 text-amber-500">
                 <Star className="w-5 h-5 fill-amber-500" />
                 <span className="text-base font-bold text-slate-700">{avgRating}</span>
               </div>
-              <div className="h-4 w-px bg-indigo-200" />
-              <span className="text-xs font-semibold text-indigo-700">
+              <div className="h-4 w-px" style={{ backgroundColor: `${brand.colorHex}40` }} />
+              <span className="text-xs font-semibold" style={{ color: brand.colorHex }}>
                 {reviews.length} {reviews.length === 1 ? 'Calificación' : 'Calificaciones'}
               </span>
             </div>
             <button onClick={openModal}
-              className="px-3 py-1.5 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg transition-all active:scale-95 flex items-center gap-1.5">
+              className="px-3 py-1.5 text-xs font-bold text-white rounded-lg transition-all active:scale-95 flex items-center gap-1.5 hover:opacity-90" style={{ backgroundColor: brand.colorHex }}>
               <Star className="w-3.5 h-3.5" /> Calificar
             </button>
           </div>
@@ -162,7 +164,7 @@ export function ReviewsModule({ currentBio, role, onUpdateBio }: ReviewsModulePr
                 <label className="block text-[10px] font-medium text-slate-500 mb-1">Tu Nombre</label>
                 <input type="text" placeholder="Ej. Paula Valencia" value={iName}
                   onChange={(e) => setIName(e.target.value)}
-                  className="w-full px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-white focus:outline-none focus:ring-1 focus:ring-indigo-500 text-slate-700" />
+                className="w-full px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-white focus:outline-none focus:ring-1 focus:ring-slate-400 text-slate-800 placeholder:text-slate-400" />
               </div>
               <div>
                 <label className="block text-[10px] font-medium text-slate-500 mb-1">Calificación</label>
@@ -179,11 +181,11 @@ export function ReviewsModule({ currentBio, role, onUpdateBio }: ReviewsModulePr
               <label className="block text-[10px] font-medium text-slate-500 mb-1">Comentario</label>
               <textarea rows={2} placeholder="Escribe tu opinión..." value={iComment}
                 onChange={(e) => setIComment(e.target.value)}
-                className="w-full px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-white focus:outline-none focus:ring-1 focus:ring-indigo-500 text-slate-700" />
+className="w-full px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-white focus:outline-none focus:ring-1 focus:ring-slate-400 text-slate-800 placeholder:text-slate-400" />
             </div>
             <div className="flex justify-end">
               <button type="submit"
-                className="px-3 py-1.5 text-xs font-bold rounded-lg bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white transition-all flex items-center gap-1">
+                className="px-3 py-1.5 text-xs font-bold rounded-lg active:scale-95 text-white transition-all flex items-center gap-1 hover:opacity-90" style={{ backgroundColor: brand.colorHex }}>
                 Publicar <Plus className="w-3.5 h-3.5" />
               </button>
             </div>
@@ -286,7 +288,7 @@ export function ReviewsModule({ currentBio, role, onUpdateBio }: ReviewsModulePr
                     <div>
                       <div className="flex items-center gap-1.5">
                         <span className="text-[11px] font-bold text-slate-700">Propietario</span>
-                        <span className="text-[9px] text-indigo-600 px-1 py-0.5 bg-indigo-50 border border-indigo-100 rounded-sm font-semibold">Respuesta Oficial</span>
+                        <span className="text-[9px] px-1 py-0.5 border rounded-sm font-semibold" style={{ color: brand.colorHex, backgroundColor: `${brand.colorHex}12`, borderColor: `${brand.colorHex}25` }}>Respuesta Oficial</span>
                       </div>
                       <p className="text-xs text-slate-500 italic mt-0.5 leading-relaxed">{rev.reply}</p>
                     </div>
@@ -297,7 +299,7 @@ export function ReviewsModule({ currentBio, role, onUpdateBio }: ReviewsModulePr
                       <input type="text" placeholder="Escribe una respuesta oficial..."
                         value={replyTexts[rev.id] || ''}
                         onChange={(e) => setReplyTexts({ ...replyTexts, [rev.id]: e.target.value })}
-                        className="flex-1 px-3 py-1 text-xs rounded-lg border border-slate-100 bg-slate-50 hover:bg-slate-100/50 focus:bg-white focus:outline-none focus:ring-1 focus:ring-indigo-500 text-slate-600" />
+                        className="flex-1 px-3 py-1 text-xs rounded-lg border border-slate-100 bg-slate-50 hover:bg-slate-100/50 focus:bg-white focus:outline-none focus:ring-1 focus:ring-slate-400 text-slate-600" />
                       <button onClick={() => handleAddReply(rev.id)}
                         className="px-3 bg-slate-800 text-white font-medium hover:bg-slate-900 rounded-lg text-xs flex items-center gap-1 transition-all active:scale-95">
                         Responder <Send className="w-3" />
@@ -332,7 +334,7 @@ export function ReviewsModule({ currentBio, role, onUpdateBio }: ReviewsModulePr
                   <label className="block text-[11px] font-medium text-slate-500 mb-1">Tu Nombre o Empresa</label>
                   <input type="text" placeholder="Ej. Paula Valencia" value={mName}
                     onChange={(e) => setMName(e.target.value)}
-                    className="w-full px-3 py-2 text-sm rounded-lg border border-slate-200 bg-white focus:outline-none focus:ring-1 focus:ring-indigo-500 text-slate-700" autoFocus />
+                    className="w-full px-3 py-2 text-xs rounded-lg border border-slate-200 bg-white focus:outline-none focus:ring-1 focus:ring-slate-400 text-slate-800 placeholder:text-slate-400" autoFocus />
                 </div>
                 <div>
                   <label className="block text-[11px] font-medium text-slate-500 mb-1">Calificación</label>
@@ -348,7 +350,7 @@ export function ReviewsModule({ currentBio, role, onUpdateBio }: ReviewsModulePr
                   <label className="block text-[11px] font-medium text-slate-500 mb-1">Tu Mensaje / Experiencia</label>
                   <textarea rows={3} placeholder="Escribe aquí tu opinión..." value={mComment}
                     onChange={(e) => setMComment(e.target.value)}
-                    className="w-full px-3 py-2 text-sm rounded-lg border border-slate-200 bg-white focus:outline-none focus:ring-1 focus:ring-indigo-500 text-slate-700" />
+                    className="w-full px-3 py-2 text-xs rounded-lg border border-slate-200 bg-white focus:outline-none focus:ring-1 focus:ring-slate-400 text-slate-800 placeholder:text-slate-400" />
                 </div>
                 <label className="flex items-center gap-2.5 p-3 rounded-xl bg-amber-50 border border-amber-200 cursor-pointer group">
                   <div onClick={(e) => { e.stopPropagation(); setSyncToGoogle(!syncToGoogle); }}
@@ -368,7 +370,7 @@ export function ReviewsModule({ currentBio, role, onUpdateBio }: ReviewsModulePr
                     Cancelar
                   </button>
                   <button type="submit"
-                    className="flex-1 py-2.5 text-sm font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl transition active:scale-95 flex items-center justify-center gap-1.5">
+                    className="flex-1 py-2.5 text-sm font-bold text-white rounded-xl transition active:scale-95 flex items-center justify-center gap-1.5 hover:opacity-90" style={{ backgroundColor: brand.colorHex }}>
                     Publicar <Plus className="w-4 h-4" />
                   </button>
                 </div>

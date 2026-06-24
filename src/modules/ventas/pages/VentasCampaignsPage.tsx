@@ -27,7 +27,7 @@ export default function VentasCampaignsPage() {
     <div className="h-full flex flex-col overflow-hidden">
 
       {/* ── Barra secundaria ── */}
-      <div className="bg-[#f8fafc] border-b border-slate-200 px-4 sm:px-6 h-10
+      <div className="bg-white border-b border-slate-200 px-4 sm:px-6 h-12
                       flex flex-row items-center justify-between
                       gap-2 select-none overflow-hidden flex-shrink-0">
 
@@ -58,13 +58,12 @@ export default function VentasCampaignsPage() {
           />
           <span className="text-[12px] font-bold font-sans whitespace-nowrap flex-shrink-0">Campañas y Pixel Logs</span>
           <span
-            className="text-[12px] font-sans whitespace-nowrap overflow-hidden transition-all duration-500 ease-in-out"
+            className="text-[12px] font-light font-sans whitespace-nowrap overflow-hidden transition-all duration-500 ease-in-out"
             style={{
               maxWidth: chipHovered ? '600px' : '0px',
               opacity: chipHovered ? 1 : 0,
               paddingLeft: chipHovered ? '6px' : '0px',
               color: `${brand.colorHex}99`,
-              fontWeight: 500,
             }}
           >
             · Meta Ads, pixel de seguimiento y eventos de conversión
